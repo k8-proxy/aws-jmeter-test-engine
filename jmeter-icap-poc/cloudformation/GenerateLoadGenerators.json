@@ -25,7 +25,7 @@
       "AmiImage" : {
          "Description" : "Ami image that will be used to launch the server",
          "Default" : "ami-002397ac402bb3b04",
-         "Type" : "String",
+         "Type" : "String"
       },
       "InstanceType" : {
         "Description" : "Instance Type",
@@ -58,6 +58,7 @@
             "Ref":"InstanceSecurityGroup"
           }
         ],
+      "IamInstanceProfile": "AWS-TestEngine-IAMRole",
       "InstanceType" : { "Ref" : "InstanceType" },
       "SpotPrice" : "0.80",
       "KeyName" : { "Ref" : "KeyPairName" },
