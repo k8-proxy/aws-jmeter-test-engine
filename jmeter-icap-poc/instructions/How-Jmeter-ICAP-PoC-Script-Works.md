@@ -65,10 +65,11 @@ p_aws_access_key= aws access key, no default value. Must to use
 p_aws_secret_key= aws secret key, no default value. Must to use
 p_aws_region= region where bucket is created, default is us-east-1
 p_prefix= prefix used to differentiate measurements from different runs, default is demo. 
+p_filetype= name of file that contains file path for each file type separately, default is files. For example, if file type os doc then there needs to be doc.txt file with path defaults of doc files.
 ```
 For example, if we want to run, jmeter script with different bucket and influxdb host then it is run like this:
 ```bash
-[root@ip-172-31-85-184 bin]# JVM_ARGS="-Xms1024m -Xmx1024m" sh jmeter.sh -n -t ICAP-POC_s3.jmx -Jp_aws_access=accesskeyhere -Jp_aws_secret_key=secretkeyhere -Jp_bucket=aws-testengine-s3 -Jp_influxHost=10.112.0.112 -Jp_prefix=myprefix -l icaptest-s33.log
+[root@ip-172-31-85-184 bin]# JVM_ARGS="-Xms1024m -Xmx1024m" sh jmeter.sh -n -t ICAP-POC_s3.jmx -Jp_aws_access=accesskeyhere -Jp_aws_secret_key=secretkeyhere -Jp_bucket=aws-testengine-s3 -Jp_influxHost=10.112.0.112 -Jp_prefix=myprefix -Jp_filetype=doc -l icaptest-s33.log
 Creating summariser <summary>
 Created the tree successfully using ICAP-POC_s3.jmx
 Starting standalone test @ Fri Sep 25 04:12:37 UTC 2020 (1601007157810)
