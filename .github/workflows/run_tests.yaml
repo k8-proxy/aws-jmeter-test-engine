@@ -7,8 +7,6 @@ jobs:
   deploy:
     name: Run tests
     runs-on: ubuntu-latest
-    env:
-      BRANCH_NAME: ${{ github.event.client_payload.branch_name }}
 
     steps:
       - name: Checkout
