@@ -9,20 +9,41 @@ import re
 import os
 
 
-def main():
-
+def get_configuration(key):
+    
     # Load configuration
     try:
-        with open("config.env") as f:
-            config = f.readlines()
-        configuration = dict(c.strip().split("=") for c in config)
+        
+        if os.path.exists("config.env"):
+            with open("config.env") as f:
+                config = f.readlines()
+            configuration = dict(c.strip().split("=") for c in config)
+            return configuration.get(key)
+        else:
+            return os.getenv(key.upper())
     except Exception as e:
-        print("Please create config.env file similar to config.env.sample")
+        print("Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
         print(str(e))
         raise
 
+def get_instance_type(users_per_instance):
+
+    # Determine the size of ec2 instance
+    if 0 < users_per_instance < 1000:
+        instance_type = "m4.large"
+    elif 1000 <= users_per_instance < 2500:
+        instance_type = "m4.xlarge"
+    elif 2500 <= users_per_instance <= 4000:
+        instance_type = "m4.2xlarge"
+    else:
+        instance_type = "m4.2xlarge"
+    
+    return instance_type
+
+def main():
+
     # Authenticate to aws
-    profile = os.getenv("AWS_PROFILE_NAME", configuration.get("aws_profile_name"))
+    profile = get_configuration("aws_profile_name")
     session = boto3.session.Session(profile_name=profile)
     client = session.client('cloudformation')
 
@@ -72,7 +93,7 @@ def main():
             exit(0)
 
     # write the script to s3 bucket after updating the parameters
-    with open("script.sh") as f:
+    with open("../scripts/StartExecution.sh") as f:
         script_data = f.read()
     
     script_data = re.sub("-Jp_vuserCount=[0-9]*", "-Jp_vuserCount=" + str(users_per_instance), script_data)
@@ -81,8 +102,8 @@ def main():
     script_data = re.sub("-Jp_url=[a-zA-Z0-9\-\.]*", "-Jp_url=" + str(endpoint_url), script_data)
 
     s3_client = session.client('s3')
-    bucket = os.getenv("BUCKET", configuration.get("bucket"))
-    file_name = os.getenv("FILE_NAME", configuration.get("file_name"))
+    bucket = get_configuration("bucket")
+    file_name = get_configuration("file_name")
     s3_client.put_object(Bucket=bucket,
                         Body=script_data,
                         Key=file_name)
@@ -97,16 +118,7 @@ def main():
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
     stack_name = 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
-
-    # Determine the size of ec2 instance
-    if 0 < users_per_instance < 1000:
-        instance_type = "m4.large"
-    elif 1000 <= users_per_instance < 2500:
-        instance_type = "m4.xlarge"
-    elif 2500 <= users_per_instance <= 4000:
-        instance_type = "m4.2xlarge"
-    else:
-        instance_type = "m4.2xlarge"
+    instance_type = get_instance_type(users_per_instance)
 
     print("Deploying %s instances in the ASG by creating %s cloudformation stack"% (instances_required, stack_name))
     client.create_stack(
