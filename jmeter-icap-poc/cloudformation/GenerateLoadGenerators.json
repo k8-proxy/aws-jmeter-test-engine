@@ -1,4 +1,3 @@
-```
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
     "Description" : "This script creates 10 EC instances from set AMI image. Change parameters accordingly",
@@ -109,45 +108,6 @@
                 }
             }
         },
-        "Ec2IamRole" : {
-            "Type" : "AWS::IAM::Role",
-            "Properties" : {
-                "RoleName" : "Ec2-Role",
-                "AssumeRolePolicyDocument" : {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [
-                                    "ec2.amazonaws.com"
-                                ]
-                            },
-                            "Action": "sts:AssumeRole"
-                        }
-                    ]
-                },
-                "Path": "/",
-                "Description" : "EC2 IAM Role",
-                "Policies": [
-                    {
-                        "PolicyName": "Ec2-Policy",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "ec2:*"
-                                    ],
-                                    "Resource": "*"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
         "Ec2Instance": {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
@@ -160,17 +120,7 @@
                         "Key": "Name",
                         "Value": {"Ref" : "Ec2Name"}
                     }
-                ],
-                "IamInstanceProfile": {
-                    "Ref": "Ec2InstanceProfile"
-                }
-            }
-        },
-        "Ec2InstanceProfile": {
-            "Type": "AWS::IAM::InstanceProfile",
-            "Properties": {
-               "Path": "/",
-               "Roles": [{ "Ref": "Ec2IamRole" }]
+                ]
             }
         }
     },
@@ -178,4 +128,3 @@
 
     }
 }
-```
