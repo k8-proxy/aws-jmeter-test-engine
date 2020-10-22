@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.1.1 r1855137">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="local" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="icapServer" elementType="Argument">
+            <stringProp name="Argument.name">icapServer</stringProp>
+            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="containerUrl" elementType="Argument">
+            <stringProp name="Argument.name">containerUrl</stringProp>
+            <stringProp name="Argument.value">http://mycloudstore/container/</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="outputPath" elementType="Argument">
+            <stringProp name="Argument.name">outputPath</stringProp>
+            <stringProp name="Argument.value">out</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3bucketName" elementType="Argument">
+            <stringProp name="Argument.name">s3bucketName</stringProp>
+            <stringProp name="Argument.value">faridpcre</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="path" elementType="Argument">
+            <stringProp name="Argument.name">path</stringProp>
+            <stringProp name="Argument.value">in</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="icapServer" elementType="Argument">
+            <stringProp name="Argument.name">icapServer</stringProp>
+            <stringProp name="Argument.value">${__P(p_url,gw-icap01.westeurope.azurecontainer.io)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="containerUrl" elementType="Argument">
+            <stringProp name="Argument.name">containerUrl</stringProp>
+            <stringProp name="Argument.value">http://mycloudstore/container/</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="outputPath" elementType="Argument">
+            <stringProp name="Argument.name">outputPath</stringProp>
+            <stringProp name="Argument.value">out</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="s3bucketName" elementType="Argument">
+            <stringProp name="Argument.name">s3bucketName</stringProp>
+            <stringProp name="Argument.value">${__P(p_bucket,faridpcre)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="path" elementType="Argument">
+            <stringProp name="Argument.name">path</stringProp>
+            <stringProp name="Argument.value">in</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="influxHost" elementType="Argument">
+            <stringProp name="Argument.name">influxHost</stringProp>
+            <stringProp name="Argument.value">${__P(p_influxHost,localhost)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="aws_access_key" elementType="Argument">
+            <stringProp name="Argument.name">aws_access_key</stringProp>
+            <stringProp name="Argument.value">${__P(p_aws_access_key,access_key)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="aws_secret_key" elementType="Argument">
+            <stringProp name="Argument.name">aws_secret_key</stringProp>
+            <stringProp name="Argument.value">${__P(p_aws_secret_key,secret)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="aws_host" elementType="Argument">
+            <stringProp name="Argument.name">aws_host</stringProp>
+            <stringProp name="Argument.value">${__P(p_aws_host,s3)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="aws_service_name" elementType="Argument">
+            <stringProp name="Argument.name">aws_service_name</stringProp>
+            <stringProp name="Argument.value">${__P(p_aws_service_name,s3)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="aws_region" elementType="Argument">
+            <stringProp name="Argument.name">aws_region</stringProp>
+            <stringProp name="Argument.value">${__P(p_aws_region,us-east-1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="TestPlan.comments">aws-testengine-s3  ${__P(p_url,gw-icap01.westeurope.azurecontainer.io)} ${__P(p_influxHost,localhost)}</stringProp>
+      </Arguments>
+      <hashTree/>
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group - ICAP Check" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Check-Server-Status" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Checking if ICAP Server is running" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Checking the ICAP Server is running
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Check-server-status: &quot; + vars.get(&quot;icapServer&quot;));
+
+String command = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;);    // for unix
+
+// Print the generated status check command
+log.info(command);
+
+// Create a process object and let this object execute the command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Server Status check complete.&quot;);
+
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+String line;
+ SampleResult.setSuccessful(false);
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  if (line.contains(&quot;OK&quot;)) {
+     SampleResult.setSuccessful(true);
+     break;
+  }
+}
+in.close();
+log.info(&quot;Server Status check Output: &quot; + logCommandOutput.toString());</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Check-Resource-Status" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Checking if ICAP Resource is running" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Checking the ICAP Resource is running
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Check-Resource-status: &quot; + vars.get(&quot;icapServer&quot;));
+
+String command = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
+
+// Print the generated status check command
+log.info(command);
+
+// Create a process object and let this object execute the command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Resource Status check complete.&quot;);
+
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+String line;
+SampleResult.setSuccessful(false);
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  if (line.contains(&quot;OK&quot;)) {
+     SampleResult.setSuccessful(true);
+     break;
+  }
+}
+in.close();
+log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString());</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(p_vuserCount,10)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(p_rampup,20)}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(p_duration,600)}</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="FileList" enabled="true">
+          <stringProp name="filename">files.txt</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="variableNames">fileName</stringProp>
+          <boolProp name="ignoreFirstLine">false</boolProp>
+          <stringProp name="delimiter">,</stringProp>
+          <boolProp name="quotedData">false</boolProp>
+          <boolProp name="recycle">true</boolProp>
+          <boolProp name="stopThread">false</boolProp>
+          <stringProp name="shareMode">shareMode.all</stringProp>
+        </CSVDataSet>
+        <hashTree/>
+        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Generate UUID" enabled="true">
+          <stringProp name="BeanShellSampler.query">
+
+// String bumid1  = ${__UUID};
+
+ vars.put(&quot;uid&quot;,&quot;${__UUID}&quot;);
+</stringProp>
+          <stringProp name="BeanShellSampler.filename"></stringProp>
+          <stringProp name="BeanShellSampler.parameters"></stringProp>
+          <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+        </BeanShellSampler>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-MoveFile2inFolder" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Upload a file to ICAP server 
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+log.info(&quot;Coping files from s3 to localdisk&quot;);
+String s3cp=&quot;aws s3 cp s3://&quot;+vars.get(&quot;s3bucketName&quot;)+&quot;/${path}/&quot;+&quot;${fileName}&quot;+&quot; &quot;+vars.get(&quot;path&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
+
+// Create a process object and let this object execute the command
+Process s3p = Runtime.getRuntime().exec(s3cp);
+s3p.waitFor();
+log.info(&quot;File copied to in. &quot;+s3cp);
+
+/*log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
+String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
+String command2=&quot; -f ${path}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+String command=command1+command2;
+// Print the generated status check command
+log.info(&quot;Command 1 is &quot;+command1);
+log.info(&quot;Command 2 is &quot;+command2);
+log.info(&quot;Full command is &quot;+command);
+
+// Create a process object and let this object execute the ping command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Execution complete.&quot;);
+
+String s3cp_out=&quot;aws s3 cp &quot;+ &quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; s3://&quot;+vars.get(&quot;s3bucketName&quot;)+&quot;/${outputPath}/&quot;+uuid+&quot;_${fileName}&quot;;
+
+Process s3p_out = Runtime.getRuntime().exec(s3cp_out);
+s3p_out.waitFor();
+
+log.info(&quot;Out file copied to s3. &quot;+s3cp_out);
+
+//clean out folder
+String removeOutFile=&quot;rm -Rf &quot;+&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;${fileName}&quot;;
+s3p_out = Runtime.getRuntime().exec(removeOutFile);
+s3p_out.waitFor();
+
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+
+in.readLine();
+String line;
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;OK&quot;))
+     SampleResult.setSuccessful(false);
+     break;
+     
+}
+
+in.close();
+log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Document-Upload" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - SonHa modify to get ICAP response code" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Upload a file to ICAP server 
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+String uuid=vars.get(&quot;uid&quot;);
+/*log.info(&quot;UUID is &quot;+uuid);
+log.info(&quot;Coping files from s3 to localdisk&quot;);
+String s3cp=&quot;aws s3 cp s3://&quot;+vars.get(&quot;s3bucketName&quot;)+&quot;/${path}/&quot;+&quot;${fileName}&quot;+&quot; &quot;+vars.get(&quot;path&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
+
+// Create a process object and let this object execute the command
+Process s3p = Runtime.getRuntime().exec(s3cp);
+s3p.waitFor();
+log.info(&quot;File copied to in. &quot;+s3cp);*/
+
+log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
+String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
+String command2=&quot; -f ${path}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+String command=command1+command2;
+// Print the generated status check command
+log.info(&quot;Command 1 is &quot;+command1);
+log.info(&quot;Command 2 is &quot;+command2);
+log.info(&quot;Full command is &quot;+command);
+
+// Create a process object and let this object execute the icap client command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Document Upload Execution complete.&quot;+ p.exitValue());
+
+
+private static String getFileChecksum(MessageDigest digest, File file) throws IOException
+{
+    //Get file input stream for reading the file content
+    FileInputStream fis = new FileInputStream(file);
+     
+    //Create byte array to read data in chunks
+    byte[] byteArray = new byte[1024];
+    int bytesCount = 0; 
+      
+    //Read file data and update in message digest
+    while ((bytesCount = fis.read(byteArray)) != -1) {
+        digest.update(byteArray, 0, bytesCount);
+    };
+     
+    //close the stream; We don&apos;t need it now.
+    fis.close();
+     
+    //Get the hash&apos;s bytes
+    byte[] bytes = digest.digest();
+     
+    //This bytes[] has bytes in decimal format;
+    //Convert it to hexadecimal format
+    StringBuilder sb = new StringBuilder();
+    for(int i=0; i&lt; bytes.length ;i++)
+    {
+        sb.append(Integer.toString((bytes[i] &amp; 0xff) + 0x100, 16).substring(1));
+    }
+     
+    //return complete hash
+   return sb.toString();
+}
+//checksum md5
+
+//Create checksum for this file
+File inFile = new File(&quot;${path}/${fileName}&quot;);
+ 
+//Use MD5 algorithm
+MessageDigest in_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
+ 
+//Get the checksum
+String in_checksum = getFileChecksum(in_Digest, inFile);
+ 
+//see checksum
+log.info(&quot;In file hash is &quot;+in_checksum);
+
+//Create checksum for this file
+File outFile = new File(&quot;${outputPath}/&quot;+uuid+&quot;_${fileName}&quot;);
+ 
+//Use MD5 algorithm
+MessageDigest out_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
+ 
+//Get the checksum
+String out_checksum = getFileChecksum(out_Digest, outFile);
+ 
+//see checksum
+log.info(&quot;Out file hash is &quot;+out_checksum);
+
+
+
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+SampleResult.setSuccessful(false);
+String line=&quot;&quot;;
+String measurement =&quot;&quot;;
+//Define list measurements
+String[] list_measurements= {&quot;ICAP HEADERS&quot;,&quot;RESPMOD HEADERS&quot;,&quot;EOF&quot;};
+//Convert text output data from command p to influxDB line syntax format
+for(int i=0;i&lt; list_measurements.length -1;i++) {
+	  	   	
+	while( (line = in.readLine()) != null ) {
+	 	     	
+	 	if (line.contains(list_measurements[i])){
+	 	            	//	System.out.println(line);
+	 	line = in.readLine();
+	 	//Check response code , if it contain 200 OK -&gt; SampleResult is passed
+	 	if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;!in_checksum.equals(out_checksum)) {
+		     SampleResult.setSuccessful(true);
+		     log.info(&quot;My line is &quot;+line);
+		  }
+	 	  line = line.trim();
+		  line = line.replaceAll(&quot; &quot;,&quot;_&quot;);
+		  line = line+&quot;=1&quot;;
+		 	          
+		   if ((line.length()&gt;0) &amp;&amp; (line.contains(&quot;=&quot;))) {
+			 	 measurement = list_measurements[i].replaceAll(&quot; &quot;,&quot;_&quot;);
+		 	      logCommandOutput.append(measurement+&quot; &quot;);
+			 	 logCommandOutput.append(line);
+		 	  }
+	 	  break;
+	 	  } 
+	 }
+	logCommandOutput.append(&quot;\n&quot;);
+
+}
+/*
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;!in_checksum.equals(out_checksum)) {
+     SampleResult.setSuccessful(true);
+     log.info(&quot;My line is &quot;+line);
+     break;
+  }
+}
+*/
+in.close();
+log.info(&quot;Upload Output: &quot; + logCommandOutput.toString());
+vars.put(&quot;data&quot;,logCommandOutput.toString());
+</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request-Add ICAP response code to influxDB" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${data}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${InfluxDBServerAddr}</stringProp>
+            <stringProp name="HTTPSampler.port">${InfluxDBPort}</stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/write?db=${InfluxDBName}</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Copy to S3 Out" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+
+access_key = vars.get(&quot;aws_access_key&quot;);
+ secret_key = vars.get(&quot;aws_secret_key&quot;);
+service = vars.get(&quot;aws_service_name&quot;);
+bucketName = vars.get(&quot;s3bucketName&quot;);
+region=vars.get(&quot;aws_region&quot;);
+
+host = bucketName+&quot;.&quot;+service+&quot;.&quot;+region+&quot;.&quot;+&quot;amazonaws.com&quot;;
+
+log.info(&quot;Host is &quot;+host);
+
+
+
+        //put your accesskey and secretkey here
+ private static final AWSCredentials credentials = new BasicAWSCredentials(
+          access_key, 
+          secret_key
+        );
+  
+  
+ AmazonS3 s3client = AmazonS3ClientBuilder
+          .standard()
+          .withCredentials(new AWSStaticCredentialsProvider(credentials))
+          .withRegion(region)
+          .build();
+
+
+ fileName=&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+ log.info(&quot;Filename is &quot;+fileName);
+
+  s3client.putObject(
+          bucketName, 
+          fileName,
+          new File(fileName)
+        );
+   log.info(&quot;File is uploaded to out folder &quot;+fileName);</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="S3 CLI copy" enabled="false">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Upload a file to ICAP server 
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+//log.info(&quot;Coping files from s3 to localdisk&quot;);
+/*String s3cp=&quot;aws s3 cp s3://&quot;+vars.get(&quot;s3bucketName&quot;)+&quot;/${path}/&quot;+&quot;${fileName}&quot;+&quot; &quot;+vars.get(&quot;path&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
+
+// Create a process object and let this object execute the ping command
+Process s3p = Runtime.getRuntime().exec(s3cp);
+s3p.waitFor();
+log.info(&quot;File copied to in. &quot;+s3cp);
+
+log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
+String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
+String command2=&quot; -f ${path}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+String command=command1+command2;
+// Print the generated status check command
+log.info(&quot;Command 1 is &quot;+command1);
+log.info(&quot;Command 2 is &quot;+command2);
+log.info(&quot;Full command is &quot;+command);
+
+// Create a process object and let this object execute the ping command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Execution complete.&quot;);
+*/
+String s3cp_out=&quot;aws s3 cp &quot;+ &quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; s3://&quot;+vars.get(&quot;s3bucketName&quot;)+&quot;/${outputPath}/&quot;+uuid+&quot;_${fileName}&quot;;
+
+Process s3p_out = Runtime.getRuntime().exec(s3cp_out);
+s3p_out.waitFor();
+
+log.info(&quot;Out file copied to s3. &quot;+s3cp_out);
+
+//clean out folder
+String removeOutFile=&quot;rm -Rf &quot;+&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+s3p_out = Runtime.getRuntime().exec(removeOutFile);
+s3p_out.waitFor();
+/*
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+
+in.readLine();
+String line;
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;OK&quot;))
+     SampleResult.setSuccessful(false);
+     break;
+     
+}
+
+in.close();
+log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-CleanOutFile" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+
+
+log.info(&quot;Cleaning file from out folder &quot;);
+
+//clean out folder
+String removeOutFile=&quot;rm -Rf &quot;+&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+s3p_out = Runtime.getRuntime().exec(removeOutFile);
+s3p_out.waitFor();
+
+log.info(&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; file deleted from out folder &quot;);
+/*
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+
+in.readLine();
+String line;
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;OK&quot;))
+     SampleResult.setSuccessful(false);
+     break;
+     
+}
+
+in.close();
+log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+          <boolProp name="ResultCollector.error_logging">true</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
+        <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="influxdbMetricsSender" elementType="Argument">
+              <stringProp name="Argument.name">influxdbMetricsSender</stringProp>
+              <stringProp name="Argument.value">org.apache.jmeter.visualizers.backend.influxdb.HttpMetricsSender</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="influxdbUrl" elementType="Argument">
+              <stringProp name="Argument.name">influxdbUrl</stringProp>
+              <stringProp name="Argument.value">http://${influxHost}:8086/write?db=jmeter</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="application" elementType="Argument">
+              <stringProp name="Argument.name">application</stringProp>
+              <stringProp name="Argument.value">application name</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="measurement" elementType="Argument">
+              <stringProp name="Argument.name">measurement</stringProp>
+              <stringProp name="Argument.value">jmetericap</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="summaryOnly" elementType="Argument">
+              <stringProp name="Argument.name">summaryOnly</stringProp>
+              <stringProp name="Argument.value">false</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="samplersRegex" elementType="Argument">
+              <stringProp name="Argument.name">samplersRegex</stringProp>
+              <stringProp name="Argument.value">.*</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="percentiles" elementType="Argument">
+              <stringProp name="Argument.name">percentiles</stringProp>
+              <stringProp name="Argument.value">90;95;99</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="testTitle" elementType="Argument">
+              <stringProp name="Argument.name">testTitle</stringProp>
+              <stringProp name="Argument.value">Test name</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="eventTags" elementType="Argument">
+              <stringProp name="Argument.name">eventTags</stringProp>
+              <stringProp name="Argument.value"></stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
+      </BackendListener>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
