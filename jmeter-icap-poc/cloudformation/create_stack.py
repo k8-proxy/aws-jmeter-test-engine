@@ -75,6 +75,7 @@ def main():
     instances_required = ceil(total_users/users_per_instance)
     if total_users <= users_per_instance:
         instances_required = 1
+        users_per_instance = total_users
     else:
         i = 0
         while i < 5:
