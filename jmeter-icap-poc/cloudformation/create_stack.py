@@ -71,6 +71,19 @@ def main():
             print("Please provide total_users in multiples of users_per_instance.")
             exit(0)
 
+    # Determine the size of ec2 instance
+    instance_type = "m4.2xlarge"
+    jvm_memory = "9216m"
+    if 0 < users_per_instance < 1000:
+        instance_type = "m4.large"
+        jvm_memory = "3072m"
+    elif 1000 <= users_per_instance < 2500:
+        instance_type = "m4.xlarge"
+        jvm_memory = "4096m"
+    elif 2500 <= users_per_instance:
+        instance_type = "m4.2xlarge"
+        jvm_memory = "9216m"
+
     # write the script to s3 bucket after updating the parameters
     with open("../scripts/StartExecution.sh") as f:
         script_data = f.read()
@@ -79,6 +92,8 @@ def main():
     script_data = re.sub("-Jp_rampup=[0-9]*", "-Jp_rampup=" + str(ramp_up), script_data)
     script_data = re.sub("-Jp_duration=[0-9]*", "-Jp_duration=" + str(duration), script_data)
     script_data = re.sub("-Jp_url=[a-zA-Z0-9\-\.]*", "-Jp_url=" + str(endpoint_url), script_data)
+    script_data = re.sub("Xms[0-9]m", "Xms" + str(jvm_memory), script_data)
+    script_data = re.sub("Xmx[0-9]m", "Xmx" + str(jvm_memory), script_data)
 
     s3_client = session.client('s3')
     bucket = configuration.get("bucket")
@@ -97,16 +112,6 @@ def main():
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
     stack_name = 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
-
-    # Determine the size of ec2 instance
-    if 0 < users_per_instance < 1000:
-        instance_type = "m4.large"
-    elif 1000 <= users_per_instance < 2500:
-        instance_type = "m4.xlarge"
-    elif 2500 <= users_per_instance <= 4000:
-        instance_type = "m4.2xlarge"
-    else:
-        instance_type = "m4.2xlarge"
 
     print("Deploying %s instances in the ASG by creating %s cloudformation stack"% (instances_required, stack_name))
     client.create_stack(
