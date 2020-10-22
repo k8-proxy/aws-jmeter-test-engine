@@ -92,8 +92,8 @@ def main():
     script_data = re.sub("-Jp_rampup=[0-9]*", "-Jp_rampup=" + str(ramp_up), script_data)
     script_data = re.sub("-Jp_duration=[0-9]*", "-Jp_duration=" + str(duration), script_data)
     script_data = re.sub("-Jp_url=[a-zA-Z0-9\-\.]*", "-Jp_url=" + str(endpoint_url), script_data)
-    script_data = re.sub("Xms[0-9]m", "Xms" + str(jvm_memory), script_data)
-    script_data = re.sub("Xmx[0-9]m", "Xmx" + str(jvm_memory), script_data)
+    script_data = re.sub("Xms[0-9]*m", "Xms" + str(jvm_memory), script_data)
+    script_data = re.sub("Xmx[0-9]*m", "Xmx" + str(jvm_memory), script_data)
 
     s3_client = session.client('s3')
     bucket = configuration.get("bucket")
