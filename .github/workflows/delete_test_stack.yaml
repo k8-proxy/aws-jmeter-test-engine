@@ -1,8 +1,5 @@
 on:
   workflow_dispatch:
-  push:
-    branches:
-    - delete_cfn_stack
   schedule:
     - cron: '*/30 * * * *'
 

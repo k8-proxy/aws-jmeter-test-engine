@@ -42,7 +42,7 @@ Pass input parameters as required to the script.
 
 `duration` is the duration of the test. Default value 900 seconds
 
-`endpoint_url`is the ICAP server URL. Default value is gw-icap02.westeurope.azurecontainer.io
+`endpoint_url` is the ICAP server URL. Default value is gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io
 
 `inlfux_host` is the IP address or hostname of the Influx DB
 
