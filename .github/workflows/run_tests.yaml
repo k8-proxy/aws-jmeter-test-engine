@@ -1,5 +1,8 @@
 on:
   workflow_dispatch:
+  push:
+    branches:
+     - "github_actions"
   schedule:
     - cron: '*/30 * * * *'
 

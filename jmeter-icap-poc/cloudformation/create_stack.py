@@ -124,7 +124,7 @@ def main():
                         Key=file_name)
 
     # Load cloudformation template
-    with open("GenerateLoadGenerators.json", "r") as f:
+    with open("GenerateLoadGenerators_test.json", "r") as f:
         asg_template_body = f.read()
 
 
