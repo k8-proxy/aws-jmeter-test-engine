@@ -26,19 +26,22 @@ def get_configuration(key):
         print(str(e))
         raise
 
-def get_instance_type(users_per_instance):
+def get_size(users_per_instance):
 
-    # Determine the size of ec2 instance
+    # Determine the size of ec2 instance and jvm memory
+    instance_type = "m4.2xlarge"
+    jvm_memory = "9216m"
     if 0 < users_per_instance < 1000:
         instance_type = "m4.large"
+        jvm_memory = "3072m"
     elif 1000 <= users_per_instance < 2500:
         instance_type = "m4.xlarge"
-    elif 2500 <= users_per_instance <= 4000:
+        jvm_memory = "4096m"
+    elif 2500 <= users_per_instance:
         instance_type = "m4.2xlarge"
-    else:
-        instance_type = "m4.2xlarge"
+        jvm_memory = "9216m"
     
-    return instance_type
+    return instance_type, jvm_memory
 
 def main():
 
@@ -97,10 +100,14 @@ def main():
     with open("../scripts/StartExecution.sh") as f:
         script_data = f.read()
     
+    instance_type, jvm_memory = get_size(users_per_instance)
+
     script_data = re.sub("-Jp_vuserCount=[0-9]*", "-Jp_vuserCount=" + str(users_per_instance), script_data)
     script_data = re.sub("-Jp_rampup=[0-9]*", "-Jp_rampup=" + str(ramp_up), script_data)
     script_data = re.sub("-Jp_duration=[0-9]*", "-Jp_duration=" + str(duration), script_data)
     script_data = re.sub("-Jp_url=[a-zA-Z0-9\-\.]*", "-Jp_url=" + str(endpoint_url), script_data)
+    script_data = re.sub("Xms[0-9]*m", "Xms" + str(jvm_memory), script_data)
+    script_data = re.sub("Xmx[0-9]*m", "Xmx" + str(jvm_memory), script_data)
 
     s3_client = session.client('s3')
     bucket = get_configuration("bucket")
@@ -119,7 +126,6 @@ def main():
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
     stack_name = 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
-    instance_type = get_instance_type(users_per_instance)
 
     print("Deploying %s instances in the ASG by creating %s cloudformation stack"% (instances_required, stack_name))
     client.create_stack(

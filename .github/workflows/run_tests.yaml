@@ -1,5 +1,7 @@
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
 
 name: Run Tests
 
@@ -17,7 +19,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+          aws-region: eu-west-1
 
       - name: Set up Python 3.7
         uses: actions/setup-python@v1
@@ -28,7 +30,8 @@ jobs:
         run: |
           pip install boto3
           cd jmeter-icap-poc/cloudformation
-          python3 create_stack.py --total_users 1000
+          python3 create_stack.py --total_users 20 --ramp_up=20 --duration=900
         env:
           BUCKET: ${{ secrets.BUCKET }}
           FILE_NAME: ${{ secrets.FILE_NAME }}
+
