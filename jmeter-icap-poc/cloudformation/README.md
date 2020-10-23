@@ -42,9 +42,11 @@ Pass input parameters as required to the script.
 
 `duration` is the duration of the test. Default value 900 seconds
 
-`endpoint_url`is the ICAP server URL. Default value is gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io
+`endpoint_url` is the ICAP server URL. Default value is gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io
 
 `inlfux_host` is the IP address or hostname of the Influx DB
+
+`prefix` is the prefix used in the cloudformation stack name
 
 Based on the values passed for total_users and users_per_instance, number of instances required will be calculated. The total users will be equally divided among all the instances.
 
