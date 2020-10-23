@@ -24,7 +24,7 @@ def main():
     
     profile_name = get_configuration("aws_profile_name")
     parser = argparse.ArgumentParser(description='Create cloudformation stack to deploy ASG.')
-    parser.add_argument('--prefix', '-i', default="ga-",
+    parser.add_argument('--prefix', '-p', default="ga-",
                         help='Prefix for Cloudformation stack name (default: "ga-")')
 
     args = parser.parse_args()
