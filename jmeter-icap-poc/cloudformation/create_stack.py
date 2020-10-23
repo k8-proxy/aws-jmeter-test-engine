@@ -69,7 +69,7 @@ def main():
     parser.add_argument('--influx_host', '-i', default="10.112.0.112",
                         help='Influx DB host (default: 10.112.0.112)')
 
-    parser.add_argument('--prefix', '-i', default="",
+    parser.add_argument('--prefix', '-p', default="",
                         help='Prefix for Cloudformation stack name (default: "")')
 
     args = parser.parse_args()
@@ -128,7 +128,7 @@ def main():
                         Key=file_name)
 
     # Load cloudformation template
-    with open("GenerateLoadGenerators.json", "r") as f:
+    with open("GenerateLoadGenerators_test.json", "r") as f:
         asg_template_body = f.read()
 
 
