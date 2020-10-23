@@ -1,4 +1,6 @@
 {
+  "dashboard": {
+  
   "annotations": {
     "list": [
       {
@@ -1788,8 +1790,16 @@
       "1d"
     ]
   },
-  "timezone": "",
-  "title": "ICAP Live Performance Dashboard 2",
-  "uid": "L4sOZudGZ",
-  "version": 11
+
+    "id": null,
+    "uid": null,
+    "title": "ICAP Live Performance Dashboard 2",
+    "tags": [ "templated" ],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 11,
+    "refresh": "25s"
+  },
+  "folderId": 0,
+  "overwrite": true
 }
