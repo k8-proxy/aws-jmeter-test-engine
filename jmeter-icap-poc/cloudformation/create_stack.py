@@ -63,11 +63,14 @@ def main():
     parser.add_argument('--duration', '-d', default=900,
                         help='duration of test (default: 900)')
 
-    parser.add_argument('--endpoint_url', '-e', default="gw-icap01.westeurope.azurecontainer.io",
-                        help='ICAP server endpoint URL (default: gw-icap01.westeurope.azurecontainer.io)')
+    parser.add_argument('--endpoint_url', '-e', default="gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io",
+                        help='ICAP server endpoint URL (default: gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io)')
 
     parser.add_argument('--influx_host', '-i', default="10.112.0.112",
                         help='Influx DB host (default: 10.112.0.112)')
+
+    parser.add_argument('--prefix', '-i', default="",
+                        help='Prefix for Cloudformation stack name (default: "")')
 
     args = parser.parse_args()
     
@@ -77,6 +80,7 @@ def main():
     duration = args.duration
     endpoint_url = args.endpoint_url
     influx_host = args.influx_host
+    prefix = args.prefix
     
     # calculate number of instances required
     instances_required = ceil(total_users/users_per_instance)
@@ -131,7 +135,7 @@ def main():
     # create ASG with instances to run jmeter tests
     now = datetime.now()
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
-    stack_name = 'aws-jmeter-test-engine-' + date_suffix
+    stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
 
     print("Deploying %s instances in the ASG by creating %s cloudformation stack"% (instances_required, stack_name))
