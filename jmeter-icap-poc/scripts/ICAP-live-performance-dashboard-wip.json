@@ -1458,10 +1458,6 @@
       "type": "bargauge"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": "icapserver",
       "fieldConfig": {
         "defaults": {
@@ -1487,43 +1483,31 @@
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
         "x": 0,
         "y": 42
       },
-      "hiddenSeries": false,
       "id": 14,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
-      "percentage": false,
       "pluginVersion": "7.2.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "alias": "",
+          "alias": "Bytes In",
           "groupBy": [],
           "measurement": "Service_gw_rebuild_Statistics",
           "orderByTime": "ASC",
@@ -1543,7 +1527,7 @@
           "tags": []
         },
         {
-          "alias": "",
+          "alias": "Bytes Out",
           "groupBy": [],
           "measurement": "Service_gw_rebuild_Statistics",
           "orderByTime": "ASC",
@@ -1563,52 +1547,12 @@
           "tags": []
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "Service gw_rebuild Statistics: Bytes In/Out",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": "icapserver",
       "fieldConfig": {
         "defaults": {
@@ -1634,43 +1578,31 @@
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
         "x": 8,
         "y": 42
       },
-      "hiddenSeries": false,
       "id": 18,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
-      "percentage": false,
       "pluginVersion": "7.2.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "alias": "",
+          "alias": "HTTP Bytes In",
           "groupBy": [],
           "measurement": "Service_gw_rebuild_Statistics",
           "orderByTime": "ASC",
@@ -1681,7 +1613,7 @@
             [
               {
                 "params": [
-                  "Service_gw_rebuild_BYTES_IN"
+                  "Service_gw_rebuild_HTTP_BYTES_IN"
                 ],
                 "type": "field"
               }
@@ -1690,7 +1622,7 @@
           "tags": []
         },
         {
-          "alias": "",
+          "alias": "HTTP Bytes Out",
           "groupBy": [],
           "measurement": "Service_gw_rebuild_Statistics",
           "orderByTime": "ASC",
@@ -1701,7 +1633,7 @@
             [
               {
                 "params": [
-                  "Service_gw_rebuild_BYTES_OUT"
+                  "Service_gw_rebuild_HTTP_BYTES_OUT"
                 ],
                 "type": "field"
               }
@@ -1710,52 +1642,12 @@
           "tags": []
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Service gw_rebuild Statistics: Bytes In/Out",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "Service gw_rebuild Statistics: HTTP Bytes",
+      "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": "icapserver",
       "fieldConfig": {
         "defaults": {
@@ -1781,43 +1673,31 @@
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
         "x": 16,
         "y": 42
       },
-      "hiddenSeries": false,
       "id": 17,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
-      "percentage": false,
       "pluginVersion": "7.2.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "alias": "",
+          "alias": "Body Bytes In",
           "groupBy": [],
           "measurement": "Service_gw_rebuild_Statistics",
           "orderByTime": "ASC",
@@ -1837,7 +1717,7 @@
           "tags": []
         },
         {
-          "alias": "",
+          "alias": "Body Bytes Out",
           "groupBy": [],
           "measurement": "Service_gw_rebuild_Statistics",
           "orderByTime": "ASC",
@@ -1857,7 +1737,7 @@
           "tags": []
         },
         {
-          "alias": "",
+          "alias": "Body Bytes Scanned",
           "groupBy": [],
           "measurement": "Service_gw_rebuild_Statistics",
           "orderByTime": "ASC",
@@ -1877,46 +1757,10 @@
           "tags": []
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "Service gw_rebuild Statistics: Body Bytes",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "stat"
     }
   ],
   "refresh": false,
@@ -1947,5 +1791,5 @@
   "timezone": "",
   "title": "ICAP Live Performance Dashboard 2",
   "uid": "L4sOZudGZ",
-  "version": 9
+  "version": 11
 }
