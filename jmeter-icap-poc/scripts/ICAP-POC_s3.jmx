@@ -119,7 +119,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(p_vuserCount,10)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(p_vuserCount,1)}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">${__P(p_rampup,20)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.duration">${__P(p_duration,600)}</stringProp>
@@ -130,7 +130,7 @@
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="FileList" enabled="true">
           <stringProp name="filename">${filetype}.txt</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="variableNames">fileName</stringProp>
+          <stringProp name="variableNames">fileName,filetype</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <stringProp name="delimiter">,</stringProp>
           <boolProp name="quotedData">false</boolProp>
@@ -285,6 +285,7 @@ log.info(&quot;Document Upload Execution complete.&quot;+ p.exitValue());
 
 private static String getFileChecksum(MessageDigest digest, File file) throws IOException
 {
+	
     //Get file input stream for reading the file content
     FileInputStream fis = new FileInputStream(file);
      
@@ -305,57 +306,154 @@ private static String getFileChecksum(MessageDigest digest, File file) throws IO
      
     //This bytes[] has bytes in decimal format;
     //Convert it to hexadecimal format
-    StringBuilder sb = new StringBuilder();
+   StringBuilder sb = new StringBuilder();
     for(int i=0; i&lt; bytes.length ;i++)
     {
         sb.append(Integer.toString((bytes[i] &amp; 0xff) + 0x100, 16).substring(1));
     }
-     
+  
     //return complete hash
-   return sb.toString();
+     return sb.toString();
 }
 //checksum md5
 
 //Create checksum for this file
 File inFile = new File(&quot;${path}/${fileName}&quot;);
- 
+String in_checksum=&quot;in&quot;;
 //Use MD5 algorithm
 MessageDigest in_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
- 
+ try {
 //Get the checksum
-String in_checksum = getFileChecksum(in_Digest, inFile);
+ in_checksum = getFileChecksum(in_Digest, inFile);
  
 //see checksum
 log.info(&quot;In file hash is &quot;+in_checksum);
+ }
+ catch (Exception e) {
 
+log.info (&quot;Failed to check in file hash&quot;);
+ }
+
+ 
 //Create checksum for this file
 File outFile = new File(&quot;${outputPath}/&quot;+uuid+&quot;_${fileName}&quot;);
  
 //Use MD5 algorithm
 MessageDigest out_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
- 
+String out_checksum=&quot;out&quot;;
+ try {
 //Get the checksum
-String out_checksum = getFileChecksum(out_Digest, outFile);
+ out_checksum = getFileChecksum(out_Digest, outFile);
  
+
+ }
+ catch (Exception e) {
+
+log.info (&quot;Failed to check out file hash&quot;);
+
+ }
+
 //see checksum
 log.info(&quot;Out file hash is &quot;+out_checksum);
-
-
 
 // Read the output of the command and log it
 BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 StringBuilder logCommandOutput = new StringBuilder();
-in.readLine();
-in.readLine();
-in.readLine();
+//in.readLine();
+//in.readLine();
+//in.readLine();
 SampleResult.setSuccessful(false);
 String line;
+String respCode;
 while( (line = in.readLine()) != null) {
   logCommandOutput.append(line);
   log.info(&quot;line is &quot;+line);
+
   if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;!in_checksum.equals(out_checksum)) {
      SampleResult.setSuccessful(true);
+     SampleResult.setResponseCode(&quot;200&quot;);
      log.info(&quot;My line is &quot;+line);
+  }
+  
+  if (line.contains(&quot;ICAP/1.0 204&quot;)) {
+     SampleResult.setResponseCode(&quot;204&quot;);
+     SampleResult.setResponseMessage(&quot;No modifications needed&quot;);
+     log.info(&quot;Response Code is 204&quot;);
+     break;
+  }
+  if (line.contains(&quot;ICAP/1.0 500&quot;)) {
+     SampleResult.setResponseCode(&quot;500&quot;);
+     SampleResult.setResponseMessage(&quot;500 Internal server error&quot;);
+     log.info(&quot;Response Code is 500&quot;);
+     break;
+  }
+
+  if (line.contains(&quot;ICAP/1.0 503&quot;)) {
+     SampleResult.setResponseCode(&quot;503&quot;);
+     SampleResult.setResponseMessage(&quot;Service overloaded&quot;);
+     log.info(&quot;Response Code is 503&quot;);
+     break;
+  }
+  if (line.contains(&quot;ICAP/1.0 400&quot;)) {
+     SampleResult.setResponseCode(&quot;400&quot;);
+     SampleResult.setResponseMessage(&quot;400 Bad request.&quot;);
+     log.info(&quot;Response Code is 400&quot;);
+     break;
+  }
+  if (line.contains(&quot;ICAP/1.0 502&quot;)) {
+     SampleResult.setResponseCode(&quot;502&quot;);
+     SampleResult.setResponseMessage(&quot;502 Bad gateway.&quot;);
+     log.info(&quot;Response Code is 502&quot;);
+     break;
+  }
+  if (line.contains(&quot;ICAP/1.0 506&quot;)) {
+     SampleResult.setResponseCode(&quot;506&quot;);
+     SampleResult.setResponseMessage(&quot;506 Server too busy.r&quot;);
+     log.info(&quot;Response Code is 506&quot;);
+     break;
+  }
+  if (line.contains(&quot;ICAP/1.0 551&quot;)) {
+     SampleResult.setResponseCode(&quot;551&quot;);
+     SampleResult.setResponseMessage(&quot;551 Resource unavailable.&quot;);
+     log.info(&quot;Response Code is 551&quot;);
+     break;
+  }
+  if (line.contains(&quot;ICAP/1.0 403&quot;)) {
+     SampleResult.setResponseCode(&quot;403&quot;);
+     SampleResult.setResponseMessage(&quot;403 Forbidden&quot;);
+     log.info(&quot;Response Code is 403&quot;);
+     break;
+  }
+   if (line.contains(&quot;ICAP/1.0 404&quot;)) {
+     SampleResult.setResponseCode(&quot;404&quot;);
+     SampleResult.setResponseMessage(&quot;404 Service Not Found&quot;);
+     log.info(&quot;Response Code is 404&quot;);
+     break;
+  }
+    if (line.contains(&quot;ICAP/1.0 405&quot;)) {
+     SampleResult.setResponseCode(&quot;405&quot;);
+     SampleResult.setResponseMessage(&quot;405 Method Not Allowed&quot;);
+     log.info(&quot;Response Code is 405&quot;);
+     break;
+  }
+    if (line.contains(&quot;ICAP/1.0 408&quot;)) {
+     SampleResult.setResponseCode(&quot;408&quot;);
+     SampleResult.setResponseMessage(&quot;408 Request Timeout&quot;);
+     log.info(&quot;Response Code is 408&quot;);
+     break;
+  }
+
+   if (line.contains(&quot;Failed to connect to icap server&quot;)) {
+     SampleResult.setResponseCode(&quot;522&quot;);
+     SampleResult.setResponseMessage(&quot;522 Failed to connect to icap server&quot;);
+     log.info(&quot;Response Code is 522&quot;);
+     break;
+  }
+  if (line.contains(&quot;HTTP/1.0 403 Forbidden&quot;)) {
+     SampleResult.setResponseCode(&quot;403&quot;);
+     SampleResult.setSuccessful(false);
+     SampleResult.setResponseMessage(&quot;403 Fordbidden&quot;);
+     log.info(&quot;Response Code is 403&quot;);
      break;
   }
 }
@@ -648,7 +746,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
         <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
       </BackendListener>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ICAP-ServerStatus" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ICAP-ServerStatus" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
