@@ -64,8 +64,8 @@
             <stringProp name="Argument.value">${__P(p_bucket,faridpcre)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="path" elementType="Argument">
-            <stringProp name="Argument.name">path</stringProp>
+          <elementProp name="inPath" elementType="Argument">
+            <stringProp name="Argument.name">inPath</stringProp>
             <stringProp name="Argument.value">in</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -128,10 +128,10 @@
       </ThreadGroup>
       <hashTree>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="FileList" enabled="true">
-          <stringProp name="filename">${filetype}.txt</stringProp>
+          <stringProp name="filename">${filetype}.csv</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="variableNames">fileName,filetype</stringProp>
-          <boolProp name="ignoreFirstLine">false</boolProp>
+          <stringProp name="variableNames">id,fileName,path,size,type,isMalicious,original_hash,rebuild_hash</stringProp>
+          <boolProp name="ignoreFirstLine">true</boolProp>
           <stringProp name="delimiter">,</stringProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -282,12 +282,13 @@ log.info(&quot;Host is &quot;+host);
 
  fileName=vars.get(&quot;path&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
  log.info(&quot;Filename is &quot;+fileName);
+ inFileName=vars.get(&quot;inPath&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
 
  S3Object s3object = s3client.getObject(bucketName, fileName);
 S3ObjectInputStream inputStream = s3object.getObjectContent();
-FileUtils.copyInputStreamToFile(inputStream, new File(fileName));
+FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
 
-   log.info(&quot;File is downloaded to in folder &quot;+fileName);</stringProp>
+   log.info(&quot;File is downloaded to in folder &quot;+inFileName);</stringProp>
             <stringProp name="scriptLanguage">java</stringProp>
           </JSR223Sampler>
           <hashTree/>
@@ -298,7 +299,7 @@ FileUtils.copyInputStreamToFile(inputStream, new File(fileName));
           <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-Document-Upload" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-Document-Process" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -334,7 +335,7 @@ log.info(&quot;File copied to in. &quot;+s3cp);*/
 
 log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
 String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
-String command2=&quot; -f ${path}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+String command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
 String command=command1+command2;
 // Print the generated status check command
 log.info(&quot;Command 1 is &quot;+command1);
@@ -383,21 +384,21 @@ private static String getFileChecksum(MessageDigest digest, File file) throws IO
 //checksum md5
 
 //Create checksum for this file
-File inFile = new File(&quot;${path}/${fileName}&quot;);
-String in_checksum=&quot;in&quot;;
+//File inFile = new File(&quot;${inPath}/${fileName}&quot;);
+//String in_checksum=&quot;in&quot;;
 //Use MD5 algorithm
-MessageDigest in_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
- try {
+//MessageDigest in_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
+ //try {
 //Get the checksum
- in_checksum = getFileChecksum(in_Digest, inFile);
+ //in_checksum = getFileChecksum(in_Digest, inFile);
  
 //see checksum
-log.info(&quot;In file hash is &quot;+in_checksum);
- }
- catch (Exception e) {
+//log.info(&quot;In file hash is &quot;+in_checksum);
+ //}
+ //catch (Exception e) {
 
-log.info (&quot;Failed to check in file hash&quot;);
- }
+//log.info (&quot;Failed to check in file hash&quot;);
+ //}
 
  
 //Create checksum for this file
@@ -434,7 +435,7 @@ while( (line = in.readLine()) != null) {
   logCommandOutput.append(line);
   log.info(&quot;line is &quot;+line);
 
-  if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;!in_checksum.equals(out_checksum)) {
+  if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;${original_hash}.equals(out_checksum)) {
      SampleResult.setSuccessful(true);
      SampleResult.setResponseCode(&quot;200&quot;);
      log.info(&quot;My line is &quot;+line);
