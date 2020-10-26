@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.1.1 r1855137">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -96,137 +96,23 @@
           </elementProp>
           <elementProp name="aws_region" elementType="Argument">
             <stringProp name="Argument.name">aws_region</stringProp>
-            <stringProp name="Argument.value">${__P(p_aws_region,us-east-1)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_aws_region,eu-west-1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="prefix" elementType="Argument">
+            <stringProp name="Argument.name">prefix</stringProp>
+            <stringProp name="Argument.value">${__P(p_prefix,demo)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="filetype" elementType="Argument">
+            <stringProp name="Argument.name">filetype</stringProp>
+            <stringProp name="Argument.value">${__P(p_filetype,files)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
         <stringProp name="TestPlan.comments">aws-testengine-s3  ${__P(p_url,gw-icap01.westeurope.azurecontainer.io)} ${__P(p_influxHost,localhost)}</stringProp>
       </Arguments>
       <hashTree/>
-      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group - ICAP Check" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
-        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
-          <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
-        </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
-        <boolProp name="ThreadGroup.scheduler">false</boolProp>
-        <stringProp name="ThreadGroup.duration"></stringProp>
-        <stringProp name="ThreadGroup.delay"></stringProp>
-      </SetupThreadGroup>
-      <hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Check-Server-Status" enabled="true">
-          <boolProp name="TransactionController.includeTimers">false</boolProp>
-          <boolProp name="TransactionController.parent">true</boolProp>
-        </TransactionController>
-        <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Checking if ICAP Server is running" enabled="true">
-            <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="script">// ********
-// Checking the ICAP Server is running
-//
-// Preconditions:
-// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
-// should be installed in same linux machine as jmeter
-//
-// ********
-
-log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Check-server-status: &quot; + vars.get(&quot;icapServer&quot;));
-
-String command = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;);    // for unix
-
-// Print the generated status check command
-log.info(command);
-
-// Create a process object and let this object execute the command
-Process p = Runtime.getRuntime().exec(command);
-p.waitFor();
-
-log.info(&quot;Server Status check complete.&quot;);
-
-// Read the output of the command and log it
-BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-StringBuilder logCommandOutput = new StringBuilder();
-String line;
- SampleResult.setSuccessful(false);
-while( (line = in.readLine()) != null) {
-  logCommandOutput.append(line);
-  if (line.contains(&quot;OK&quot;)) {
-     SampleResult.setSuccessful(true);
-     break;
-  }
-}
-in.close();
-log.info(&quot;Server Status check Output: &quot; + logCommandOutput.toString());</stringProp>
-            <stringProp name="scriptLanguage">java</stringProp>
-          </JSR223Sampler>
-          <hashTree/>
-        </hashTree>
-        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
-          <intProp name="ActionProcessor.action">1</intProp>
-          <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
-        </TestAction>
-        <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Check-Resource-Status" enabled="true">
-          <boolProp name="TransactionController.includeTimers">false</boolProp>
-          <boolProp name="TransactionController.parent">true</boolProp>
-        </TransactionController>
-        <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Checking if ICAP Resource is running" enabled="true">
-            <stringProp name="cacheKey">true</stringProp>
-            <stringProp name="filename"></stringProp>
-            <stringProp name="parameters"></stringProp>
-            <stringProp name="script">// ********
-// Checking the ICAP Resource is running
-//
-// Preconditions:
-// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
-// should be installed in same linux machine as jmeter
-//
-// ********
-
-log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Check-Resource-status: &quot; + vars.get(&quot;icapServer&quot;));
-
-String command = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
-
-// Print the generated status check command
-log.info(command);
-
-// Create a process object and let this object execute the command
-Process p = Runtime.getRuntime().exec(command);
-p.waitFor();
-
-log.info(&quot;Resource Status check complete.&quot;);
-
-// Read the output of the command and log it
-BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-StringBuilder logCommandOutput = new StringBuilder();
-String line;
-SampleResult.setSuccessful(false);
-while( (line = in.readLine()) != null) {
-  logCommandOutput.append(line);
-  if (line.contains(&quot;OK&quot;)) {
-     SampleResult.setSuccessful(true);
-     break;
-  }
-}
-in.close();
-log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString());</stringProp>
-            <stringProp name="scriptLanguage">java</stringProp>
-          </JSR223Sampler>
-          <hashTree/>
-        </hashTree>
-        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
-          <intProp name="ActionProcessor.action">1</intProp>
-          <intProp name="ActionProcessor.target">0</intProp>
-          <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
-        </TestAction>
-        <hashTree/>
-      </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -242,7 +128,7 @@ log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString(
       </ThreadGroup>
       <hashTree>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="FileList" enabled="true">
-          <stringProp name="filename">files.txt</stringProp>
+          <stringProp name="filename">${filetype}.txt</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">fileName</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
@@ -265,7 +151,7 @@ log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString(
           <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
         </BeanShellSampler>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-MoveFile2inFolder" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-MoveFile2inFolder" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -347,7 +233,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Document-Upload" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-Document-Upload" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -486,7 +372,7 @@ log.info(&quot;Upload Output: &quot; + logCommandOutput.toString());</stringProp
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Copy to S3 Out" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-Copy to S3 Out" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -627,7 +513,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-CleanOutFile" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-CleanOutFile" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -729,7 +615,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
             </elementProp>
             <elementProp name="measurement" elementType="Argument">
               <stringProp name="Argument.name">measurement</stringProp>
-              <stringProp name="Argument.value">jmetericap</stringProp>
+              <stringProp name="Argument.value">${prefix}_jmetericap</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="summaryOnly" elementType="Argument">
@@ -762,6 +648,131 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
         <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
       </BackendListener>
       <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ICAP-ServerStatus" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(p_duration,600)}</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Check-Server-Status" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Checking if ICAP Server is running" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Checking the ICAP Server is running
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Check-server-status: &quot; + vars.get(&quot;icapServer&quot;));
+
+String command = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;);    // for unix
+
+// Print the generated status check command
+log.info(command);
+
+// Create a process object and let this object execute the command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Server Status check complete.&quot;);
+
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+String line;
+ SampleResult.setSuccessful(false);
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  if (line.contains(&quot;OK&quot;)) {
+     SampleResult.setSuccessful(true);
+     break;
+  }
+}
+in.close();
+log.info(&quot;Server Status check Output: &quot; + logCommandOutput.toString());</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="ICAP-Check-Resource-Status" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Checking if ICAP Resource is running" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Checking the ICAP Resource is running
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Check-Resource-status: &quot; + vars.get(&quot;icapServer&quot;));
+
+String command = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
+
+// Print the generated status check command
+log.info(command);
+
+// Create a process object and let this object execute the command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Resource Status check complete.&quot;);
+
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+String line;
+SampleResult.setSuccessful(false);
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  if (line.contains(&quot;OK&quot;)) {
+     SampleResult.setSuccessful(true);
+     break;
+  }
+}
+in.close();
+log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString());</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+      </hashTree>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
