@@ -104,6 +104,7 @@ def main():
             print("Please provide total_users in multiples of users_per_instance.")
             exit(0)
 
+
     bucket = get_configuration("bucket")
     file_name = get_configuration("file_name")
     instance_type, jvm_memory = get_size(users_per_instance)
