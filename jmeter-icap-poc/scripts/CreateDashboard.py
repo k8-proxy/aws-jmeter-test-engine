@@ -30,12 +30,13 @@ def __get_commandline_args():
 
 #  Appends prefix to all occurrences of "measurement" value in the Grafana JSON file
 def __add_prefix_to_grafana_json(grafana_json, prefix):
-    if 'panels' in grafana_json:
-        for i in grafana_json['panels']:
-            if 'targets' in i:
-                for j in i['targets']:
-                    if 'measurement' in j:
-                        j['measurement'] = prefix + j['measurement']
+    if 'panels' in grafana_json["dashboard"]:
+        for i in grafana_json["dashboard"]['panels']:
+            for j in i:
+                if 'targets' in j:
+                    for k in i['targets']:
+                        if 'measurement' in k:
+                            k['measurement'] = prefix + k['measurement']
 
 
 # responsible for posting the dashboard to Grafana and returning the URL to it
@@ -52,8 +53,10 @@ def __post_grafana_dash(key, grafana_template, prefix, grafana_url):
     with open(grafana_template) as json_file:
         grafana_json = json.load(json_file)
         __add_prefix_to_grafana_json(grafana_json, prefix)
+        print(grafana_json)
 
     resp = requests.post(grafana_api_url, json=grafana_json, headers=headers)
+    print(resp.text)
     d = eval(resp.text)
 
     # if the response contains a URL, use it to build a url that links directly to the newly created dashboard

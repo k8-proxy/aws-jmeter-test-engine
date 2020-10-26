@@ -6,22 +6,47 @@ from math import ceil
 import argparse
 from datetime import datetime
 import re
+import os
 
 
-def main():
-
+def get_configuration(key):
+    
     # Load configuration
     try:
-        with open("config.env") as f:
-            config = f.readlines()
-        configuration = dict(c.strip().split("=") for c in config)
+        
+        if os.path.exists("config.env"):
+            with open("config.env") as f:
+                config = f.readlines()
+            configuration = dict(c.strip().split("=") for c in config)
+            return configuration.get(key)
+        else:
+            return os.getenv(key.upper())
     except Exception as e:
-        print("Please create config.env file similar to config.env.sample")
+        print("Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
         print(str(e))
         raise
 
+def get_size(users_per_instance):
+
+    # Determine the size of ec2 instance and jvm memory
+    instance_type = "m4.2xlarge"
+    jvm_memory = "9216m"
+    if 0 < users_per_instance < 1000:
+        instance_type = "m4.large"
+        jvm_memory = "3072m"
+    elif 1000 <= users_per_instance < 2500:
+        instance_type = "m4.xlarge"
+        jvm_memory = "4096m"
+    elif 2500 <= users_per_instance:
+        instance_type = "m4.2xlarge"
+        jvm_memory = "9216m"
+    
+    return instance_type, jvm_memory
+
+def main():
+
     # Authenticate to aws
-    profile = configuration.get("aws_profile_name")
+    profile = get_configuration("aws_profile_name")
     session = boto3.session.Session(profile_name=profile)
     client = session.client('cloudformation')
 
@@ -38,8 +63,14 @@ def main():
     parser.add_argument('--duration', '-d', default=900,
                         help='duration of test (default: 900)')
 
-    parser.add_argument('--endpoint_url', '-e', default="gw-icap01.westeurope.azurecontainer.io",
-                        help='ICAP server endpoint URL (default: gw-icap01.westeurope.azurecontainer.io)')
+    parser.add_argument('--endpoint_url', '-e', default="gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io",
+                        help='ICAP server endpoint URL (default: gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io)')
+
+    parser.add_argument('--influx_host', '-i', default="10.112.0.112",
+                        help='Influx DB host (default: 10.112.0.112)')
+
+    parser.add_argument('--prefix', '-p', default="",
+                        help='Prefix for Cloudformation stack name (default: "")')
 
     args = parser.parse_args()
     
@@ -48,6 +79,8 @@ def main():
     ramp_up = args.ramp_up
     duration = args.duration
     endpoint_url = args.endpoint_url
+    influx_host = args.influx_host
+    prefix = args.prefix
     
     # calculate number of instances required
     instances_required = ceil(total_users/users_per_instance)
@@ -71,18 +104,10 @@ def main():
             print("Please provide total_users in multiples of users_per_instance.")
             exit(0)
 
-    # Determine the size of ec2 instance
-    instance_type = "m4.2xlarge"
-    jvm_memory = "9216m"
-    if 0 < users_per_instance < 1000:
-        instance_type = "m4.large"
-        jvm_memory = "3072m"
-    elif 1000 <= users_per_instance < 2500:
-        instance_type = "m4.xlarge"
-        jvm_memory = "4096m"
-    elif 2500 <= users_per_instance:
-        instance_type = "m4.2xlarge"
-        jvm_memory = "9216m"
+
+    bucket = get_configuration("bucket")
+    file_name = get_configuration("file_name")
+    instance_type, jvm_memory = get_size(users_per_instance)
 
     # write the script to s3 bucket after updating the parameters
     with open("../scripts/StartExecution.sh") as f:
@@ -94,23 +119,24 @@ def main():
     script_data = re.sub("-Jp_url=[a-zA-Z0-9\-\.]*", "-Jp_url=" + str(endpoint_url), script_data)
     script_data = re.sub("Xms[0-9]*m", "Xms" + str(jvm_memory), script_data)
     script_data = re.sub("Xmx[0-9]*m", "Xmx" + str(jvm_memory), script_data)
+    script_data = re.sub("-Jp_influxHost=[a-zA-Z0-9\.]*", "-Jp_influxHost=" + influx_host, script_data)
+    script_data = re.sub("-Jp_bucket=[a-z0-9\-]*", "-Jp_bucket=" + bucket, script_data)
+    script_data = re.sub("s3://[a-z0-9\-]*", "s3://" + bucket, script_data)
 
     s3_client = session.client('s3')
-    bucket = configuration.get("bucket")
-    file_name = configuration.get("file_name")
     s3_client.put_object(Bucket=bucket,
                         Body=script_data,
                         Key=file_name)
 
     # Load cloudformation template
-    with open("GenerateLoadGenerators.json", "r") as f:
+    with open("GenerateLoadGenerators_test.json", "r") as f:
         asg_template_body = f.read()
 
 
     # create ASG with instances to run jmeter tests
     now = datetime.now()
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
-    stack_name = 'aws-jmeter-test-engine-' + date_suffix
+    stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
 
     print("Deploying %s instances in the ASG by creating %s cloudformation stack"% (instances_required, stack_name))
