@@ -435,7 +435,7 @@ while( (line = in.readLine()) != null) {
   logCommandOutput.append(line);
   log.info(&quot;line is &quot;+line);
 
-  if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;${original_hash}.equals(out_checksum)) {
+  if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;${rebuild_hash}.equals(out_checksum)) {
      SampleResult.setSuccessful(true);
      SampleResult.setResponseCode(&quot;200&quot;);
      log.info(&quot;My line is &quot;+line);
