@@ -1,4 +1,4 @@
-## Create CloudFormation stack to deploy AutoScalingGroup
+## Deploy CloudFormation stack to run jmeter tests
 
 1. Install python.
 
@@ -42,7 +42,11 @@ Pass input parameters as required to the script.
 
 `duration` is the duration of the test. Default value 900 seconds
 
-`endpoint_url`is the ICAP server URL. Default value is gw-icap02.westeurope.azurecontainer.io
+`endpoint_url` is the ICAP server URL. Default value is gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io
+
+`inlfux_host` is the IP address or hostname of the Influx DB
+
+`prefix` is the prefix used in the cloudformation stack name
 
 Based on the values passed for total_users and users_per_instance, number of instances required will be calculated. The total users will be equally divided among all the instances.
 
@@ -73,7 +77,7 @@ python create_stack.py --total_users 4000 --users_per_instance 4000
 
 Windows powershell or command prompt:
 ```powershell
-python create_stack.py --total_users 4000 --users_per_instance 4000 --ramp_up=300 --duration=900 --endpoint_url=gw-icap01.westeurope.azurecontainer.io
+python create_stack.py --total_users 4000 --users_per_instance 4000 --ramp_up=300 --duration=900 --inlfux_host=10.112.0.112 --endpoint_url=gw-icap01.westeurope.azurecontainer.io
 ```
 
 7. Once the tests are completed, delete the stack from AWS cloudformation using console and run the script again when required.

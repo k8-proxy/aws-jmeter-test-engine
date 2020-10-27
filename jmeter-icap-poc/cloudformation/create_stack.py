@@ -10,9 +10,10 @@ import os
 
 
 def get_configuration(key):
+    
     # Load configuration
     try:
-
+        
         if os.path.exists("config.env"):
             with open("config.env") as f:
                 config = f.readlines()
@@ -21,13 +22,12 @@ def get_configuration(key):
         else:
             return os.getenv(key.upper())
     except Exception as e:
-        print(
-            "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
+        print("Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
         print(str(e))
         raise
 
-
 def get_size(users_per_instance):
+
     # Determine the size of ec2 instance and jvm memory
     instance_type = "m4.2xlarge"
     jvm_memory = "9216m"
@@ -40,11 +40,11 @@ def get_size(users_per_instance):
     elif 2500 <= users_per_instance:
         instance_type = "m4.2xlarge"
         jvm_memory = "9216m"
-
+    
     return instance_type, jvm_memory
 
-
 def main():
+
     # Authenticate to aws
     profile = get_configuration("aws_profile_name")
     session = boto3.session.Session(profile_name=profile)
@@ -72,9 +72,6 @@ def main():
     parser.add_argument('--prefix', '-p', default="",
                         help='Prefix for Cloudformation stack name (default: "")')
 
-    parser.add_argument('--instances_required', '-q', default="",
-                        help='Number of instances required, calculated in master script')
-
     args = parser.parse_args()
 
     users_per_instance = int(args.users_per_instance)
@@ -83,7 +80,29 @@ def main():
     endpoint_url = args.endpoint_url
     influx_host = args.influx_host
     prefix = args.prefix
-    instances_required = args.instances_required
+    
+    # calculate number of instances required
+    instances_required = ceil(total_users/users_per_instance)
+    if total_users <= users_per_instance:
+        instances_required = 1
+        users_per_instance = total_users
+    else:
+        i = 0
+        while i < 5:
+            if total_users % users_per_instance == 0:
+                instances_required = int(total_users/users_per_instance)
+                break
+            else:
+                if total_users % instances_required == 0:
+                    users_per_instance = int(total_users / instances_required)
+                else:
+                    instances_required += 1
+            i += 1
+
+        if instances_required * users_per_instance != total_users:
+            print("Please provide total_users in multiples of users_per_instance.")
+            exit(0)
+
 
     bucket = get_configuration("bucket")
     file_name = get_configuration("file_name")
@@ -118,7 +137,7 @@ def main():
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
 
-    print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (instances_required, stack_name))
+    print("Deploying %s instances in the ASG by creating %s cloudformation stack"% (instances_required, stack_name))
     client.create_stack(
         StackName=stack_name,
         TemplateBody=asg_template_body,
