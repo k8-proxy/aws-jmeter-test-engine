@@ -29,7 +29,7 @@ def __get_commandline_args():
                         help='The URL to your grafana DB home',
                         default="10.112.0.112:3000")
 
-    parser.add_argument('--key', '-k',
+    parser.add_argument('--grafana_key', '-k',
                         type=str,
                         help='API key to be used for dashboard creation in grafana database',
                         default="")

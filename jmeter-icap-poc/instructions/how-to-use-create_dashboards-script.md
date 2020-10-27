@@ -1,4 +1,4 @@
-# Using CreateDashboard.py to Create Grafana Dashboards
+# Using create_dashboard.py to Create Grafana Dashboards
 
 ## Introduction
 
