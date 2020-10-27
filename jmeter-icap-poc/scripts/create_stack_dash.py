@@ -100,7 +100,7 @@ def __exec_create_stack(cl_args, instances_required, users_per_instance):
 if __name__ == '__main__':
     arguments = __get_commandline_args()
     instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users), int(arguments.users_per_instance))
-    print("Creating stack...")
+    print("Creating Load Generators...")
     __exec_create_stack(arguments, str(instances_required), str(users_per_instance))
     print("Creating dashboard...")
     __exec_create_dashboard(arguments, str(instances_required))
