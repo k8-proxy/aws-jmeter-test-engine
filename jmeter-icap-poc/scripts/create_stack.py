@@ -132,7 +132,7 @@ def main():
                          Key=file_name)
 
     # Load cloudformation template
-    with open("GenerateLoadGenerators_test.json", "r") as f:
+    with open("../cloudformation/GenerateLoadGenerators_test.json", "r") as f:
         asg_template_body = f.read()
 
     # create ASG with instances to run jmeter tests
@@ -164,6 +164,7 @@ def main():
             }
         ]
     )
+    print("Stack created with the following properties:\nTotal Users: %d users\nDuration: %s seconds\nEndpoint URL: %s" % (total_users, duration, endpoint_url))
 
 
 if __name__ == "__main__":

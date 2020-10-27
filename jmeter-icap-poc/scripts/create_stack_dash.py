@@ -91,9 +91,6 @@ def __exec_create_stack(cl_args, instances_required, users_per_instance):
     influx_host = cl_args.influx_host
     prefix = cl_args.prefix
 
-    print("arguments: " + str(cl_args))
-    print("total users: " + total_users)
-    print(type(total_users))
     args = ['python', 'create_stack.py', '-t', total_users, '-u', users_per_instance, '-r', ramp_up, '-d', duration,
             '-e', endpoint_url, '-i', influx_host, '-p', prefix, '-q', instances_required]
 
