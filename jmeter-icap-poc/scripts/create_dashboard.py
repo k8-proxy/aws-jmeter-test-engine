@@ -52,7 +52,7 @@ def __add_users_req_to_grafana_json(grafana_json, instances_required):
             if 'targets' in j:
                 for k in i['targets']:
                     if "alias" in k and k["alias"] == "Number of Users":
-                        k["select"][0][1]["params"][0] = " /*" + instances_required
+                        k["select"][0][1]["params"][0] = "*" + instances_required
 
 
 # responsible for posting the dashboard to Grafana and returning the URL to it

@@ -68,7 +68,7 @@ def __calculate_instances_required(total_users, users_per_instance):
             print("Please provide total_users in multiples of users_per_instance.")
             exit(0)
 
-    return instances_required
+    return instances_required, users_per_instance
 
 
 def __exec_create_dashboard(cl_args, instances_required):
@@ -82,15 +82,18 @@ def __exec_create_dashboard(cl_args, instances_required):
     run(args)
 
 
-def __exec_create_stack(cl_args, instances_required):
+def __exec_create_stack(cl_args, instances_required, users_per_instance):
     total_users = cl_args.total_users
-    users_per_instance = str(cl_args.users_per_instance)
+    # users_per_instance = str(cl_args.users_per_instance)
     ramp_up = cl_args.ramp_up
     duration = cl_args.duration
     endpoint_url = cl_args.endpoint_url
     influx_host = cl_args.influx_host
     prefix = cl_args.prefix
 
+    print("arguments: " + str(cl_args))
+    print("total users: " + total_users)
+    print(type(total_users))
     args = ['python', 'create_stack.py', '-t', total_users, '-u', users_per_instance, '-r', ramp_up, '-d', duration,
             '-e', endpoint_url, '-i', influx_host, '-p', prefix, '-q', instances_required]
 
@@ -99,9 +102,8 @@ def __exec_create_stack(cl_args, instances_required):
 
 if __name__ == '__main__':
     arguments = __get_commandline_args()
-    instances_required = str(
-        __calculate_instances_required(int(arguments.total_users), int(arguments.users_per_instance)))
+    instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users), int(arguments.users_per_instance))
     print("Creating stack...")
-    __exec_create_stack(arguments, instances_required)
+    __exec_create_stack(arguments, str(instances_required), str(users_per_instance))
     print("Creating dashboard...")
-    __exec_create_dashboard(arguments, instances_required)
+    __exec_create_dashboard(arguments, str(instances_required))
