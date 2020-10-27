@@ -1,0 +1,20 @@
+--total_users
+4000
+--users_per_instance
+4000
+--ramp_up
+300
+--duration
+900
+--endpoint_url
+gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io
+--influx_host
+10.112.0.112
+--grafana_url
+http://localhost:3000/
+--key
+eyJrIjoiem5EVXI4cEVHT3p6ajZDenRsemF4V1VBcGVEZXJqZ20iLCJuIjoiZ3JhZmFuYUVkaXRvcktleSIsImlkIjoxfQ==
+--grafana_file
+D:/Git Projects/aws-jmeter-test-engine/jmeter-icap-poc/scripts/ICAP-live-performance-dashboard.json
+--prefix
+test-prefix-
