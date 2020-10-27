@@ -5,7 +5,8 @@ import argparse
 
 # get command line arguments and return their parsed content
 def __get_commandline_args():
-    parser = argparse.ArgumentParser(fromfile_prefix_chars='@', description='Get Grafana template file, prefix to use when producing dashboards, '
+    parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
+                                     description='Get Grafana template file, prefix to use when producing dashboards, '
                                                  'API key, and grafana URL')
     parser.add_argument('--grafana_url', '-g',
                         type=str,

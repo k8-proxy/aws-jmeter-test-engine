@@ -5,7 +5,7 @@ from math import ceil
 
 def __get_commandline_args():
     parser = ArgumentParser(fromfile_prefix_chars='@', description='Create cloudformation stack to deploy ASG. '
-                                        'Create Grafana Dashboard for ICAP server metrics display.')
+                                                                   'Create Grafana Dashboard for ICAP server metrics display.')
     parser.add_argument('--total_users', '-t', default=4000,
                         help='total number of users in the test (default: 4000)')
 
@@ -83,8 +83,8 @@ def __exec_create_dashboard(cl_args, instances_required):
 
 
 def __exec_create_stack(cl_args, instances_required):
-    total_users = int(cl_args.total_users)
-    users_per_instance = int(cl_args.users_per_instance)
+    total_users = cl_args.total_users
+    users_per_instance = str(cl_args.users_per_instance)
     ramp_up = cl_args.ramp_up
     duration = cl_args.duration
     endpoint_url = cl_args.endpoint_url
@@ -99,7 +99,8 @@ def __exec_create_stack(cl_args, instances_required):
 
 if __name__ == '__main__':
     arguments = __get_commandline_args()
-    instances_required = str(__calculate_instances_required(int(arguments.total_users), int(arguments.users_per_instance)))
+    instances_required = str(
+        __calculate_instances_required(int(arguments.total_users), int(arguments.users_per_instance)))
     print("Creating stack...")
     __exec_create_stack(arguments, instances_required)
     print("Creating dashboard...")
