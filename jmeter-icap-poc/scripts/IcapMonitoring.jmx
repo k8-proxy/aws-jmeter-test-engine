@@ -94,6 +94,11 @@
             <stringProp name="Argument.value">${__P(p_aws_region,us-east-1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="prefix" elementType="Argument">
+            <stringProp name="Argument.name">prefix</stringProp>
+            <stringProp name="Argument.value">${__P(p_prefix,demo)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
         <stringProp name="TestPlan.comments">aws-testengine-s3  ${__P(p_url,gw-icap01.westeurope.azurecontainer.io)} ${__P(p_influxHost,localhost)}</stringProp>
       </Arguments>
@@ -142,7 +147,13 @@
         StringBuffer msrbuffer = new StringBuffer();
         String line=&quot;&quot;;
         //Define list measurements
-        String[] list_measurements= {&quot;Running Servers Statistics&quot;,&quot;General Statistics&quot;,&quot;Service info Statistics&quot;,&quot;Service echo Statistics&quot;,&quot;Service gw_rebuild Statistics&quot;,&quot;EOF&quot;};
+        String runningServers=${prefix}+&quot; Running Servers Statistics&quot;;
+        String generalStats=${prefix}+&quot; General Statistics&quot;;
+        String serviceStats=${prefix}+&quot; Service info Statistics&quot;;
+        String serviceEchoStats=${prefix}+&quot; Service echo Statistics&quot;;
+        String servicegw_rebuildStats=${prefix}+&quot; Service gw_rebuild Statistics&quot;;
+      
+       String[] list_measurements= {runningServers,generalStats,serviceStats,serviceEchoStats,servicegw_rebuildStats,&quot;EOF&quot;};// String[] list_measurements= {&quot;Running Servers Statistics&quot;,&quot;General Statistics&quot;,&quot;Service info Statistics&quot;,&quot;Service echo Statistics&quot;,&quot;Service gw_rebuild Statistics&quot;,&quot;EOF&quot;};
 
         //Convert text output data from command p to influxDB line syntax format
  	   for(int i=0;i&lt; list_measurements.length -1;i++) {
