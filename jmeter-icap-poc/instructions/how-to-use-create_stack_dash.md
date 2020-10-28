@@ -88,7 +88,7 @@ IP address or hostname of the Influx Database
 <tr>
 <td> --grafana_url, -g </td>
 <td>
-The URL to the Grafana database's home page (typically this would be the "<Machine Ip>:3000")
+The URL to the Grafana database's home page (typically this would be the "MachineIP:3000")
 </td>
 </tr>
 <tr>
