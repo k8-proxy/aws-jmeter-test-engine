@@ -10,7 +10,7 @@ gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io
 54.154.160.95
 --grafana_url
 http://54.154.160.95:3000/
---key
+--grafana_key
 eyJrIjoiR0cyOG9vUWhDUEM3dmRCaGV6QzRvejZJU0htT2hvRk0iLCJuIjoiZ2xhc3N3YWxsIiwiaWQiOjF9
 --grafana_file
 LatestDashboard.json

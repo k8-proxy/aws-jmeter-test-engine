@@ -117,6 +117,10 @@ The prefix used in both the Cloudformation stack name and the name of the Dashbo
 </tr>
 </table>
 
+## How create_stack_dash.py works
+
+[how_create_stack_dash_works](img/create_stack_dash diagram.png)
+
 ## Running the create_stack_dash.py script
 
 To run the create_stack_dash.py script, use the following command:
@@ -126,7 +130,7 @@ python create_stack_dash.py
 
 Followed by the options required. This can be done manually, as seen in this example:
 ```
-python create_stack_dash.py -f "path/grafana_file.json" -k eyJrIjoiemSIsImlkIjoxfQ== -g "http://localhost:3000/" -p "test-prefix"
+python create_stack_dash.py -f "grafana_template.json" -k "grafana key" -g "link to grafana home page" -p "test-prefix"
 ```
 It can also be done using a file that contains all the arguments in separate lines (note, file name should be preceded by an '@' character):
 ```
