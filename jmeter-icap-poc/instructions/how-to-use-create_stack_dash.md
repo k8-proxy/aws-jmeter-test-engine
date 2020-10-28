@@ -100,7 +100,7 @@ Grafana API Key ([see prerequisits in this article on how to generate this](http
 <tr>
 <td> --grafana_file, -f </td>
 <td>
-Name/path of JSON file that will be used to create Grafana Dashboards.
+Name/path of JSON file that will be used as a template to create Grafana Dashboards.
 </td>
 </tr>
 <tr>
