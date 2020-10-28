@@ -72,11 +72,16 @@ def __calculate_instances_required(total_users, users_per_instance):
 
 
 def __exec_create_dashboard(cl_args, instances_required):
+    duration = cl_args.duration
+    total_users = cl_args.total_users
+    endpoint_url = cl_args.endpoint_url
     grafana_file = cl_args.grafana_file
-    grafana_api_key = cl_args.key
+    grafana_api_key = cl_args.grafana_key
     grafana_url = cl_args.grafana_url
     prefix = cl_args.prefix
-    args = ['python', 'create_dashboard.py', '-f', grafana_file, '-k', grafana_api_key, '-g', grafana_url, '-p', prefix,
+    # '-t', total_users, '-d', duration, '-e', endpoint_url,
+    args = ['python', 'create_dashboard.py', '-t', total_users, '-d', duration, '-e', endpoint_url, '-f', grafana_file,
+            '-k', grafana_api_key, '-g', grafana_url, '-p', prefix,
             '-q', instances_required]
 
     run(args)
@@ -84,7 +89,6 @@ def __exec_create_dashboard(cl_args, instances_required):
 
 def __exec_create_stack(cl_args, instances_required, users_per_instance):
     total_users = cl_args.total_users
-    # users_per_instance = str(cl_args.users_per_instance)
     ramp_up = cl_args.ramp_up
     duration = cl_args.duration
     endpoint_url = cl_args.endpoint_url
@@ -99,7 +103,8 @@ def __exec_create_stack(cl_args, instances_required, users_per_instance):
 
 if __name__ == '__main__':
     arguments = __get_commandline_args()
-    instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users), int(arguments.users_per_instance))
+    instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users),
+                                                                            int(arguments.users_per_instance))
     print("Creating Load Generators...")
     __exec_create_stack(arguments, str(instances_required), str(users_per_instance))
     print("Creating dashboard...")
