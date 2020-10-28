@@ -119,7 +119,7 @@ The prefix used in both the Cloudformation stack name and the name of the Dashbo
 
 ## How create_stack_dash.py works
 
-[how_create_stack_dash_works](img/create_stack_dash diagram.png)
+![how_create_stack_dash_works](img/create_stack_dash.png)
 
 ## Running the create_stack_dash.py script
 
