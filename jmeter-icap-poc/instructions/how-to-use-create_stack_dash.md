@@ -94,7 +94,7 @@ The URL to the Grafana database's home page (typically this would be the "<Machi
 <tr>
 <td> --grafana_key, -k </td>
 <td>
-Grafana API Key ([see prerequisits in this article on how to generate this](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/how-to-use-createDashboards-script.md)).
+Grafana API Key (<a href="https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/how-to-use-createDashboards-script.md">see prerequisits in this article on how to generate this</a>).
 </td>
 </tr>
 <tr>
