@@ -53,7 +53,7 @@ Below is a table highlighting all the available options
 
 <table>
 <tr>
-<td width="210"> Option </td> <td> Description </td>
+<td width="180"> Option </td> <td> Description </td>
 </tr>
 <tr>
 <td> --total_users, -t </td>
