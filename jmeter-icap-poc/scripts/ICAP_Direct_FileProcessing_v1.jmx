@@ -61,7 +61,7 @@
           </elementProp>
           <elementProp name="s3bucketName" elementType="Argument">
             <stringProp name="Argument.name">s3bucketName</stringProp>
-            <stringProp name="Argument.value">${__P(p_bucket,faridpcre)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_bucket,aws-testengine-s3)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="inPath" elementType="Argument">
@@ -227,12 +227,12 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           </JSR223Sampler>
           <hashTree/>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-MoveFile2inFolder" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-MoveFile2inFolder" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move2in" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -299,12 +299,12 @@ FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
           <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-Document-Process" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-Document-Process" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="DocProcess" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -431,11 +431,13 @@ StringBuilder logCommandOutput = new StringBuilder();
 SampleResult.setSuccessful(false);
 String line;
 String respCode;
+log.info(&quot;rebuild hash is &quot;+&quot;${rebuild_hash}&quot;);
+
 while( (line = in.readLine()) != null) {
   logCommandOutput.append(line);
   log.info(&quot;line is &quot;+line);
 
-  if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;${original_hash}.equals(out_checksum)) {
+  if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;&quot;${rebuild_hash}&quot;.equals(out_checksum)) {
      SampleResult.setSuccessful(true);
      SampleResult.setResponseCode(&quot;200&quot;);
      log.info(&quot;My line is &quot;+line);
@@ -536,12 +538,12 @@ log.info(&quot;Upload Output: &quot; + logCommandOutput.toString());</stringProp
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-Copy to S3 Out" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-Copy to S3 Out" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CPss3out" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -677,12 +679,12 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-CleanOutFile" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-CleanOutFile" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CleanOutFile" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -758,60 +760,97 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
+        <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
+          <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="influxdbMetricsSender" elementType="Argument">
+                <stringProp name="Argument.name">influxdbMetricsSender</stringProp>
+                <stringProp name="Argument.value">org.apache.jmeter.visualizers.backend.influxdb.HttpMetricsSender</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="influxdbUrl" elementType="Argument">
+                <stringProp name="Argument.name">influxdbUrl</stringProp>
+                <stringProp name="Argument.value">http://${influxHost}:8086/write?db=jmeter</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="application" elementType="Argument">
+                <stringProp name="Argument.name">application</stringProp>
+                <stringProp name="Argument.value">application name</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="measurement" elementType="Argument">
+                <stringProp name="Argument.name">measurement</stringProp>
+                <stringProp name="Argument.value">${prefix}_jmetericap</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="summaryOnly" elementType="Argument">
+                <stringProp name="Argument.name">summaryOnly</stringProp>
+                <stringProp name="Argument.value">false</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="samplersRegex" elementType="Argument">
+                <stringProp name="Argument.name">samplersRegex</stringProp>
+                <stringProp name="Argument.value">.*ICAP-Document-Process</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="percentiles" elementType="Argument">
+                <stringProp name="Argument.name">percentiles</stringProp>
+                <stringProp name="Argument.value">90;95;99</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="testTitle" elementType="Argument">
+                <stringProp name="Argument.name">testTitle</stringProp>
+                <stringProp name="Argument.value">Test name</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="eventTags" elementType="Argument">
+                <stringProp name="Argument.name">eventTags</stringProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
+        </BackendListener>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename">/Users/faridsha/Documents/icaptest-s35.log</stringProp>
+        </ResultCollector>
+        <hashTree/>
       </hashTree>
-      <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
-        <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
-          <collectionProp name="Arguments.arguments">
-            <elementProp name="influxdbMetricsSender" elementType="Argument">
-              <stringProp name="Argument.name">influxdbMetricsSender</stringProp>
-              <stringProp name="Argument.value">org.apache.jmeter.visualizers.backend.influxdb.HttpMetricsSender</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="influxdbUrl" elementType="Argument">
-              <stringProp name="Argument.name">influxdbUrl</stringProp>
-              <stringProp name="Argument.value">http://${influxHost}:8086/write?db=jmeter</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="application" elementType="Argument">
-              <stringProp name="Argument.name">application</stringProp>
-              <stringProp name="Argument.value">application name</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="measurement" elementType="Argument">
-              <stringProp name="Argument.name">measurement</stringProp>
-              <stringProp name="Argument.value">${prefix}_jmetericap</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="summaryOnly" elementType="Argument">
-              <stringProp name="Argument.name">summaryOnly</stringProp>
-              <stringProp name="Argument.value">false</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="samplersRegex" elementType="Argument">
-              <stringProp name="Argument.name">samplersRegex</stringProp>
-              <stringProp name="Argument.value">.*</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="percentiles" elementType="Argument">
-              <stringProp name="Argument.name">percentiles</stringProp>
-              <stringProp name="Argument.value">90;95;99</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="testTitle" elementType="Argument">
-              <stringProp name="Argument.name">testTitle</stringProp>
-              <stringProp name="Argument.value">Test name</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="eventTags" elementType="Argument">
-              <stringProp name="Argument.name">eventTags</stringProp>
-              <stringProp name="Argument.value"></stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-          </collectionProp>
-        </elementProp>
-        <stringProp name="classname">org.apache.jmeter.visualizers.backend.influxdb.InfluxdbBackendListenerClient</stringProp>
-      </BackendListener>
-      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="ICAP-ServerStatus" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -935,6 +974,194 @@ log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString(
           <intProp name="ActionProcessor.target">0</intProp>
           <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
         </TestAction>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Get ICAP server status" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(p_duration,600)}</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Server Status" enabled="true">
+          <stringProp name="scriptLanguage">java</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">/* By deafault, InfluxDB get datetime of host system, Un-comment if you want to insert daytime manual
+	   	import java.time.Instant;
+		import java.time.LocalDateTime;
+		import java.time.ZoneId;
+		import java.time.ZonedDateTime;
+*/
+	   //String my_var = vars.get(&quot;ICAPServerAddr&quot;);
+        String command =&quot;/usr/local/c-icap/bin/c-icap-client -s info?view=text -i &quot; +vars.get(&quot;icapServer&quot;)+&quot; -req any&quot;;
+	   // Print the generated status check command
+		log.info(command);
+
+		// Create a process object and let this object execute the command
+		Process p = Runtime.getRuntime().exec(command);
+		p.waitFor();
+/*By deafault, InfluxDB get datetime of host system, Un-comment if you want to insert daytime manual
+	   LocalDateTime now = LocalDateTime.now();
+	   LocalDateTime localDateTime = LocalDateTime.now();
+        ZonedDateTime zdt = ZonedDateTime.of(localDateTime, ZoneId.systemDefault());
+ */
+
+       //Get output of execution command p
+        BufferedReader br=new BufferedReader(new InputStreamReader(p.getInputStream()));   
+        StringBuffer msrbuffer = new StringBuffer();
+        String line=&quot;&quot;;
+        //Define list measurements
+        prefix=region=vars.get(&quot;prefix&quot;);
+        String runningServers=prefix+&quot; Running Servers Statistics&quot;;
+        String generalStats=prefix+&quot; General Statistics&quot;;
+        String serviceStats=prefix+&quot; Service info Statistics&quot;;
+        String serviceEchoStats=prefix+&quot; Service echo Statistics&quot;;
+        String servicegw_rebuildStats=prefix+&quot; Service gw_rebuild Statistics&quot;;
+      
+       String[] list_measurements= {runningServers,generalStats,serviceStats,serviceEchoStats,servicegw_rebuildStats,&quot;EOF&quot;};// String[] list_measurements= {&quot;Running Servers Statistics&quot;,&quot;General Statistics&quot;,&quot;Service info Statistics&quot;,&quot;Service echo Statistics&quot;,&quot;Service gw_rebuild Statistics&quot;,&quot;EOF&quot;};
+
+        //Convert text output data from command p to influxDB line syntax format
+ 	   for(int i=0;i&lt; list_measurements.length -1;i++) {
+ 	   	
+	     line = list_measurements[i].replaceAll(&quot; &quot;,&quot;_&quot;);
+	     msrbuffer.append(line+&quot; &quot;);
+	     while( (line = br.readLine()) != null ) {
+	     	
+	         if (!(line.contentEquals(list_measurements[i+1]))){
+	            	//	System.out.println(line);
+	         line = line.replaceAll(&quot;=&quot;,&quot;&quot;);
+	         line = line.replaceAll(&quot;: | : &quot;, &quot;=&quot;);
+	         line = line.replaceAll(&quot; &quot;,&quot;_&quot;);
+	         line = line.replaceAll(&quot;=(.+_.*+)&quot;,&quot;=\&quot;$1\&quot;&quot;);
+	          
+	            	//line =line.replaceAll(&quot;\n&quot;, &quot;&quot;);
+	         if ((line.length()&gt;0) &amp;&amp; (line.contains(&quot;=&quot;))) {
+	            msrbuffer.append(line+&quot;,&quot;);
+	         		} 
+	         } else {break;}
+	            }
+
+	            msrbuffer.deleteCharAt(msrbuffer.length() -1);
+/*By deafault, InfluxDB get datetime of host system, Un-comment if you want to insert daytime manual
+	            msrbuffer.append(&quot; &quot;+zdt.toInstant().toEpochMilli());
+
+*/
+	            if ((line = br.readLine()) != null) msrbuffer.append(&quot;\n&quot;);
+
+	        }
+
+        br.close();    
+       // fr.close();   
+        log.info(msrbuffer.toString());
+        //Add influxDB format to variable data
+        vars.put(&quot;data&quot;,msrbuffer.toString());</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Think Time" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">100</stringProp>
+        </TestAction>
+        <hashTree>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Pause" enabled="true">
+            <stringProp name="ConstantTimer.delay">1000</stringProp>
+            <stringProp name="RandomTimer.range">100</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Post to Influx" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${data}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${influxHost}</stringProp>
+          <stringProp name="HTTPSampler.port">8086</stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/write?db=icapserver</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Think Time" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">1000</stringProp>
+        </TestAction>
+        <hashTree>
+          <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Pause" enabled="true">
+            <stringProp name="ConstantTimer.delay">1000</stringProp>
+            <stringProp name="RandomTimer.range">100</stringProp>
+          </UniformRandomTimer>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename">/home/son/icapserver.jtl</stringProp>
+        </ResultCollector>
         <hashTree/>
       </hashTree>
     </hashTree>
