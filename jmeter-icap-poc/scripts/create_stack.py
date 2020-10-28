@@ -164,7 +164,8 @@ def main():
             }
         ]
     )
-    print("Stack created with the following properties:\nTotal Users: %d users\nDuration: %s seconds\nEndpoint URL: %s" % (total_users, duration, endpoint_url))
+
+    print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (total_users, duration, endpoint_url))
 
 
 if __name__ == "__main__":
