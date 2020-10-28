@@ -62,12 +62,6 @@ Total number of users for the test, Default value is 4000.
 </td>
 </tr>
 <tr>
-<td> --users_per_instance, -u </td>
-<td>
-Number of users per ec2 instance, default value: 4000
-</td>
-</tr>
-<tr>
 <td> --ramp_up, -r </td>
 <td>
 Ramp up time, default value: 300 seconds
