@@ -1,5 +1,5 @@
 --total_users
-40
+25
 --ramp_up
 300
 --duration
@@ -13,6 +13,6 @@ http://54.154.160.95:3000/
 --key
 eyJrIjoiR0cyOG9vUWhDUEM3dmRCaGV6QzRvejZJU0htT2hvRk0iLCJuIjoiZ2xhc3N3YWxsIiwiaWQiOjF9
 --grafana_file
-ICAP-live-performance-dashboard.json
+LatestDashboard.json
 --prefix
-testprefix
+glasswall

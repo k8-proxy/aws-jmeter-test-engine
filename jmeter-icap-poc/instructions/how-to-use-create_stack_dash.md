@@ -130,7 +130,7 @@ python create_stack_dash.py -f "path/grafana_file.json" -k eyJrIjoiemSIsImlkIjox
 ```
 It can also be done using a file that contains all the arguments in separate lines (note, file name should be preceded by an '@' character):
 ```
-python create_stack_dash.py args.txt
+python create_stack_dash.py @args.txt
 ```
 
 Here is an example what arg.txt's contents may look like:
