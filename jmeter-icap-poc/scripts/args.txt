@@ -1,11 +1,11 @@
 --total_users
-25
+20
 --ramp_up
 300
 --duration
 900
 --endpoint_url
-gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io
+icap-client.uksouth.cloudapp.azure.com
 --influx_host
 54.154.160.95
 --grafana_url
