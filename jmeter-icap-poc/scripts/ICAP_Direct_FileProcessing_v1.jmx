@@ -527,7 +527,7 @@ while( (line = in.readLine()) != null) {
      SampleResult.setResponseCode(&quot;403&quot;);
      SampleResult.setSuccessful(false);
      SampleResult.setResponseMessage(&quot;403 Fordbidden&quot;);
-     log.info(&quot;Response Code is 403&quot;);
+     log.info(&quot;Response Code is 403. Guilty file is &quot;+ &quot;${fileName}&quot;);
      break;
   }
 }
