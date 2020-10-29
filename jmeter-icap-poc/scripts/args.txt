@@ -5,13 +5,13 @@
 --duration
 900
 --endpoint_url
-icap-client.uksouth.cloudapp.azure.com
+gw-icap01.westeurope.azurecontainer.io
 --influx_host
-54.154.160.95
+10.112.0.112
 --grafana_url
-http://54.154.160.95:3000/
+http://3.250.147.216:3000/
 --grafana_key
-eyJrIjoiR0cyOG9vUWhDUEM3dmRCaGV6QzRvejZJU0htT2hvRk0iLCJuIjoiZ2xhc3N3YWxsIiwiaWQiOjF9
+eyJrIjoicDFHNlk0UFR3Z1FKcVlxM2ZCM0M0VUtRdmFKdlEweTYiLCJuIjoiQWRtaW4tQXBpIiwiaWQiOjF9
 --grafana_file
 LatestDashboard.json
 --prefix

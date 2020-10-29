@@ -13,8 +13,8 @@ def get_configuration(key):
     # Load configuration
     try:
 
-        if os.path.exists("config.env"):
-            with open("config.env") as f:
+        if os.path.exists("..\Cloudformation\config.env"):
+            with open("..\Cloudformation\config.env") as f:
                 config = f.readlines()
             configuration = dict(c.strip().split("=") for c in config)
             return configuration.get(key)
@@ -123,7 +123,6 @@ def main():
     script_data = re.sub("Xms[0-9]*m", "Xms" + str(jvm_memory), script_data)
     script_data = re.sub("Xmx[0-9]*m", "Xmx" + str(jvm_memory), script_data)
     script_data = re.sub("-Jp_influxHost=[a-zA-Z0-9\.]*", "-Jp_influxHost=" + influx_host, script_data)
-    script_data = re.sub("-Jp_bucket=[a-z0-9\-]*", "-Jp_bucket=" + bucket, script_data)
     script_data = re.sub("s3://[a-z0-9\-]*", "s3://" + bucket, script_data)
 
     s3_client = session.client('s3')
@@ -132,7 +131,7 @@ def main():
                          Key=file_name)
 
     # Load cloudformation template
-    with open("../cloudformation/GenerateLoadGenerators_test.json", "r") as f:
+    with open("../cloudformation/GenerateLoadGenerators.json", "r") as f:
         asg_template_body = f.read()
 
     # create ASG with instances to run jmeter tests
