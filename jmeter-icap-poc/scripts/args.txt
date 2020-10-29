@@ -11,7 +11,7 @@ gw-icap01.westeurope.azurecontainer.io
 --grafana_url
 http://3.250.147.216:3000/
 --grafana_key
-eyJrIjoicDFHNlk0UFR3Z1FKcVlxM2ZCM0M0VUtRdmFKdlEweTYiLCJuIjoiQWRtaW4tQXBpIiwiaWQiOjF9
+
 --grafana_file
 LatestDashboard.json
 --prefix
