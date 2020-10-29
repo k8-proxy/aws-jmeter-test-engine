@@ -10,24 +10,24 @@ import os
 
 
 def get_configuration(key):
-    
     # Load configuration
     try:
-        
-        if os.path.exists("config.env"):
-            with open("config.env") as f:
+
+        if os.path.exists("..\Cloudformation\config.env"):
+            with open("..\Cloudformation\config.env") as f:
                 config = f.readlines()
             configuration = dict(c.strip().split("=") for c in config)
             return configuration.get(key)
         else:
             return os.getenv(key.upper())
     except Exception as e:
-        print("Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
+        print(
+            "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
         print(str(e))
         raise
 
-def get_size(users_per_instance):
 
+def get_size(users_per_instance):
     # Determine the size of ec2 instance and jvm memory
     instance_type = "m4.2xlarge"
     jvm_memory = "9216m"
@@ -40,17 +40,17 @@ def get_size(users_per_instance):
     elif 2500 <= users_per_instance:
         instance_type = "m4.2xlarge"
         jvm_memory = "9216m"
-    
+
     return instance_type, jvm_memory
 
-def main():
 
+def main():
     # Authenticate to aws
     profile = get_configuration("aws_profile_name")
     session = boto3.session.Session(profile_name=profile)
     client = session.client('cloudformation')
 
-    parser = argparse.ArgumentParser(description='Create cloudformation stack to deploy ASG.')
+    parser = argparse.ArgumentParser(fromfile_prefix_chars='@', description='Create cloudformation stack to deploy ASG.')
     parser.add_argument('--total_users', '-t', default=4000,
                         help='total number of users in the test (default: 4000)')
 
@@ -72,37 +72,41 @@ def main():
     parser.add_argument('--prefix', '-p', default="",
                         help='Prefix for Cloudformation stack name (default: "")')
 
+    parser.add_argument('--instances_required', '-q', default="3",
+                        help='Number of instances required, needed to modify Grafana JSON')
+
     args = parser.parse_args()
 
+    total_users = int(args.total_users)
     users_per_instance = int(args.users_per_instance)
     ramp_up = args.ramp_up
     duration = args.duration
     endpoint_url = args.endpoint_url
     influx_host = args.influx_host
     prefix = args.prefix
-    
-    # calculate number of instances required
-    instances_required = ceil(total_users/users_per_instance)
-    if total_users <= users_per_instance:
-        instances_required = 1
-        users_per_instance = total_users
-    else:
-        i = 0
-        while i < 5:
-            if total_users % users_per_instance == 0:
-                instances_required = int(total_users/users_per_instance)
-                break
-            else:
-                if total_users % instances_required == 0:
-                    users_per_instance = int(total_users / instances_required)
-                else:
-                    instances_required += 1
-            i += 1
+    instances_required = args.instances_required
 
-        if instances_required * users_per_instance != total_users:
-            print("Please provide total_users in multiples of users_per_instance.")
-            exit(0)
-
+    # # calculate number of instances required
+    # instances_required = ceil(total_users / users_per_instance)
+    # if total_users <= users_per_instance:
+    #     instances_required = 1
+    #     users_per_instance = total_users
+    # else:
+    #     i = 0
+    #     while i < 5:
+    #         if total_users % users_per_instance == 0:
+    #             instances_required = int(total_users / users_per_instance)
+    #             break
+    #         else:
+    #             if total_users % instances_required == 0:
+    #                 users_per_instance = int(total_users / instances_required)
+    #             else:
+    #                 instances_required += 1
+    #         i += 1
+    #
+    #     if instances_required * users_per_instance != total_users:
+    #         print("Please provide total_users in multiples of users_per_instance.")
+    #         exit(0)
 
     bucket = get_configuration("bucket")
     file_name = get_configuration("file_name")
@@ -119,7 +123,6 @@ def main():
     script_data = re.sub("Xms[0-9]*m", "Xms" + str(jvm_memory), script_data)
     script_data = re.sub("Xmx[0-9]*m", "Xmx" + str(jvm_memory), script_data)
     script_data = re.sub("-Jp_influxHost=[a-zA-Z0-9\.]*", "-Jp_influxHost=" + influx_host, script_data)
-    script_data = re.sub("-Jp_bucket=[a-z0-9\-]*", "-Jp_bucket=" + bucket, script_data)
     script_data = re.sub("s3://[a-z0-9\-]*", "s3://" + bucket, script_data)
 
     s3_client = session.client('s3')
@@ -128,7 +131,7 @@ def main():
                          Key=file_name)
 
     # Load cloudformation template
-    with open("GenerateLoadGenerators_test.json", "r") as f:
+    with open("../cloudformation/GenerateLoadGenerators.json", "r") as f:
         asg_template_body = f.read()
 
     # create ASG with instances to run jmeter tests
@@ -137,7 +140,7 @@ def main():
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
 
-    print("Deploying %s instances in the ASG by creating %s cloudformation stack"% (instances_required, stack_name))
+    print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (instances_required, stack_name))
     client.create_stack(
         StackName=stack_name,
         TemplateBody=asg_template_body,
@@ -160,6 +163,8 @@ def main():
             }
         ]
     )
+
+    print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (total_users, duration, endpoint_url))
 
 
 if __name__ == "__main__":
