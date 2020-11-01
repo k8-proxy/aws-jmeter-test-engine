@@ -124,7 +124,6 @@ def main(config):
     print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (config.instances_required, stack_name))
     print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (config.total_users, config.duration, config.endpoint_url))
 
-    exit(0)
     client.create_stack(
         StackName=stack_name,
         TemplateBody=asg_template_body,
