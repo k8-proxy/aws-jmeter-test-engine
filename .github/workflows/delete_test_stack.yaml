@@ -30,6 +30,6 @@ jobs:
         run: |
           pip install boto3
           cd jmeter-icap-poc/cloudformation
-          python3 delete_stack.py --prefix=${PREFIX:-ga-}
+          python3 delete_stack.py --prefix=${PREFIX:-ga}
         env:
           PREFIX: ${{ secrets.PREFIX }}
