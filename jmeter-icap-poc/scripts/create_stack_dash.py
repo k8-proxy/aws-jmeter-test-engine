@@ -121,14 +121,16 @@ def __exec_delete_stack(cl_args):
     run(args)
 
 
-# Starts the process of calling delete_stack. Will start the timer and display messages updating users on status
+# Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
 def __start_delete_stack(cl_args, additional_delay):
     duration = arguments.duration
     total_wait_time = additional_delay + int(duration)
     minutes = total_wait_time / 60
-    print("Stack will be deleted after {0:.1f} minutes".format(minutes))
     finish_time = datetime.now(timezone.utc) + timedelta(seconds=total_wait_time)
     start_time = datetime.now(timezone.utc)
+
+    print("Stack will be deleted after {0:.1f} minutes".format(minutes))
+
     while datetime.now(timezone.utc) < finish_time:
         if datetime.now(timezone.utc) != start_time:
             diff = datetime.now(timezone.utc) - start_time
@@ -140,6 +142,7 @@ def __start_delete_stack(cl_args, additional_delay):
 
 
 if __name__ == '__main__':
+
     arguments = __get_commandline_args()
     instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users),
                                                                             int(arguments.users_per_instance))
