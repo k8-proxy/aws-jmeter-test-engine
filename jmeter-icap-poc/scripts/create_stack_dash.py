@@ -1,7 +1,8 @@
 from subprocess import run
 from argparse import ArgumentParser
 from math import ceil
-
+import create_stack
+from create_stack import Config
 
 def __get_commandline_args():
     parser = ArgumentParser(fromfile_prefix_chars='@', description='Create cloudformation stack to deploy ASG. '
@@ -80,25 +81,25 @@ def __exec_create_dashboard(cl_args, instances_required):
     grafana_url = cl_args.grafana_url
     prefix = cl_args.prefix
     # '-t', total_users, '-d', duration, '-e', endpoint_url,
-    args = ['python', 'create_dashboard.py', '-t', total_users, '-d', duration, '-e', endpoint_url, '-f', grafana_file,
+    args = ['python3', 'create_dashboard.py', '-t', total_users, '-d', duration, '-e', endpoint_url, '-f', grafana_file,
             '-k', grafana_api_key, '-g', grafana_url, '-p', prefix,
             '-q', instances_required]
-
+    
     run(args)
 
 
 def __exec_create_stack(cl_args, instances_required, users_per_instance):
-    total_users = cl_args.total_users
-    ramp_up = cl_args.ramp_up
-    duration = cl_args.duration
-    endpoint_url = cl_args.endpoint_url
-    influx_host = cl_args.influx_host
-    prefix = cl_args.prefix
 
-    args = ['python', 'create_stack.py', '-t', total_users, '-u', users_per_instance, '-r', ramp_up, '-d', duration,
-            '-e', endpoint_url, '-i', influx_host, '-p', prefix, '-q', instances_required]
+    Config.total_users = cl_args.total_users
+    Config.users_per_instance = users_per_instance
+    Config.ramp_up = cl_args.ramp_up
+    Config.duration = cl_args.duration
+    Config.endpoint_url = cl_args.endpoint_url
+    Config.influx_host = cl_args.influx_host
+    Config.prefix = cl_args.prefix
+    Config.instances_required = instances_required
 
-    run(args)
+    create_stack.main(config=Config)
 
 
 if __name__ == '__main__':
@@ -106,6 +107,6 @@ if __name__ == '__main__':
     instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users),
                                                                             int(arguments.users_per_instance))
     print("Creating Load Generators...")
-    __exec_create_stack(arguments, str(instances_required), str(users_per_instance))
+    __exec_create_stack(arguments, instances_required, users_per_instance)
     print("Creating dashboard...")
     __exec_create_dashboard(arguments, str(instances_required))
