@@ -30,6 +30,9 @@ class Config(object):
         endpoint_url = os.getenv("ENDPOINT_URL")
         influx_host = os.getenv("INFLUX_HOST")
         prefix = os.getenv("PREFIX")
+        grafana_url = os.getenv("GRAFANA_URL")
+        grafana_key = os.getenv("GRAFANA_KEY")
+        grafana_file = os.getenv("GRAFANA_FILE")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -121,7 +124,7 @@ def main(config):
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name =  prefix + "LoadTest-" + date_suffix
 
-    print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (config.instances_required, stack_name))
+    print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (str(config.instances_required), stack_name))
     client.create_stack(
         StackName=stack_name,
         TemplateBody=asg_template_body,

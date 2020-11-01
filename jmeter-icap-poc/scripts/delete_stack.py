@@ -2,39 +2,27 @@ import boto3
 from datetime import timedelta, datetime, timezone
 import os
 import argparse
+from create_stack import Config
 
-def get_configuration(key):
-    
-    # Load configuration
-    try:
-        
-        if os.path.exists("config.env"):
-            with open("config.env") as f:
-                config = f.readlines()
-            configuration = dict(c.strip().split("=") for c in config)
-            return configuration.get(key)
-        else:
-            return os.getenv(key.upper())
-    except Exception as e:
-        print("Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
-        print(str(e))
-        raise
 
 def main():
     
-    profile_name = get_configuration("aws_profile_name")
+    profile_name = Config.aws_profile_name
     parser = argparse.ArgumentParser(description='Create cloudformation stack to deploy ASG.')
-    parser.add_argument('--prefix', '-p', default="ga-",
+    parser.add_argument('--prefix', '-p', default="ga",
                         help='Prefix for Cloudformation stack name (default: "ga-")')
+    parser.add_argument('--min_age', '-m', default=30, type=int,
+                        help='Minimum age of stack to delete in minutes (default: 30)')
 
     args = parser.parse_args()
-    prefix = args.prefix
+    prefix = args.prefix + "-" if args.prefix not in  ["", None] else args.prefix
+    min_age = args.min_age
 
     session = boto3.session.Session(profile_name=profile_name)
     client = session.client("cloudformation")
 
     now = datetime.now(timezone.utc)
-    past_time = now - timedelta(minutes=30)
+    past_time = now - timedelta(minutes=min_age)
     stacks_list = client.list_stacks(StackStatusFilter=["CREATE_COMPLETE", "CREATE_FAILED"])
 
     print("finding the stack names with prefix %s and created before %s"%(prefix, past_time))

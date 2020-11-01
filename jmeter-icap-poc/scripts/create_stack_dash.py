@@ -43,6 +43,18 @@ def __get_commandline_args():
     parser.add_argument('--prefix', '-p', default="",
                         help='Prefix for Cloudformation stack name (default: "")')
 
+    parser.add_argument('--test_data_file', default=Config.test_data_file,
+                        help='Test data file')
+
+    parser.add_argument('--jmx_script_name', default=Config.jmx_script_name,
+                        help='JMX script name')
+
+    parser.add_argument('--secret_id', default=Config.secret_id,
+                        help='Secrets manager id to use')
+
+    parser.add_argument('--region', default=Config.region,
+                        help='AWS Region to use')
+    
     return parser.parse_args()
 
 
@@ -98,6 +110,10 @@ def __exec_create_stack(cl_args, instances_required, users_per_instance):
     Config.influx_host = cl_args.influx_host
     Config.prefix = cl_args.prefix
     Config.instances_required = instances_required
+    Config.test_data_file = cl_args.test_data_file
+    Config.jmx_script_name = cl_args.jmx_script_name
+    Config.secret_id = cl_args.secret_id
+    Config.region = cl_args.region
 
     create_stack.main(config=Config)
 
