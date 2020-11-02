@@ -69,8 +69,8 @@ def main():
     parser.add_argument('--influx_host', '-i', default="10.112.0.112",
                         help='Influx DB host (default: 10.112.0.112)')
 
-    parser.add_argument('--prefix', '-p', default="",
-                        help='Prefix for Cloudformation stack name (default: "")')
+    parser.add_argument('--stack_name', '-n', default="aws-jmeter-test-engine",
+                        help='Used for Cloudformation stack name')
 
     parser.add_argument('--instances_required', '-q', default="3",
                         help='Number of instances required, needed to modify Grafana JSON')
@@ -83,7 +83,8 @@ def main():
     duration = args.duration
     endpoint_url = args.endpoint_url
     influx_host = args.influx_host
-    prefix = args.prefix
+    stack_name = args.stack_name
+    print("stack name is " + stack_name)
     instances_required = args.instances_required
 
     # # calculate number of instances required
@@ -137,7 +138,6 @@ def main():
     # create ASG with instances to run jmeter tests
     now = datetime.now()
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
-    stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = "LoadTest-" + date_suffix
 
     print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (instances_required, stack_name))

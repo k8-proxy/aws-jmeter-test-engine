@@ -50,6 +50,9 @@ def __get_commandline_args():
     parser.add_argument('--prefix', '-p', default="",
                         help='Prefix for Cloudformation stack name (default: "")')
 
+    parser.add_argument('--exclude_dashboard', '-x', action='store_true',
+                        help='Setting this option will prevent the creation of a new dashboard for this stack')
+
     parser.add_argument('--preserve_stack', '-s', action='store_true',
                         help='Setting this option will prevent the created stack from being automatically deleted.')
 
@@ -101,28 +104,26 @@ def __exec_create_dashboard(cl_args, instances_required):
 
 
 # Takes arguments from command line, run create_stack script using them
-def __exec_create_stack(cl_args, instances_required, users_per_instance):
+def __exec_create_stack(cl_args, instances_required, users_per_instance, stack_name):
     total_users = cl_args.total_users
     ramp_up = cl_args.ramp_up
     duration = cl_args.duration
     endpoint_url = cl_args.endpoint_url
     influx_host = cl_args.influx_host
-    prefix = cl_args.prefix
 
     args = ['python', 'create_stack.py', '-t', total_users, '-u', users_per_instance, '-r', ramp_up, '-d', duration,
-            '-e', endpoint_url, '-i', influx_host, '-p', prefix, '-q', instances_required]
+            '-e', endpoint_url, '-i', influx_host, '-n', stack_name, '-q', instances_required]
 
     run(args)
 
 
-def __exec_delete_stack(cl_args):
-    prefix = cl_args.prefix
-    args = ['python', 'delete_stack.py', '-p', prefix]
+def __exec_delete_stack(stack_name):
+    args = ['python', 'delete_stack.py', '-n', stack_name]
     run(args)
 
 
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
-def __start_delete_stack(cl_args, additional_delay):
+def __start_delete_stack(additional_delay, stack_name):
     duration = arguments.duration
     total_wait_time = additional_delay + int(duration)
     minutes = total_wait_time / 60
@@ -138,7 +139,17 @@ def __start_delete_stack(cl_args, additional_delay):
                     total_wait_time - diff.seconds) / 60))
         time.sleep(MESSAGE_INTERVAL)
 
-    __exec_delete_stack(cl_args)
+    __exec_delete_stack(stack_name)
+
+
+def __get_stack_name(cl_args):
+    # create ASG with instances to run jmeter tests
+    now = datetime.now()
+    prefix = cl_args.prefix
+    date_suffix = now.strftime("%Y-%m-%d-%H-%M")
+    created_stack_name = prefix + '-aws-jmeter-test-engine-' + date_suffix
+
+    return created_stack_name
 
 
 if __name__ == '__main__':
@@ -146,13 +157,19 @@ if __name__ == '__main__':
     arguments = __get_commandline_args()
     instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users),
                                                                             int(arguments.users_per_instance))
+
+    stack_name = __get_stack_name(arguments)
+
     print("Creating Load Generators...")
-    __exec_create_stack(arguments, str(instances_required), str(users_per_instance))
-    print("Creating dashboard...")
-    __exec_create_dashboard(arguments, str(instances_required))
+    __exec_create_stack(arguments, str(instances_required), str(users_per_instance), stack_name)
+
+    exclude_dashboard = arguments.exclude_dashboard
+    if not exclude_dashboard:
+        print("Creating dashboard...")
+        __exec_create_dashboard(arguments, str(instances_required))
 
     preserve_stack = arguments.preserve_stack
     if not preserve_stack:
-        __start_delete_stack(arguments, DELETE_TIME_OFFSET)
+        __start_delete_stack(DELETE_TIME_OFFSET, stack_name)
     else:
         print("Stack will not be automatically deleted.")

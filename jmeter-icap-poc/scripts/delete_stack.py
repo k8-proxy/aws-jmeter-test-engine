@@ -24,25 +24,25 @@ def get_configuration(key):
 def main():
     profile_name = get_configuration("aws_profile_name")
     parser = argparse.ArgumentParser(description='Create cloudformation stack to deploy ASG.')
-    parser.add_argument('--prefix', '-p', default="ga-",
-                        help='Prefix for Cloudformation stack name (default: "ga-")')
+    parser.add_argument('--stack_name', '-n', default="",
+                        help='Cloudformation stack name of stack to be deleted')
 
     args = parser.parse_args()
-    prefix = args.prefix
+    stack_name = args.stack_name
 
     session = boto3.session.Session(profile_name=profile_name)
     client = session.client("cloudformation")
 
     stacks_list = client.list_stacks(StackStatusFilter=["CREATE_COMPLETE", "CREATE_FAILED"])
 
-    print("finding the stack names with prefix %s" % prefix)
-    for s in stacks_list["StackSummaries"]:
-        stack_name = s["StackName"]
-        if not stack_name.startswith(prefix + "aws-jmeter-test-engine-"):
-            continue
+    #print("finding stack with name %s" % stack_name)
+    #for s in stacks_list["StackSummaries"]:
+        # stack_name = s["StackName"]
+        # if not stack_name.startswith(prefix + "aws-jmeter-test-engine-"):
+        #    continue
 
-        print("deleting stack %s" % (stack_name))
-        client.delete_stack(StackName=stack_name)
+    print("deleting stack named: %s" % (stack_name))
+    client.delete_stack(StackName=stack_name)
 
 
 if __name__ == "__main__":
