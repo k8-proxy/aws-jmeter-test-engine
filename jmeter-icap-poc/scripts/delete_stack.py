@@ -32,8 +32,6 @@ def main():
 
     session = boto3.session.Session(profile_name=profile_name)
     client = session.client("cloudformation")
-
-    stacks_list = client.list_stacks(StackStatusFilter=["CREATE_COMPLETE", "CREATE_FAILED"])
     
     print("deleting stack named: %s" % (stack_name))
     client.delete_stack(StackName=stack_name)
