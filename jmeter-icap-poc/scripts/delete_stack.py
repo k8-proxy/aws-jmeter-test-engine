@@ -34,13 +34,7 @@ def main():
     client = session.client("cloudformation")
 
     stacks_list = client.list_stacks(StackStatusFilter=["CREATE_COMPLETE", "CREATE_FAILED"])
-
-    #print("finding stack with name %s" % stack_name)
-    #for s in stacks_list["StackSummaries"]:
-        # stack_name = s["StackName"]
-        # if not stack_name.startswith(prefix + "aws-jmeter-test-engine-"):
-        #    continue
-
+    
     print("deleting stack named: %s" % (stack_name))
     client.delete_stack(StackName=stack_name)
 
