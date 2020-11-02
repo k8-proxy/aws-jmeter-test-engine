@@ -104,9 +104,15 @@ Name/path of JSON file that will be used as a template to create Grafana Dashboa
 </td>
 </tr>
 <tr>
-<td> -p, --prefix </td>
+<td>--prefix, -p </td>
 <td>
 The prefix used in both the Cloudformation stack name and the name of the Dashboard and measurements created.
+</td>
+</tr>
+<tr>
+<td> --preserve_stack, -s </td>
+<td>
+This is a flag; it takes no arguments. If set (ex: create_stack_dash -s), it will prevent the stack created from being automatically deleted after the duration period specified above is complete.
 </td>
 </tr>
 </table>
@@ -164,4 +170,5 @@ Endpoint URL: gw-link.dgp.usanorth.gdfghd.io
 Creating dashboard...
 Dashboard created at:
 http://55.123.133.82:3000//d/4YK94UtGk/test-run-1-icap-live-performance-dashboard
+Stack will be deleted after 45.0 minutes
 ```

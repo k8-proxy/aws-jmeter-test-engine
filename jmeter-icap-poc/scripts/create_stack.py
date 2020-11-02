@@ -13,8 +13,8 @@ def get_configuration(key):
     # Load configuration
     try:
 
-        if os.path.exists("..\Cloudformation\config.env"):
-            with open("..\Cloudformation\config.env") as f:
+        if os.path.exists("config.env"):
+            with open("config.env") as f:
                 config = f.readlines()
             configuration = dict(c.strip().split("=") for c in config)
             return configuration.get(key)
