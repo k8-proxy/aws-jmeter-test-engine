@@ -8,11 +8,12 @@ This script launches a Cloudformation stack that spins up load generators. Then 
 
 1. Install [Python](https://www.python.org/downloads/).
 
-2. Ensure boto3 and requests python packages are installed. This can be done using the following console commands:
+2. Ensure boto3, requests and dotenv python packages are installed. This can be done using the following console commands:
 
 ```
 pip install boto3
 pip install requests
+pip install python-dotenv
 ```
 
 3. Set AWS authentication for the Cloudformation stack that will be created. This can be done by configuring AWS on the machine running the script using this script. Make sure AWS CLI is installed on the machine and that a user exists with an AWS access key (can be created under IAM, Security Credentials in the AWS console), then run the following commands:
@@ -34,13 +35,55 @@ Input the correct values; the last prompt can be left at default by pressing ent
 
 Once configured, the AWS credentials and config files can be found in the AWS folder located in "~/.aws/" on linux systems or "%USERPROFILE%\\.aws" in Windows systems. At the top of the config folder a profile name in brackets should be present (ex: [default], here "default" will be the profile name to use in the config.env file discussed in the next step).
 
-4. Create config.env file.
+4. Update the config.env file with the AWS profile information.
 
 Create config.env file by copying the existing config.env.sample file. Update the file with the following details:
 
 - aws_profile_name - The AWS profile created in step 3.
-- bucket=gov - Bucket name where a file with number of instances will be created.
-- file_name -  File name with number of instances will be created in the s3 bucket.
+- bucket - Bucket name where a file with number of instances will be created.
+
+## Using config.env to pass parameters to create_stack_dash.py
+
+The config.env file is the preferred way to pass parameters to this script, it should be located in the same folder as create_stack_dash. It contains many parameters that translate to options (listed in options section below) when running the script. Below is a sample config.env file:
+
+```
+AWS_PROFILE_NAME=glasswall
+REGION=eu-west-1
+SCRIPT_BUCKET=aws-testengine-s3
+SCRIPT_NAME=script/StartExecution.sh
+TEST_DATA_BUCKET=icap-perf-test-data
+TEST_DATA_FILE=files.csv
+SECRET_ID=GlasswallDataRepositoryTestUser
+TOTAL_USERS=4000
+USERS_PER_INSTANCE=4000
+INSTANCES_REQUIRED=1
+RAMP_UP=300
+DURATION=900
+ENDPOINT_URL=icap-client.uksouth.cloudapp.azure.com
+INFLUX_HOST=64.159.132.71
+PREFIX=aj-test
+INSTANCES_REQUIRED=1
+JMX_SCRIPT_NAME=ICAP_Direct_FileProcessing_v1.jmx
+GRAFANA_URL=64.159.132.71:3000
+GRAFANA_KEY=ey2kn6b2j6hbio37j2bm7nj728un24o8k48kpmo3k3m8i5m9k5g9mk9op59m3i8m3==
+GRAFANA_FILE=LatestDashboard.json
+EXCLUDE_DASHBOARD=0
+PRESERVE_STACK=0
+PREFIX_BASED_DELETE=0
+```
+
+These parameters have corresponding options that can be used during script execution, they do not have to be set in config.env. Many of the paramters above are also optional, they can be omitted. Any options input manually via the command line will override options within the config.env file. For example, if the config.env file is set to allow dashboard creation:
+
+```
+EXCLUDE_DASHBOARD=0
+```
+
+But the option to exclude dashboard creation is used:
+
+```
+python create_stack_dash.py -x
+```
+The Dashboard will still not be created (the option -x prevents dashboard creation) despite the content of the config.env file. The options below correspond to the same name parameters in the config.env file; they are listed along with brief descriptions of their usage.
 
 ## Options available for the create_stack_dash.py script
 
@@ -110,15 +153,39 @@ The prefix used in both the Cloudformation stack name and the name of the Dashbo
 </td>
 </tr>
 <tr>
+<td> --test_data_file </td>
+<td>
+Test data file name/path
+</td>
+</tr>
+<tr>
+<td> --jmx_script_name </td>
+<td>
+JMX script file name/path
+</td>
+</tr>
+<tr>
+<td> --region </td>
+<td>
+AWS Region to use
+</td>
+</tr>
+<tr>
 <td> --preserve_stack, -s </td>
 <td>
-This is a flag; it takes no arguments. If set (ex: create_stack_dash -s), it will prevent the stack created from being automatically deleted after the duration period specified above is complete.
+This takes no arguments. If set (ex: create_stack_dash -s), it will prevent the stack created from being automatically deleted after the duration period specified above is complete.
 </td>
 </tr>
 <tr>
 <td> --exclude_dashboard, -x </td>
 <td>
-This is a flag; it takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script is run.
+This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script. is run.
+</td>
+</tr>
+<tr>
+<td> --prefix_based_delete, -pb </td>
+<td>
+This takes no arguments. If set (ex: create_stack_dash -pb), stacks will be deleted based on prefix and time created.
 </td>
 </tr>
 </table>
@@ -138,43 +205,23 @@ Followed by the options required. This can be done manually, as seen in this exa
 ```
 python create_stack_dash.py -f "grafana_template.json" -k "grafana key" -g "link to grafana home page" -p "test-prefix"
 ```
-It can also be done using a file that contains all the arguments in separate lines (note, file name should be preceded by an '@' character):
-```
-python create_stack_dash.py @args.txt
-```
-
-Here is an example what arg.txt's contents may look like:
-```
---total_users
-400
---ramp_up
-300
---duration
-900
---endpoint_url
-gw-link.dgp.usanorth.gdfghd.io
---influx_host
-55.123.133.82
---grafana_url
-http://55.123.133.82:3000/
---key
-iR0cyOG9vUWhDUEMiLCJuIjoiZ2xsIiwjF9135kN$IPFJFlgkajtF
---grafana_file
-ICAP-live-performance-dashboard.json
---prefix
-test-run-1
-```
+Or the Config.env file would contain all the parameters required.
 
 A successful run should output information on number of users, duration, and links to the end point and Grafana dashboard. See example below:
 ```
 Creating Load Generators...
-Deploying 1 instances in the ASG by creating testprefixaws-jmeter-test-engine-2020-10-27-22-00 cloudformation stack
+Deploying 1 instances in the ASG by creating test-prefix-aws-jmeter-test-engine-2020-11-03-01-39 cloudformation stack
 Stack created with the following properties:
-Total Users: 400 users
-Duration: 900 seconds
-Endpoint URL: gw-link.dgp.usanorth.gdfghd.io
+Total Users: 4000
+Duration: 900
+Endpoint URL: icap-client.uksouth.cloudapp.azure.com
 Creating dashboard...
 Dashboard created at:
-http://55.123.133.82:3000//d/4YK94UtGk/test-run-1-icap-live-performance-dashboard
-Stack will be deleted after 45.0 minutes
+http://64.159.132.71:3000//d/LVI8JIhMk/test-prefix-icap-live-performance-dashboard
+Stack will be deleted after 45 minutes
+10.0 minutes have elapsed, stack will be deleted in 35.0 minutes
+20.0 minutes have elapsed, stack will be deleted in 25.0 minutes
+30.0 minutes have elapsed, stack will be deleted in 15.0 minutes
+40.0 minutes have elapsed, stack will be deleted in 5.0 minutes
+deleting stack named: test-prefix-aws-jmeter-test-engine-2020-11-03-01-39
 ```

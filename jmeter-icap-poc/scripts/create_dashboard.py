@@ -1,45 +1,6 @@
 import requests
 import json
-import argparse
-
-
-# get command line arguments and return their parsed content
-def __get_commandline_args():
-    parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
-                                     description='Get Grafana template file, prefix to use when producing dashboards, '
-                                                 'API key, and grafana URL')
-
-    parser.add_argument('--total_users', '-t', default=4000,
-                        help='total number of users in the test (default: 4000)')
-
-    parser.add_argument('--duration', '-d', default=900,
-                        help='duration of test (default: 900)')
-
-    parser.add_argument('--endpoint_url', '-e', default="gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io",
-                        help='ICAP server endpoint URL (default: gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io)')
-
-    parser.add_argument('--grafana_url', '-g',
-                        type=str,
-                        help='The URL to your grafana DB home',
-                        default="10.112.0.112:3000")
-
-    parser.add_argument('--grafana_key', '-k',
-                        type=str,
-                        help='API key to be used for dashboard creation in grafana database',
-                        default="")
-
-    parser.add_argument('--grafana_file', '-f',
-                        type=str,
-                        help='path to grafana template used for dashboard creation',
-                        default="")
-
-    parser.add_argument('--prefix', '-p', default="",
-                        help='prefix used for differentiating grafana dashboards and metrics')
-
-    parser.add_argument('--instances_required', '-q', default="3",
-                        help='Number of instances required, needed to modify Grafana JSON')
-
-    return parser.parse_args()
+from create_stack import Config
 
 
 #  Appends prefix to title and all occurrences of "measurement" value in the Grafana JSON file
@@ -61,7 +22,7 @@ def __add_users_req_to_grafana_json(grafana_json, instances_required):
             if 'targets' in j:
                 for k in i['targets']:
                     if "alias" in k and k["alias"] == "Number of Users":
-                        k["select"][0][1]["params"][0] = "*" + instances_required
+                        k["select"][0][1]["params"][0] = "*" + str(instances_required)
 
 
 def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url):
@@ -98,21 +59,17 @@ def __post_grafana_dash(key, grafana_template, prefix, grafana_url, instances_re
         return grafana_url + d.get('url')
 
 
-# main: Gets command line arguments, creates dashboard in grafana, outputs URL in response (if any)
-if __name__ == '__main__':
-    arguments = __get_commandline_args()
+def main(config):
 
-    total_users = arguments.total_users
-    duration = arguments.duration
-    endpoint_url = arguments.endpoint_url
-    key = arguments.grafana_key
-    grafana_template = arguments.grafana_file
-    prefix = arguments.prefix
-    grafana_url = arguments.grafana_url
-    instances_required = arguments.instances_required
+    created_dashboard_url = __post_grafana_dash(config.grafana_key, config.grafana_file, config.prefix,
+                                                config.grafana_url, config.instances_required,
+                                                config.total_users, config.duration, config.endpoint_url)
 
-    created_dashboard_url = __post_grafana_dash(key, grafana_template, prefix, grafana_url, instances_required,
-                                                total_users, duration, endpoint_url)
     if created_dashboard_url:
         print("Dashboard created at: ")
         print(created_dashboard_url)
+
+
+# main: Gets command line arguments, creates dashboard in grafana, outputs URL in response (if any)
+if __name__ == '__main__':
+    main(Config)
