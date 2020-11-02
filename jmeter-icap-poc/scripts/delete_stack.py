@@ -25,16 +25,19 @@ def main():
     past_time = now - timedelta(minutes=min_age)
     stacks_list = client.list_stacks(StackStatusFilter=["CREATE_COMPLETE", "CREATE_FAILED"])
 
-    print("finding the stack names with prefix %s and created before %s"%(prefix, past_time))
+    print("finding the stack names with prefix %s" % prefix)
     for s in stacks_list["StackSummaries"]:
         stack_name = s["StackName"]
         if not stack_name.startswith(prefix + "aws-jmeter-test-engine-"):
             continue
-        creation_time = s["CreationTime"]
         
+
+        # This will delete stacks that are older than given age.
+        creation_time = s["CreationTime"]
         if creation_time <= past_time:
             print("deleting stack %s"%(stack_name))
             client.delete_stack(StackName=stack_name)
+
 
 if __name__ == "__main__":
     main()
