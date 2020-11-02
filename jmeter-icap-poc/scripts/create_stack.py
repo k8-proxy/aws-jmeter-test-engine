@@ -117,7 +117,7 @@ def main(config):
                          Key=file_name)
 
     # Load cloudformation template
-    with open("../cloudformation/GenerateLoadGenerators_test.json", "r") as f:
+    with open("../cloudformation/GenerateLoadGenerators.json", "r") as f:
         asg_template_body = f.read()
 
     # create ASG with instances to run jmeter tests
