@@ -53,7 +53,7 @@ Below is a table highlighting all the available options
 
 <table>
 <tr>
-<td width="180"> Option </td> <td> Description </td>
+<td width="200"> Option </td> <td> Description </td>
 </tr>
 <tr>
 <td> --total_users, -t </td>
@@ -113,6 +113,12 @@ The prefix used in both the Cloudformation stack name and the name of the Dashbo
 <td> --preserve_stack, -s </td>
 <td>
 This is a flag; it takes no arguments. If set (ex: create_stack_dash -s), it will prevent the stack created from being automatically deleted after the duration period specified above is complete.
+</td>
+</tr>
+<tr>
+<td> --exclude_dashboard, -x </td>
+<td>
+This is a flag; it takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script is run.
 </td>
 </tr>
 </table>
