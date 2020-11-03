@@ -179,7 +179,7 @@ This takes no arguments. If set (ex: create_stack_dash -s), it will prevent the 
 <tr>
 <td> --exclude_dashboard, -x </td>
 <td>
-This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script. is run.
+This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script is run.
 </td>
 </tr>
 <tr>
