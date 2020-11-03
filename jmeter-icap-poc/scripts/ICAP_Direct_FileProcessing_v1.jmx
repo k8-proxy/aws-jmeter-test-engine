@@ -528,7 +528,7 @@ while( (line = in.readLine()) != null) {
      SampleResult.setResponseCode(&quot;403&quot;);
      SampleResult.setSuccessful(false);
      SampleResult.setResponseMessage(&quot;403 Fordbidden&quot;);
-     log.info(&quot;Response Code is 403. Guilty file is &quot;+ &quot;${fileName}&quot;);
+     log.info(&quot;Response Code is 403. File is &quot;+ &quot;${fileName}&quot;);
      if (&quot;${rebuild_hash}&quot;.equals(&quot;NULL&quot;))
      SampleResult.setSuccessful(true);
      break;
