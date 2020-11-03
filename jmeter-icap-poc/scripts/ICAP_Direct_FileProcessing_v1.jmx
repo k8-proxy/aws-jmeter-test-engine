@@ -451,6 +451,7 @@ while( (line = in.readLine()) != null) {
   
   if (line.contains(&quot;ICAP/1.0 204&quot;)) {
      SampleResult.setResponseCode(&quot;204&quot;);
+     SampleResult.setSuccessful(true);
      SampleResult.setResponseMessage(&quot;No modifications needed&quot;);
      log.info(&quot;Response Code is 204&quot;);
      break;
@@ -527,7 +528,9 @@ while( (line = in.readLine()) != null) {
      SampleResult.setResponseCode(&quot;403&quot;);
      SampleResult.setSuccessful(false);
      SampleResult.setResponseMessage(&quot;403 Fordbidden&quot;);
-     log.info(&quot;Response Code is 403. Guilty file is &quot;+ &quot;${fileName}&quot;);
+     log.info(&quot;Response Code is 403. File is &quot;+ &quot;${fileName}&quot;);
+     if (&quot;${rebuild_hash}&quot;.equals(&quot;NULL&quot;))
+     SampleResult.setSuccessful(true);
      break;
   }
 }
@@ -537,7 +540,7 @@ log.info(&quot;Upload Output: &quot; + logCommandOutput.toString());</stringProp
             <stringProp name="scriptLanguage">java</stringProp>
           </JSR223Sampler>
           <hashTree/>
-          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
+          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="false">
             <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="influxdbMetricsSender" elementType="Argument">
@@ -906,7 +909,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
               <connectTime>true</connectTime>
             </value>
           </objProp>
-         <stringProp name="filename">/Users/faridsha/Documents/icaptest-s35.log</stringProp>
+          <stringProp name="filename">/Users/faridsha/Documents/icaptest-s35.log</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
