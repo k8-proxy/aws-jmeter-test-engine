@@ -31,9 +31,9 @@ jobs:
           pip install boto3 python-dotenv
           cd jmeter-icap-poc/scripts
           cp config.env.sample config.env
+          sed -i -e '/AWS_PROFILE_NAME/ { d; } ' config.env
           python3 create_stack.py
         env:
-          AWS_PROFILE_NAME: ${{ null }}
           SCRIPT_BUCKET: "aws-testengine-s3" # ${{ secrets.SCRIPT_BUCKET }}
           SCRIPT_NAME: "script/StartExecution.sh" # ${{ secrets.SCRIPT_NAME }}
           INFLUX_HOST: "10.112.0.112" # ${{ secrets.INFLUX_HOST }}
