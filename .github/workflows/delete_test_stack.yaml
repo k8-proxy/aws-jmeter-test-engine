@@ -32,4 +32,5 @@ jobs:
           cd jmeter-icap-poc/scripts
           python3 delete_stack.py
         env:
+          AWS_PROFILE_NAME: ""
           PREFIX: "ga" # ${{ secrets.PREFIX }}
