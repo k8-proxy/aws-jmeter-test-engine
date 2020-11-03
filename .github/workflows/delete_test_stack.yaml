@@ -30,7 +30,7 @@ jobs:
         run: |
           pip install boto3 python-dotenv
           cd jmeter-icap-poc/scripts
+          sed -i -e '/AWS_PROFILE_NAME/ { d; } ' config.env
           python3 delete_stack.py
         env:
-          AWS_PROFILE_NAME: ${{ secrets.AWS_PROFILE_NAME }}
           PREFIX: "ga" # ${{ secrets.PREFIX }}
