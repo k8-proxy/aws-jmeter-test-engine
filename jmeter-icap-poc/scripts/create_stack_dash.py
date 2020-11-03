@@ -1,14 +1,13 @@
-from subprocess import run
 from argparse import ArgumentParser
 import time
-from dotenv import load_dotenv
-import os
 from datetime import timedelta, datetime, timezone
 from math import ceil
-import create_dashboard
 import delete_stack
 import create_stack
+import create_dashboard
 from create_stack import Config
+from ec2_instance_manager import start_instance
+from aws_secrets import get_secret_value
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
 DELETE_TIME_OFFSET = 900
@@ -77,8 +76,14 @@ def __get_commandline_args():
     parser.add_argument('--prefix_based_delete', '-pb', action='store_true',
                         help='Setting this option will cause stacks to be deleted based on prefix and time created.')
 
-    parser.add_argument('--min_age', '-m', default=30, type=int,
+    parser.add_argument('--min_age', '-m', default=Config.min_age, type=int,
                         help='Minimum age of stack to delete in minutes (default: 30)')
+
+    parser.add_argument('--grafana_server_tag', '-tag', default=Config.grafana_server_tag,
+                        help='Tag of server containing the Grafana database that will be started')
+
+    parser.add_argument('--grafana_secret_id', '-gsid', default=Config.grafana_secret_id,
+                        help='The secret ID for the Grafana API Key stored in AWS Secrets')
 
     return parser.parse_args()
 
@@ -131,7 +136,6 @@ def __start_delete_stack(additional_delay, config):
 
 
 def __get_stack_name(config):
-
     now = datetime.now()
     prefix = config.prefix
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
@@ -144,7 +148,6 @@ def __get_stack_name(config):
 
 
 def main(config):
-
     print("Creating Load Generators...")
     create_stack.main(config)
 
@@ -179,6 +182,7 @@ if __name__ == "__main__":
     Config.secret_id = args.secret_id
     Config.region = args.region
     Config.min_age = args.min_age
+    Config.grafana_server_tag = args.grafana_server_tag
 
     # these are flag/boolean arguments
     if args.exclude_dashboard:
@@ -197,5 +201,23 @@ if __name__ == "__main__":
         Config.prefix_based_delete = int(Config.prefix_based_delete) == 1
 
     Config.stack_name = __get_stack_name(Config)
+
+    # if Grafana custom IP was inserted via config, use it. Otherwise, start up the instance and use that IP instead.
+    if not Config.grafana_url and not Config.grafana_server_tag:
+        print("Must input either grafana_url or grafana_server_tags in config.env or using args")
+        exit(0)
+    elif not Config.grafana_url:
+        ip = start_instance(Config)
+        Config.grafana_url = 'http://{0}:3000/'.format(ip)
+        print(Config.grafana_url)
+
+        # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
+        if not Config.grafana_key and not Config.grafana_secret_id:
+            print("Must input either grafana_key or grafana_secret_id in config.env or using args")
+            exit(0)
+        elif not Config.grafana_key:
+            print("Fetching Grafana Secret Key")
+            Config.grafana_key = get_secret_value(config=Config, secret_id=Config.grafana_secret_id)
+            print("Grafana secret key retrieved.")
 
     main(Config)
