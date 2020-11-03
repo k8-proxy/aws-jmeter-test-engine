@@ -29,7 +29,7 @@ jobs:
       - name: Install required packages and delete stack
         run: |
           pip install boto3
-          cd jmeter-icap-poc/cloudformation
+          cd jmeter-icap-poc/scripts
           python3 delete_stack.py --prefix=${PREFIX:-ga}
         env:
           PREFIX: ${{ secrets.PREFIX }}
