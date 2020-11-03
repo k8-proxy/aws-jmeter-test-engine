@@ -30,6 +30,6 @@ jobs:
         run: |
           pip install boto3 python-dotenv
           cd jmeter-icap-poc/scripts
-          python3 delete_stack.py --prefix=${PREFIX:-ga}
+          python3 delete_stack.py
         env:
-          PREFIX: ${{ secrets.PREFIX }}
+          PREFIX: "ga" # ${{ secrets.PREFIX }}
