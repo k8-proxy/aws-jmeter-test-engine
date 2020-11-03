@@ -28,7 +28,7 @@ jobs:
 
       - name: Install required packages and delete stack
         run: |
-          pip install boto3
+          pip install boto3 python-dotenv
           cd jmeter-icap-poc/scripts
           python3 delete_stack.py --prefix=${PREFIX:-ga}
         env:

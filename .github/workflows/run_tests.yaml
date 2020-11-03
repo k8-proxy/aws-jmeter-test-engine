@@ -28,7 +28,7 @@ jobs:
 
       - name: Install required packages and run tests
         run: |
-          pip install boto3
+          pip install boto3 python-dotenv
           cd jmeter-icap-poc/scripts
           cp config.env.sample config.env
           python3 create_stack.py --total_users ${TOTAL_USERS:-20} --ramp_up=${RAMP_UP:-20} --duration=${DURATION:-900} --influx_host=${INFLUX_HOST:-10.112.0.112} --endpoint_url=${ENDPOINT_URL:-gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io} --prefix=${PREFIX:-ga} --test_data_file=${TEST_DATA_FILE:-files.csv}
