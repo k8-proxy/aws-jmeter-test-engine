@@ -33,7 +33,7 @@ jobs:
           cp config.env.sample config.env
           python3 create_stack.py
         env:
-          AWS_PROFILE_NAME: ""
+          AWS_PROFILE_NAME: ${{ secrets.AWS_PROFILE_NAME }}
           SCRIPT_BUCKET: "aws-testengine-s3" # ${{ secrets.SCRIPT_BUCKET }}
           SCRIPT_NAME: "script/StartExecution.sh" # ${{ secrets.SCRIPT_NAME }}
           INFLUX_HOST: "10.112.0.112" # ${{ secrets.INFLUX_HOST }}
