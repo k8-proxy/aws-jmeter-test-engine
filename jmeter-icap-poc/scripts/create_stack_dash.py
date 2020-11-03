@@ -11,9 +11,9 @@ import create_stack
 from create_stack import Config
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
-DELETE_TIME_OFFSET = 3
+DELETE_TIME_OFFSET = 900
 # Interval between "time elapsed" messages sent to user; should be set to 600.
-MESSAGE_INTERVAL = 1
+MESSAGE_INTERVAL = 600
 
 
 # set all possible arguments/options that can be input into the script
