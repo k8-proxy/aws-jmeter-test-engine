@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import boto3
-from math import ceil
 import argparse
 from datetime import datetime
 import re
@@ -33,6 +32,11 @@ class Config(object):
         grafana_url = os.getenv("GRAFANA_URL")
         grafana_key = os.getenv("GRAFANA_KEY")
         grafana_file = os.getenv("GRAFANA_FILE")
+        exclude_dashboard = os.getenv("EXCLUDE_DASHBOARD")
+        preserve_stack = os.getenv("PRESERVE_STACK")
+        prefix_based_delete = os.getenv("PREFIX_BASED_DELETE")
+        min_age = os.getenv("MIN_AGE")
+        stack_name = os.getenv("STACK_NAME")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -62,29 +66,6 @@ def main(config):
     profile = config.aws_profile_name
     session = boto3.session.Session(profile_name=profile)
     client = session.client('cloudformation')
-
-
-    # # calculate number of instances required
-    # instances_required = ceil(total_users / users_per_instance)
-    # if total_users <= users_per_instance:
-    #     instances_required = 1
-    #     users_per_instance = total_users
-    # else:
-    #     i = 0
-    #     while i < 5:
-    #         if total_users % users_per_instance == 0:
-    #             instances_required = int(total_users / users_per_instance)
-    #             break
-    #         else:
-    #             if total_users % instances_required == 0:
-    #                 users_per_instance = int(total_users / instances_required)
-    #             else:
-    #                 instances_required += 1
-    #         i += 1
-    #
-    #     if instances_required * users_per_instance != total_users:
-    #         print("Please provide total_users in multiples of users_per_instance.")
-    #         exit(0)
 
     file_name = config.script_name
     instance_type, jvm_memory = get_size(config.users_per_instance)
@@ -120,11 +101,12 @@ def main(config):
     # create ASG with instances to run jmeter tests
     now = datetime.now()
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
-    prefix = config.prefix + "-" if config.prefix not in  ["", None] else config.prefix
+    prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
-    asg_name =  prefix + "LoadTest-" + date_suffix
+    asg_name = prefix + "LoadTest-" + date_suffix
 
-    print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (str(config.instances_required), stack_name))
+    print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (
+    str(config.instances_required), stack_name))
     client.create_stack(
         StackName=stack_name,
         TemplateBody=asg_template_body,
@@ -147,8 +129,8 @@ def main(config):
             }
         ]
     )
-    print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (config.total_users, config.duration, config.endpoint_url))
-
+    print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (
+    config.total_users, config.duration, config.endpoint_url))
 
 if __name__ == "__main__":
 
