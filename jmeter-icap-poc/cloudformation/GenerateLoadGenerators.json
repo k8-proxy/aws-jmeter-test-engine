@@ -1,6 +1,6 @@
 {
    "AWSTemplateFormatVersion" : "2010-09-09",
-   "Description" : "This script creates 10 EC instances from set AMI image. Change parameters accordingly",
+   "Description" : "This script creates EC2 instances from set AMI image. Change parameters accordingly",
    "Parameters" : {
     "VpcId": {
       "Type": "String",

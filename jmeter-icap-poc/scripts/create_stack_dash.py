@@ -1,6 +1,8 @@
 from subprocess import run
 from argparse import ArgumentParser
 from math import ceil
+import create_stack
+from create_stack import Config
 import time
 from datetime import timedelta, datetime, timezone
 
@@ -50,8 +52,21 @@ def __get_commandline_args():
     parser.add_argument('--prefix', '-p', default="",
                         help='Prefix for Cloudformation stack name (default: "")')
 
+    parser.add_argument('--test_data_file', default=Config.test_data_file,
+                        help='Test data file')
+
+    parser.add_argument('--jmx_script_name', default=Config.jmx_script_name,
+                        help='JMX script name')
+
+    parser.add_argument('--secret_id', default=Config.secret_id,
+                        help='Secrets manager id to use')
+
+    parser.add_argument('--region', default=Config.region,
+                        help='AWS Region to use')
+    
     parser.add_argument('--preserve_stack', '-s', action='store_true',
                         help='Setting this option will prevent the created stack from being automatically deleted.')
+
 
     return parser.parse_args()
 
@@ -96,23 +111,27 @@ def __exec_create_dashboard(cl_args, instances_required):
     args = ['python', 'create_dashboard.py', '-t', total_users, '-d', duration, '-e', endpoint_url, '-f', grafana_file,
             '-k', grafana_api_key, '-g', grafana_url, '-p', prefix,
             '-q', instances_required]
-
+    
     run(args)
 
 
 # Takes arguments from command line, run create_stack script using them
 def __exec_create_stack(cl_args, instances_required, users_per_instance):
-    total_users = cl_args.total_users
-    ramp_up = cl_args.ramp_up
-    duration = cl_args.duration
-    endpoint_url = cl_args.endpoint_url
-    influx_host = cl_args.influx_host
-    prefix = cl_args.prefix
 
-    args = ['python', 'create_stack.py', '-t', total_users, '-u', users_per_instance, '-r', ramp_up, '-d', duration,
-            '-e', endpoint_url, '-i', influx_host, '-p', prefix, '-q', instances_required]
+    Config.total_users = cl_args.total_users
+    Config.users_per_instance = users_per_instance
+    Config.ramp_up = cl_args.ramp_up
+    Config.duration = cl_args.duration
+    Config.endpoint_url = cl_args.endpoint_url
+    Config.influx_host = cl_args.influx_host
+    Config.prefix = cl_args.prefix
+    Config.instances_required = instances_required
+    Config.test_data_file = cl_args.test_data_file
+    Config.jmx_script_name = cl_args.jmx_script_name
+    Config.secret_id = cl_args.secret_id
+    Config.region = cl_args.region
 
-    run(args)
+    create_stack.main(config=Config)
 
 
 def __exec_delete_stack(cl_args):
@@ -147,7 +166,7 @@ if __name__ == '__main__':
     instances_required, users_per_instance = __calculate_instances_required(int(arguments.total_users),
                                                                             int(arguments.users_per_instance))
     print("Creating Load Generators...")
-    __exec_create_stack(arguments, str(instances_required), str(users_per_instance))
+    __exec_create_stack(arguments, instances_required, users_per_instance)
     print("Creating dashboard...")
     __exec_create_dashboard(arguments, str(instances_required))
 

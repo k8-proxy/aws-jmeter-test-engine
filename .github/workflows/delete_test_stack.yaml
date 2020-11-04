@@ -17,8 +17,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: eu-west-1
 
       - name: Set up Python 3.7
@@ -28,8 +28,9 @@ jobs:
 
       - name: Install required packages and delete stack
         run: |
-          pip install boto3
-          cd jmeter-icap-poc/cloudformation
-          python3 delete_stack.py --prefix=${PREFIX:-ga-}
+          pip install boto3 python-dotenv
+          cd jmeter-icap-poc/scripts
+          sed -i -e '/AWS_PROFILE_NAME/ { d; } ' config.env
+          python3 delete_stack.py
         env:
-          PREFIX: ${{ secrets.PREFIX }}
+          PREFIX: "ga" # ${{ secrets.PREFIX }}

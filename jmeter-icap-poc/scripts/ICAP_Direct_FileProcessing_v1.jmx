@@ -128,7 +128,7 @@
       </ThreadGroup>
       <hashTree>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="FileList" enabled="true">
-          <stringProp name="filename">${filetype}.csv</stringProp>
+          <stringProp name="filename">${filetype}</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames">id,fileName,path,size,type,isMalicious,original_hash,rebuild_hash</stringProp>
           <boolProp name="ignoreFirstLine">true</boolProp>
