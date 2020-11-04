@@ -188,8 +188,7 @@ if __name__ == "__main__":
 
     Config.total_users = int(args.total_users)
     Config.users_per_instance = int(args.users_per_instance)
-    Config.instances_required, Config.users_per_instance = __calculate_instances_required(Config.total_users,
-                                                                                          Config.users_per_instance)
+    Config.instances_required, Config.users_per_instance = __calculate_instances_required(Config.total_users, Config.users_per_instance)
     Config.ramp_up = args.ramp_up
     Config.duration = args.duration
     Config.endpoint_url = args.endpoint_url
