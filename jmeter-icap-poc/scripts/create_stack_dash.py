@@ -115,26 +115,8 @@ def __calculate_instances_required(total_users, users_per_instance):
     return instances_required, users_per_instance
 
 
-# Takes arguments from command line, run create_dashboard script using them
-def __exec_create_dashboard(cl_args, instances_required):
-    duration = cl_args.duration
-    total_users = cl_args.total_users
-    endpoint_url = cl_args.endpoint_url
-    grafana_file = cl_args.grafana_file
-    grafana_api_key = cl_args.grafana_key
-    grafana_url = cl_args.grafana_url
-    prefix = cl_args.prefix
-
-    args = ['python', 'create_dashboard.py', '-t', total_users, '-d', duration, '-e', endpoint_url, '-f', grafana_file,
-            '-k', grafana_api_key, '-g', grafana_url, '-p', prefix,
-            '-q', instances_required]
-    
-    run(args)
-
-
 # Takes arguments from command line, run create_stack script using them
 def __exec_create_stack(cl_args, instances_required, users_per_instance):
-
     Config.total_users = cl_args.total_users
     Config.users_per_instance = users_per_instance
     Config.ramp_up = cl_args.ramp_up
@@ -149,12 +131,6 @@ def __exec_create_stack(cl_args, instances_required, users_per_instance):
     Config.region = cl_args.region
 
     create_stack.main(config=Config)
-
-
-def __exec_delete_stack(cl_args):
-    prefix = cl_args.prefix
-    args = ['python', 'delete_stack.py', '-p', prefix]
-    run(args)
 
 
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
@@ -213,7 +189,7 @@ if __name__ == "__main__":
     Config.total_users = int(args.total_users)
     Config.users_per_instance = int(args.users_per_instance)
     Config.instances_required, Config.users_per_instance = __calculate_instances_required(Config.total_users,
-                                                               Config.users_per_instance)
+                                                                                          Config.users_per_instance)
     Config.ramp_up = args.ramp_up
     Config.duration = args.duration
     Config.endpoint_url = args.endpoint_url
