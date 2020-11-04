@@ -1,7 +1,7 @@
-# Use this code snippet in your app.
 # If you need more information about configurations or implementing the sample code, visit the AWS docs:
 # https://aws.amazon.com/developers/getting-started/python/
 
+import json
 import boto3
 import base64
 from botocore.exceptions import ClientError
@@ -55,4 +55,4 @@ def get_secret_value(config, secret_id):
             secret = get_secret_value_response['SecretString']
         else:
             decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
-        return secret
+        return json.loads(secret)

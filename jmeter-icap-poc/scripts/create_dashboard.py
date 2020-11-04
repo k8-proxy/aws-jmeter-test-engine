@@ -34,8 +34,16 @@ def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_ur
 
 
 # responsible for posting the dashboard to Grafana and returning the URL to it
-def __post_grafana_dash(key, grafana_template, prefix, grafana_url, instances_required, total_users, duration,
-                        endpoint_url):
+def __post_grafana_dash(config):
+    key = config.grafana_key
+    grafana_template = config.grafana_file
+    prefix = config.prefix
+    grafana_url = config.grafana_url
+    instances_required = config.instances_required
+    total_users = config.total_users
+    duration = config.duration
+    endpoint_url = config.endpoint_url
+
     if grafana_url[len(grafana_url) - 1] != '/':
         grafana_url += '/'
 
@@ -53,7 +61,6 @@ def __post_grafana_dash(key, grafana_template, prefix, grafana_url, instances_re
 
     resp = requests.post(grafana_api_url, json=grafana_json, headers=headers)
     d = eval(resp.text)
-
     # if the response contains a URL, use it to build a url that links directly to the newly created dashboard
     if "url" in d:
         return grafana_url + d.get('url')
@@ -61,9 +68,7 @@ def __post_grafana_dash(key, grafana_template, prefix, grafana_url, instances_re
 
 def main(config):
 
-    created_dashboard_url = __post_grafana_dash(config.grafana_key, config.grafana_file, config.prefix,
-                                                config.grafana_url, config.instances_required,
-                                                config.total_users, config.duration, config.endpoint_url)
+    created_dashboard_url = __post_grafana_dash(config)
 
     if created_dashboard_url:
         print("Dashboard created at: ")
