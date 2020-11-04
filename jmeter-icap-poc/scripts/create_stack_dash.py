@@ -228,13 +228,13 @@ if __name__ == "__main__":
         Config.grafana_url = 'http://{0}:3000/'.format(ip)
         print(Config.grafana_url)
 
-        # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
-        if not Config.grafana_key and not Config.grafana_secret_id:
-            print("Must input either grafana_key or grafana_secret_id in config.env or using args")
-            exit(0)
-        elif not Config.grafana_key:
-            print("Fetching Grafana Secret Key")
-            Config.grafana_key = get_secret_value(config=Config, secret_id=Config.grafana_secret_id)
-            print("Grafana secret key retrieved.")
+    # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
+    if not Config.grafana_key and not Config.grafana_secret_id:
+        print("Must input either grafana_key or grafana_secret_id in config.env or using args")
+        exit(0)
+    elif not Config.grafana_key:
+        print("Fetching Grafana Secret Key")
+        Config.grafana_key = get_secret_value(config=Config, secret_id=Config.grafana_secret_id)
+        print("Grafana secret key retrieved.")
 
     main(Config)
