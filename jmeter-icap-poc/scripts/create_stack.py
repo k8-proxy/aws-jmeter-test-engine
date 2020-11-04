@@ -93,6 +93,14 @@ def main(config):
     s3_client.put_object(Bucket=config.script_bucket,
                          Body=script_data,
                          Key=file_name)
+    
+    # upload jmx script and test data file to S3
+    print("Uploading jmx script and test data file to S3")
+    with open(config.jmx_script_name, 'rb') as data:
+        s3_client.upload_fileobj(data, config.script_bucket ,"script/" + config.jmx_script_name)
+
+    with open(config.test_data_file, 'rb') as data:
+        s3_client.upload_fileobj(data, config.script_bucket, "script/" + config.test_data_file)
 
     # Load cloudformation template
     with open("../cloudformation/GenerateLoadGenerators.json", "r") as f:
