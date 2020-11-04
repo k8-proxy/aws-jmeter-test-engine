@@ -68,28 +68,6 @@ def main(config):
     session = boto3.session.Session(profile_name=profile)
     client = session.client('cloudformation')
 
-    # # calculate number of instances required
-    # instances_required = ceil(total_users / users_per_instance)
-    # if total_users <= users_per_instance:
-    #     instances_required = 1
-    #     users_per_instance = total_users
-    # else:
-    #     i = 0
-    #     while i < 5:
-    #         if total_users % users_per_instance == 0:
-    #             instances_required = int(total_users / users_per_instance)
-    #             break
-    #         else:
-    #             if total_users % instances_required == 0:
-    #                 users_per_instance = int(total_users / instances_required)
-    #             else:
-    #                 instances_required += 1
-    #         i += 1
-    #
-    #     if instances_required * users_per_instance != total_users:
-    #         print("Please provide total_users in multiples of users_per_instance.")
-    #         exit(0)
-
     file_name = config.script_name
     instance_type, jvm_memory = get_size(config.users_per_instance)
 
@@ -155,6 +133,58 @@ def main(config):
     print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (
         config.total_users, config.duration, config.endpoint_url))
 
-
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(fromfile_prefix_chars='@', description='Create cloudformation stack to deploy ASG.')
+    parser.add_argument('--total_users', '-t', default=Config.total_users,
+                        help='total number of users in the test (default: 4000)')
+
+    parser.add_argument('--users_per_instance', '-u', default=Config.users_per_instance,
+                        help='number of users per instance (default: 4000)')
+
+    parser.add_argument('--ramp_up', '-r', default=Config.ramp_up,
+                        help='ramp up time (default: 300)')
+
+    parser.add_argument('--duration', '-d', default=Config.duration,
+                        help='duration of test (default: 900)')
+
+    parser.add_argument('--endpoint_url', '-e', default=Config.endpoint_url,
+                        help=f'ICAP server endpoint URL (default: {Config.endpoint_url})')
+
+    parser.add_argument('--influx_host', '-i', default=Config.influx_host,
+                        help=f'Influx DB host (default: {Config.influx_host})')
+
+    parser.add_argument('--prefix', '-p', default=Config.prefix,
+                        help=f'Prefix for Cloudformation stack name, jmx and grafana dashboard (default: {Config.prefix})')
+
+    parser.add_argument('--instances_required', '-q', default=Config.instances_required,
+                        help='Number of instances required, needed to modify Grafana JSON')
+
+    parser.add_argument('--test_data_file', default=Config.test_data_file,
+                        help='Test data file')
+
+    parser.add_argument('--jmx_script_name', default=Config.jmx_script_name,
+                        help='JMX script name')
+
+    parser.add_argument('--secret_id', default=Config.secret_id,
+                        help='Secrets manager id to use')
+
+    parser.add_argument('--region', default=Config.region,
+                        help='AWS Region to use')
+
+    args = parser.parse_args()
+
+    Config.total_users = int(args.total_users)
+    Config.users_per_instance = int(args.users_per_instance)
+    Config.instances_required = int(args.instances_required)
+    Config.ramp_up = args.ramp_up
+    Config.duration = args.duration
+    Config.endpoint_url = args.endpoint_url
+    Config.influx_host = args.influx_host
+    Config.prefix = args.prefix
+    Config.test_data_file = args.test_data_file
+    Config.jmx_script_name = args.jmx_script_name
+    Config.secret_id = args.secret_id
+    Config.region = args.region
+
     main(Config)
