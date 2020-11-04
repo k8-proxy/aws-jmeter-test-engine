@@ -1,10 +1,10 @@
 # Variables
-SCRIPT="ICAP_Direct_FileProcessing_v1.jmx"
-DATA_FILE="files.csv"
-SCRIPT_BUCKET="aws-testengine-s3"
-TEST_DATA_BUCKET="icap-perf-test-data"
-SECRET_ID="GlasswallDataRepositoryTestUser"
-REGION="eu-west-1"
+SCRIPT=ICAP_Direct_FileProcessing_v1.jmx
+DATA_FILE=files.csv
+SCRIPT_BUCKET=aws-testengine-s3
+TEST_DATA_BUCKET=icap-perf-test-data
+SECRET_ID=GlasswallDataRepositoryTestUser
+REGION=eu-west-1
 
 ###
 sudo yum install jq -y
