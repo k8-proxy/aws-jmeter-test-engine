@@ -1275,6 +1275,38 @@
 						]
 					},
 					{
+						"alias": "ppt-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "ppt_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
 						"alias": "doc-ICAP-Document-Process-Fail",
 						"groupBy": [],
 						"measurement": "jmetericap",
@@ -2305,6 +2337,38 @@
 								"key": "responseCode",
 								"operator": "=",
 								"value": "522"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							}
+						]
+					},
+					{
+						"alias": "ICAP-Document-Process- Error 555",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "F",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "responseCode",
+								"operator": "=",
+								"value": "555"
 							},
 							{
 								"condition": "AND",
