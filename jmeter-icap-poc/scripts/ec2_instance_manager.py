@@ -1,6 +1,5 @@
 import boto3
 import time
-from create_stack import Config
 
 
 def stop_instance(config):
