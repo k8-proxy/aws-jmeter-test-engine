@@ -28,7 +28,7 @@ jobs:
 
       - name: Install required packages and run tests
         run: |
-          pip install boto3 python-dotenv
+          pip install boto3 python-dotenv requests
           cd jmeter-icap-poc/scripts
           cp config.env.sample config.env
           sed -i -e '/AWS_PROFILE_NAME/ { d; } ' config.env
