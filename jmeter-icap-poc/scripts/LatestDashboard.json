@@ -16,7 +16,7 @@
 		"editable": true,
 		"gnetId": null,
 		"graphTooltip": 0,
-		"id": 6,
+		"id": 2,
 		"links": [],
 		"panels": [
 			{
@@ -35,7 +35,7 @@
 				},
 				"id": 20,
 				"options": {
-					"content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \nicap-client.uksouth.cloudapp.azure.com. Total users is 20. Duration of test is 900 seconds  </p>    ",
+					"content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \nicap-client.uksouth.cloudapp.azure.com. Total users are 100000. Duration of test is 2100 seconds  </p>    ",
 					"mode": "html"
 				},
 				"pluginVersion": "7.1.0",
@@ -119,7 +119,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -146,7 +146,7 @@
 								},
 								{
 									"params": [
-										"*1"
+										"*25"
 									],
 									"type": "math"
 								}
@@ -268,7 +268,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Total Process Successes",
@@ -342,7 +342,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Total Process Errors",
@@ -416,7 +416,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Total Process Requests",
@@ -496,7 +496,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Total Requests",
@@ -568,7 +568,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -610,39 +610,7 @@
 						]
 					},
 					{
-						"alias": "pdf-ICAP-Document-Process-Fail",
-						"groupBy": [],
-						"measurement": "jmetericap",
-						"orderByTime": "ASC",
-						"policy": "default",
-						"refId": "A",
-						"resultFormat": "time_series",
-						"select": [
-							[
-								{
-									"params": [
-										"pct95.0"
-									],
-									"type": "field"
-								}
-							]
-						],
-						"tags": [
-							{
-								"key": "transaction",
-								"operator": "=",
-								"value": "pdf_ICAP-Document-Process"
-							},
-							{
-								"condition": "AND",
-								"key": "statut",
-								"operator": "=",
-								"value": "ok"
-							}
-						]
-					},
-					{
-						"alias": "csv-ICAP-Document-Process-Fail",
+						"alias": "csv-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -674,7 +642,7 @@
 						]
 					},
 					{
-						"alias": "doc-ICAP-Document-Process-Fail",
+						"alias": "doc-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -706,7 +674,7 @@
 						]
 					},
 					{
-						"alias": "docx-ICAP-Document-Process-Fail",
+						"alias": "docx-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -738,7 +706,7 @@
 						]
 					},
 					{
-						"alias": "dxf-ICAP-Document-Process-Fail",
+						"alias": "dxf-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -770,7 +738,7 @@
 						]
 					},
 					{
-						"alias": "gif-ICAP-Document-Process-Fail",
+						"alias": "gif-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -802,7 +770,7 @@
 						]
 					},
 					{
-						"alias": "html-ICAP-Document-Process-Fail",
+						"alias": "html-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -834,7 +802,7 @@
 						]
 					},
 					{
-						"alias": "jpeg-ICAP-Document-Process-Fail",
+						"alias": "jpeg-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -866,7 +834,7 @@
 						]
 					},
 					{
-						"alias": "odp-ICAP-Document-Process-Fail",
+						"alias": "odp-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -898,7 +866,7 @@
 						]
 					},
 					{
-						"alias": "odt-ICAP-Document-Process-Fail",
+						"alias": "odt-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -930,7 +898,7 @@
 						]
 					},
 					{
-						"alias": "pptx-ICAP-Document-Process-Fail",
+						"alias": "pptx-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -962,7 +930,7 @@
 						]
 					},
 					{
-						"alias": "rtf-ICAP-Document-Process-Fail",
+						"alias": "rtf-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -994,7 +962,7 @@
 						]
 					},
 					{
-						"alias": "xls-ICAP-Document-Process-Fail",
+						"alias": "xls-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -1026,7 +994,7 @@
 						]
 					},
 					{
-						"alias": "xlsm-ICAP-Document-Process-Fail",
+						"alias": "xlsm-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -1058,7 +1026,7 @@
 						]
 					},
 					{
-						"alias": "xlsx-ICAP-Document-Process-Fail",
+						"alias": "xlsx-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -1090,7 +1058,7 @@
 						]
 					},
 					{
-						"alias": "xml-ICAP-Document-Process-Fail",
+						"alias": "xml-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
 						"orderByTime": "ASC",
@@ -1112,6 +1080,38 @@
 								"key": "transaction",
 								"operator": "=",
 								"value": "xml_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "ppt-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "R",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "ppt_ICAP-Document-Process"
 							},
 							{
 								"condition": "AND",
@@ -1201,7 +1201,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -1813,7 +1813,7 @@
 					"showHeader": true,
 					"sortBy": []
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "ICAP-Document-Process",
@@ -1905,7 +1905,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"pointradius": 5,
 				"points": true,
 				"renderer": "flot",
@@ -2039,7 +2039,7 @@
 					},
 					"showUnfilled": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Number of Children",
@@ -2145,7 +2145,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -2401,7 +2401,7 @@
 					},
 					"showUnfilled": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Req Mods",
@@ -2534,7 +2534,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Started Processes",
@@ -2669,7 +2669,7 @@
 					},
 					"textMode": "auto"
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Bytes In",
@@ -2764,7 +2764,7 @@
 					},
 					"textMode": "auto"
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "HTTP Bytes In",
@@ -2859,7 +2859,7 @@
 					},
 					"textMode": "auto"
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Body Bytes In",
@@ -2972,7 +2972,7 @@
 					},
 					"showUnfilled": true
 				},
-				"pluginVersion": "7.2.2",
+				"pluginVersion": "7.2.0",
 				"targets": [
 					{
 						"alias": "Requests Scanned",
@@ -3090,7 +3090,7 @@
 		"title": "ICAP Live Performance Dashboard",
 		"id": null,
 		"uid": null,
-		"version": 20
+		"version": 21
 	},
 	"folderId": 0,
 	"overwrite": true
