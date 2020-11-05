@@ -43,3 +43,4 @@ jobs:
           DURATION: 900 # ${{ secrets.DURATION }}
           PREFIX: "ga" #${{ secrets.PREFIX }}
           TEST_DATA_FILE: "files.csv" # ${{ secrets.TEST_DATA_FILE }}
+          GRAFANA_SECRET_ID: ${{ secrets.GRAFANA_SECRET_ID }}
