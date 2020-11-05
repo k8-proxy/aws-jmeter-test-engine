@@ -7,7 +7,7 @@ def main(config):
     profile_name = config.aws_profile_name
 
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
-    min_age = config.min_age
+    min_age = int(config.min_age)
     stack_name = config.stack_name
 
 

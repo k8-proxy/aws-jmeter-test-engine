@@ -65,14 +65,16 @@ PREFIX=aj-test
 INSTANCES_REQUIRED=1
 JMX_SCRIPT_NAME=ICAP_Direct_FileProcessing_v1.jmx
 GRAFANA_URL=64.159.132.71:3000
-GRAFANA_KEY=ey2kn6b2j6hbio37j2bm7nj728un24o8k48kpmo3k3m8i5m9k5g9mk9op59m3i8m3==
+GRAFANA_KEY=
 GRAFANA_FILE=LatestDashboard.json
 EXCLUDE_DASHBOARD=0
 PRESERVE_STACK=0
 PREFIX_BASED_DELETE=0
+GRAFANA_SERVER_TAG=GrafanaServer
+GRAFANA_SECRET_ID=GrafanaSecret
 ```
 
-These parameters have corresponding options that can be used during script execution, they do not have to be set in config.env. Many of the paramters above are also optional, they can be omitted. Any options input manually via the command line will override options within the config.env file. For example, if the config.env file is set to allow dashboard creation:
+These parameters have corresponding options that can be used during script execution, they do not have to be set in config.env. Many of the parameters above are also optional, they can be omitted. Any options input manually via the command line will override options within the config.env file. For example, if the config.env file is set to allow dashboard creation:
 
 ```
 EXCLUDE_DASHBOARD=0
@@ -186,6 +188,18 @@ This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard 
 <td> --prefix_based_delete, -pb </td>
 <td>
 This takes no arguments. If set (ex: create_stack_dash -pb), stacks will be deleted based on prefix and time created.
+</td>
+</tr>
+<tr>
+<td> --grafana_server_tag, -tag </td>
+<td>
+This takes the tag of server containing the Grafana database; this server will automatically be started if it is stopped. (Note: The --grafana_url option will prevent this option from taking effect, as the Grafana server IP would be obtained from that).
+</td>
+</tr>
+<tr>
+<td>--grafana_secret_id, -gsid</td>
+<td>
+The secret name of the Grafana API Key inside AWS Secrets Manager. This will be used to retrieve the key for use when generating Grafana dashboards. (Note: The --grafana_key option will prevent this option from taking effect; a user directly providing a key would negate the need for a key lookup).
 </td>
 </tr>
 </table>

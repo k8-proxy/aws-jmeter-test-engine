@@ -2,11 +2,11 @@
 # coding: utf-8
 
 import boto3
-import argparse
 from datetime import datetime
 import re
 import os
 from dotenv import load_dotenv
+import argparse
 
 
 class Config(object):
@@ -37,6 +37,8 @@ class Config(object):
         prefix_based_delete = os.getenv("PREFIX_BASED_DELETE")
         min_age = os.getenv("MIN_AGE")
         stack_name = os.getenv("STACK_NAME")
+        grafana_server_tag = os.getenv("GRAFANA_SERVER_TAG")
+        grafana_secret_id = os.getenv("GRAFANA_SECRET_ID")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -106,7 +108,7 @@ def main(config):
     asg_name = prefix + "LoadTest-" + date_suffix
 
     print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (
-    str(config.instances_required), stack_name))
+        str(config.instances_required), stack_name))
     client.create_stack(
         StackName=stack_name,
         TemplateBody=asg_template_body,
@@ -130,7 +132,7 @@ def main(config):
         ]
     )
     print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (
-    config.total_users, config.duration, config.endpoint_url))
+        config.total_users, config.duration, config.endpoint_url))
 
 if __name__ == "__main__":
 
