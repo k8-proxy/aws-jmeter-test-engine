@@ -232,7 +232,7 @@ if __name__ == "__main__":
     if not Config.grafana_key and not Config.grafana_secret_id:
         print("Must input either grafana_key or grafana_secret_id in config.env or using args")
         exit(0)
-    elif not Config.grafana_key:
+    elif not Config.grafana_key and not Config.exclude_dashboard:
         secret_response = get_secret_value(config=Config, secret_id=Config.grafana_secret_id)
         secret_val = next(iter(secret_response.values()))
         Config.grafana_key = secret_val
