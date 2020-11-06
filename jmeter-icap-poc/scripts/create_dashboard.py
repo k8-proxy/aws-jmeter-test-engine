@@ -64,6 +64,8 @@ def __post_grafana_dash(config):
     # if the response contains a URL, use it to build a url that links directly to the newly created dashboard
     if "url" in d:
         return grafana_url + d.get('url')
+    else:
+        print("dashboard creation failed: {0}".format(resp.text))
 
 
 def main(config):
