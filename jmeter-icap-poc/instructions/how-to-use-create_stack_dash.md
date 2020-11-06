@@ -198,7 +198,7 @@ This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard 
 <tr>
 <td> --grafana_server_tag, -tag </td>
 <td>
-This takes the tag of the server containing the Grafana database; this server will automatically be started if it is stopped. Tags in AWS have both a key and a value. The key should be "Name", only the value of that key is what should be provided to this option. (Note: The --grafana_url option will prevent this option from taking effect, as the Grafana server IP would be obtained from that).
+This takes the tag of the server containing the Grafana database; this server will automatically be started if it is stopped. Tags in AWS have both a key and a value. The key field should contain "Name", only the value of the tag is what should be provided to this option. The tag must have a value field; it should not be empty. (Note: The --grafana_url option will prevent this option from taking effect, as the Grafana server IP would be obtained directly from that).
 </td>
 </tr>
 <tr>
