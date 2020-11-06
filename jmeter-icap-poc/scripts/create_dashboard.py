@@ -65,7 +65,7 @@ def __post_grafana_dash(config):
     if "url" in d:
         return grafana_url + d.get('url')
     else:
-        print("dashboard creation failed: {0}".format(resp.text))
+        print("Dashboard creation failed: {0}".format(resp.text))
 
 
 def main(config):
