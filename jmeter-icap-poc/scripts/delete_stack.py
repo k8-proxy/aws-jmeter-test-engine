@@ -1,6 +1,5 @@
 import boto3
 from datetime import timedelta, datetime, timezone
-import argparse
 from create_stack import Config
 
 def main(config):
