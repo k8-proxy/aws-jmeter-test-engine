@@ -261,7 +261,7 @@ Below is a list of potential issues end users might face along with some suggest
 - The machine attempting to start the EC2 instance must have the correct permissions set in the EC2 instance's security group.
 - The option grafana_server_tag must be used to start the EC2 instance. It should contain only the value of the tag with a key field containing "Name". See below:
 
-![how_create_stack_dash_works](img/grafana_server_tag.png)
+![how_create_stack_dash_works](img/grafana_server_tag.PNG)
 
 ### Stacks are not being automatically deleted
 - Ensure the option "preserve_stack" is not enabled
