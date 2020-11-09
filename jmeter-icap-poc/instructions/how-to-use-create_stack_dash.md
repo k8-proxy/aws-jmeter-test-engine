@@ -1,5 +1,16 @@
 # Using create_stack_dash.py to Create Load Generators and Corresponding Dashboards
 
+
+## Table of Contents
+  * [Introduction](#introduction)
+  * [Prerequisites](#prerequisites)
+  * [Using config.env to pass parameters to create_stack_dash.py](#using-configenv-to-pass-parameters-to-create-stack-dashpy)
+  * [Options available for the create_stack_dash.py script](#options-available-for-the-create-stack-dashpy-script)
+  * [How create_stack_dash.py works](#how-create-stack-dashpy-works)
+  * [Running the create_stack_dash.py script](#running-the-create-stack-dashpy-script)
+  * [Troubleshooting](#troubleshooting)
+
+
 ## Introduction
 
 This script launches a Cloudformation stack that spins up load generators. Then it creates Grafana Dashboards that display various metrics from the load generators.
@@ -185,15 +196,9 @@ This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard 
 </td>
 </tr>
 <tr>
-<td> --prefix_based_delete, -pb </td>
-<td>
-This takes no arguments. If set (ex: create_stack_dash -pb), stacks will be deleted based on prefix and time created.
-</td>
-</tr>
-<tr>
 <td> --grafana_server_tag, -tag </td>
 <td>
-This takes the tag of the server containing the Grafana database; this server will automatically be started if it is stopped. Tags in AWS have both a key and a value. The key should be "Name", only the value of that key is what should be provided to this option. (Note: The --grafana_url option will prevent this option from taking effect, as the Grafana server IP would be obtained from that).
+This takes the tag of the server containing the Grafana database; this server will automatically be started if it is stopped. Tags in AWS have both a key and a value. The key field should contain "Name", only the value of the tag is what should be provided to this option. The tag must have a value field; it should not be empty. (Note: The --grafana_url option will prevent this option from taking effect, as the Grafana server IP would be obtained directly from that).
 </td>
 </tr>
 <tr>
@@ -239,3 +244,25 @@ Stack will be deleted after 45 minutes
 40.0 minutes have elapsed, stack will be deleted in 5.0 minutes
 deleting stack named: test-prefix-aws-jmeter-test-engine-2020-11-03-01-39
 ```
+
+## Troubleshooting
+
+Below is a list of potential issues end users might face along with some suggested solutions:
+
+### Grafana Dashboard is not being created
+- Check that the "exclude_dashboard" option is not enabled
+- The grafana_key or grafana_secret_id options in config.env must be entered correctly (grafana_secret_id should refer to the name of the secret in AWS Secrets Manager)
+- Grafana API Key must have correct permissions (must be Editor or Admin) and that it has not expired. [See this file](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/how-to-use-create_dashboards-script.md) for more information on how to create a Grafana API Key.
+- If using a custom Grafana URL, make sure the correct port is being used (default port is 3000)
+- The machine running this script must have access to the server holding the Grafana instance (i.e. the EC2 instance containing the Grafana installation has its security group set to allow the machine running this script to enter).
+- The Grafana JSON template should be formatted correctly, for more information refer to the [Grafana Dashboard API](https://grafana.com/docs/grafana/latest/http_api/dashboard/).
+
+### EC2 instance containing Grafana installation is not auto-starting
+- The machine attempting to start the EC2 instance must have the correct permissions set in the EC2 instance's security group.
+- The option grafana_server_tag must be used to start the EC2 instance. It should contain only the value of the tag with a key field containing "Name". See below:
+
+![how_create_stack_dash_works](img/grafana_server_tag.png)
+
+### Stacks are not being automatically deleted
+- Ensure the option "preserve_stack" is not enabled
+- create_stack_dash.py deletes only the stack that was created in an individual run. If the script is stopped before the delete process takes place (i.e. before the duration period + 15 minutes) for any reason, the stack it created will not be deleted and must be deleted manually.

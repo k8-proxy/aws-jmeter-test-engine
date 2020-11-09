@@ -73,9 +73,6 @@ def __get_commandline_args():
     parser.add_argument('--preserve_stack', '-s', action='store_true',
                         help='Setting this option will prevent the created stack from being automatically deleted.')
 
-    parser.add_argument('--prefix_based_delete', '-pb', action='store_true',
-                        help='Setting this option will cause stacks to be deleted based on prefix and time created.')
-
     parser.add_argument('--min_age', '-m', default=Config.min_age, type=int,
                         help='Minimum age of stack to delete in minutes (default: 30)')
 
@@ -211,11 +208,6 @@ if __name__ == "__main__":
         Config.preserve_stack = True
     elif Config.preserve_stack:
         Config.preserve_stack = int(Config.preserve_stack) == 1
-
-    if args.prefix_based_delete:
-        Config.prefix_based_delete = True
-    elif Config.prefix_based_delete:
-        Config.prefix_based_delete = int(Config.prefix_based_delete) == 1
 
     Config.stack_name = __get_stack_name(Config)
 
