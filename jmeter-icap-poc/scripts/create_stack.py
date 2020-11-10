@@ -7,6 +7,7 @@ import re
 import os
 from dotenv import load_dotenv
 import argparse
+import base64
 
 
 class Config(object):
@@ -69,7 +70,7 @@ def main(config):
     session = boto3.session.Session(profile_name=profile)
     client = session.client('cloudformation')
 
-    file_name = config.script_name
+    file_name = config.prefix + "_" + config.script_name
     instance_type, jvm_memory = get_size(config.users_per_instance)
 
     # write the script to s3 bucket after updating the parameters
@@ -114,7 +115,14 @@ def main(config):
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = prefix + "LoadTest-" + date_suffix
-
+    userdata = base64.b64encode(f"""
+    #!/bin/bash
+    touch /var/lock/subsys/local
+    sudo aws s3 cp s3://aws-testengine-s3/{file_name} /home/ec2-user/apache-jmeter-5.3/bin/
+    cd /home/ec2-user/apache-jmeter-5.3/bin
+    sudo chmod +x StartExecution.sh
+    ./StartExecution.sh
+    """.encode("utf-8")).decode("ascii")
     print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (
         str(config.instances_required), stack_name))
     client.create_stack(
@@ -136,6 +144,10 @@ def main(config):
             {
                 "ParameterKey": "InstanceType",
                 "ParameterValue": instance_type
+            },
+            {
+                "ParameterKey": "UserData",
+                "ParameterValue": userdata
             }
         ]
     )
