@@ -45,6 +45,9 @@
      "MaxInstances": {
        "Type": "Number",
        "Default": 1
+     },
+     "UserData": {
+       "Type": "String"
      }
    },
   "Resources" : {
@@ -53,6 +56,7 @@
       "Type" : "AWS::AutoScaling::LaunchConfiguration",
       "Properties" : {
       "ImageId" : { "Ref" : "AmiImage" },
+      "UserData": { "Ref" : "UserData" },
       "SecurityGroups" :   [
           {
             "Ref":"InstanceSecurityGroup"
