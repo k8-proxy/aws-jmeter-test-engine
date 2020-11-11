@@ -19,11 +19,6 @@
             <stringProp name="Argument.value">${__P(p_url,gw-icap01.westeurope.azurecontainer.io)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="containerUrl" elementType="Argument">
-            <stringProp name="Argument.name">containerUrl</stringProp>
-            <stringProp name="Argument.value">http://mycloudstore/container/</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="outputPath" elementType="Argument">
             <stringProp name="Argument.name">outputPath</stringProp>
             <stringProp name="Argument.value">out</stringProp>
@@ -76,7 +71,7 @@
           </elementProp>
           <elementProp name="filetype" elementType="Argument">
             <stringProp name="Argument.name">filetype</stringProp>
-            <stringProp name="Argument.value">${__P(p_filetype,proxyfiles)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_filetype,proxysitefiles)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
