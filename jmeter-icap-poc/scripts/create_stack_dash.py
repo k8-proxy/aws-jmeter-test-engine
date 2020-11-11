@@ -195,6 +195,7 @@ if __name__ == "__main__":
     Config.jmx_script_name = args.jmx_script_name
     Config.secret_id = args.secret_id
     Config.region = args.region
+    Config.grafana_url = args.grafana_url
     Config.min_age = args.min_age
     Config.grafana_server_tag = args.grafana_server_tag
 
