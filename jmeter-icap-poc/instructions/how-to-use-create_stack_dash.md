@@ -53,6 +53,18 @@ Create config.env file by copying the existing config.env.sample file. Update th
 - aws_profile_name - The AWS profile created in step 3.
 - bucket - Bucket name where a file with number of instances will be created.
 
+5. If using AWS Secrets Manager to store the Grafana API Key, a secret name would need to be provided either in the config.env file or via the command line:
+
+```
+GRAFANA_SECRET=MyGrafanaSecretName
+```
+
+or
+
+```
+python create_stack_dash.py -gs MyGrafanaSecretName
+```
+
 ## Using config.env to pass parameters to create_stack_dash.py
 
 The config.env file is the preferred way to pass parameters to this script, it should be located in the same folder as create_stack_dash. It contains many parameters that translate to options (listed in options section below) when running the script. Below is a sample config.env file:
@@ -68,9 +80,9 @@ TEST_DATA_ACCESS_SECRET=GlasswallDataRepositoryTestUser
 TOTAL_USERS=4000
 USERS_PER_INSTANCE=4000
 INSTANCES_REQUIRED=1
-RAMP_UP=300
+RAMP_UP_TIME=300
 DURATION=900
-ENDPOINT_URL=icap-client.uksouth.cloudapp.azure.com
+ICAP_ENDPOINT_URL=icap-client.uksouth.cloudapp.azure.com
 INFLUX_HOST=64.159.132.71
 PREFIX=aj-test
 INSTANCES_REQUIRED=1
@@ -81,7 +93,7 @@ GRAFANA_FILE=LatestDashboard.json
 EXCLUDE_DASHBOARD=0
 PRESERVE_STACK=0
 GRAFANA_SERVER_TAG=GrafanaServer
-GRAFANA_SECRET_ID=GrafanaSecret
+GRAFANA_SECRET=GrafanaSecret
 ```
 
 These parameters have corresponding options that can be used during script execution, they do not have to be set in config.env. Many of the parameters above are also optional, they can be omitted. Any options input manually via the command line will override options within the config.env file. For example, if the config.env file is set to allow dashboard creation:
@@ -117,7 +129,7 @@ Total number of users for the test, Default value is 4000.
 </td>
 </tr>
 <tr>
-<td> --ramp_up, -r </td>
+<td> --ramp_up_time, -r </td>
 <td>
 Ramp up time, default value: 300 seconds
 </td>
@@ -129,7 +141,7 @@ Duration of the test, default value: 900 seconds
 </td>
 </tr>
 <tr>
-<td> --endpoint_url, -e </td>
+<td> --icap_endpoint_url, -e </td>
 <td>
 The ICAP server URL
 </td>
@@ -201,7 +213,7 @@ This takes the tag of the server containing the Grafana database; this server wi
 </td>
 </tr>
 <tr>
-<td>--grafana_secret_id, -gsid</td>
+<td>--grafana_secret, -gs</td>
 <td>
 The secret name of the Grafana API Key inside AWS Secrets Manager. This will be used to retrieve the key for use when generating Grafana dashboards. (Note: The --grafana_key option will prevent this option from taking effect; a user directly providing a key would negate the need for a key lookup).
 </td>

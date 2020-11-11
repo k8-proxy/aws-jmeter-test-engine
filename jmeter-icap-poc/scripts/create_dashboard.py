@@ -42,7 +42,7 @@ def __post_grafana_dash(config):
     instances_required = config.instances_required
     total_users = config.total_users
     duration = config.duration
-    endpoint_url = config.endpoint_url
+    endpoint_url = config.icap_endpoint_url
 
     if grafana_url[len(grafana_url) - 1] != '/':
         grafana_url += '/'

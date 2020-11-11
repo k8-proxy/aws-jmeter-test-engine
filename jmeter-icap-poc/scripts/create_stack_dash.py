@@ -25,13 +25,13 @@ def __get_commandline_args():
     parser.add_argument('--users_per_instance', '-u', default=Config.users_per_instance,
                         help='number of users per instance (default: 4000)')
 
-    parser.add_argument('--ramp_up', '-r', default=Config.ramp_up,
+    parser.add_argument('--ramp_up_time', '-r', default=Config.ramp_up_time,
                         help='ramp up time (default: 300)')
 
     parser.add_argument('--duration', '-d', default=Config.duration,
                         help='duration of test (default: 900)')
 
-    parser.add_argument('--endpoint_url', '-e', default=Config.endpoint_url,
+    parser.add_argument('--icap_endpoint_url', '-e', default=Config.icap_endpoint_url,
                         help='ICAP server endpoint URL (default: gw-icap-k8s-a0c293ac.hcp.uksouth.azmk8s.io)')
 
     parser.add_argument('--influx_host', '-i', default=Config.influx_host,
@@ -61,7 +61,7 @@ def __get_commandline_args():
     parser.add_argument('--jmx_script_name', default=Config.jmx_script_name,
                         help='JMX script name')
 
-    parser.add_argument('--secret_id', default=Config.secret_id,
+    parser.add_argument('--test_data_access_secret', default=Config.test_data_access_secret,
                         help='Secrets manager id to use')
 
     parser.add_argument('--region', default=Config.region,
@@ -79,7 +79,7 @@ def __get_commandline_args():
     parser.add_argument('--grafana_server_tag', '-tag', default=Config.grafana_server_tag,
                         help='Tag of server containing the Grafana database that will be started')
 
-    parser.add_argument('--grafana_secret_id', '-gsid', default=Config.grafana_secret_id,
+    parser.add_argument('--grafana_secret', '-gs', default=Config.grafana_secret,
                         help='The secret ID for the Grafana API Key stored in AWS Secrets')
 
     return parser.parse_args()
@@ -186,14 +186,14 @@ if __name__ == "__main__":
     Config.total_users = int(args.total_users)
     Config.users_per_instance = int(args.users_per_instance)
     Config.instances_required, Config.users_per_instance = __calculate_instances_required(Config.total_users, Config.users_per_instance)
-    Config.ramp_up = args.ramp_up
+    Config.ramp_up_time = args.ramp_up_time
     Config.duration = args.duration
-    Config.endpoint_url = args.endpoint_url
+    Config.icap_endpoint_url = args.icap_endpoint_url
     Config.influx_host = args.influx_host
     Config.prefix = args.prefix
     Config.test_data_file = args.test_data_file
     Config.jmx_script_name = args.jmx_script_name
-    Config.secret_id = args.secret_id
+    Config.test_data_access_secret = args.test_data_access_secret
     Config.region = args.region
     Config.grafana_url = args.grafana_url
     Config.min_age = args.min_age
@@ -222,11 +222,11 @@ if __name__ == "__main__":
         print(Config.grafana_url)
 
     # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
-    if not Config.grafana_key and not Config.grafana_secret_id:
+    if not Config.grafana_key and not Config.grafana_secret:
         print("Must input either grafana_key or grafana_secret_id in config.env or using args")
         exit(0)
     elif not Config.grafana_key and not Config.exclude_dashboard:
-        secret_response = get_secret_value(config=Config, secret_id=Config.grafana_secret_id)
+        secret_response = get_secret_value(config=Config, secret_id=Config.grafana_secret)
         secret_val = next(iter(secret_response.values()))
         Config.grafana_key = secret_val
         if secret_val:
