@@ -53,9 +53,21 @@ Create config.env file by copying the existing config.env.sample file. Update th
 - aws_profile_name - The AWS profile created in step 3.
 - bucket - Bucket name where a file with number of instances will be created.
 
+5. If using AWS Secrets Manager to store the Grafana API Key, a secret name would need to be provided either in the config.env file or via the command line:
+
+```
+GRAFANA_SECRET=MyGrafanaSecretName
+```
+
+or
+
+```
+python create_stack_dash.py -gs MyGrafanaSecretName
+```
+
 ## Using config.env to pass parameters to create_stack_dash.py
 
-The config.env file is the preferred way to pass parameters to this script, it should be located in the same folder as create_stack_dash. It contains many parameters that translate to options (listed in options section below) when running the script. Below is a sample config.env file:
+The config.env file is the preferred way to pass parameters to this script, it should be located in the same folder as create_stack_dash. It contains many parameters that translate to options (listed in options section below) when running the script. For a more detailed description of each parameter, [refer to the table of parameters available below](#options-available-for-the-create-stack-dashpy-script). Below is a sample config.env file:
 
 ```
 AWS_PROFILE_NAME=glasswall
@@ -64,13 +76,13 @@ SCRIPT_BUCKET=aws-testengine-s3
 SCRIPT_NAME=script/StartExecution.sh
 TEST_DATA_BUCKET=icap-perf-test-data
 TEST_DATA_FILE=files.csv
-SECRET_ID=GlasswallDataRepositoryTestUser
+TEST_DATA_ACCESS_SECRET=GlasswallDataRepositoryTestUser
 TOTAL_USERS=4000
 USERS_PER_INSTANCE=4000
 INSTANCES_REQUIRED=1
-RAMP_UP=300
+RAMP_UP_TIME=300
 DURATION=900
-ENDPOINT_URL=icap-client.uksouth.cloudapp.azure.com
+ICAP_ENDPOINT_URL=icap-client.uksouth.cloudapp.azure.com
 INFLUX_HOST=64.159.132.71
 PREFIX=aj-test
 INSTANCES_REQUIRED=1
@@ -80,9 +92,8 @@ GRAFANA_KEY=
 GRAFANA_FILE=LatestDashboard.json
 EXCLUDE_DASHBOARD=0
 PRESERVE_STACK=0
-PREFIX_BASED_DELETE=0
 GRAFANA_SERVER_TAG=GrafanaServer
-GRAFANA_SECRET_ID=GrafanaSecret
+GRAFANA_SECRET=GrafanaSecret
 ```
 
 These parameters have corresponding options that can be used during script execution, they do not have to be set in config.env. Many of the parameters above are also optional, they can be omitted. Any options input manually via the command line will override options within the config.env file. For example, if the config.env file is set to allow dashboard creation:
@@ -96,113 +107,113 @@ But the option to exclude dashboard creation is used:
 ```
 python create_stack_dash.py -x
 ```
-The Dashboard will still not be created (the option -x prevents dashboard creation) despite the content of the config.env file. The options below correspond to the same name parameters in the config.env file; they are listed along with brief descriptions of their usage.
+The Dashboard will still not be created (the option -x prevents dashboard creation) despite the content of the config.env file.
 
-## Options available for the create_stack_dash.py script
+## Options/Parameters available for the create_stack_dash.py script
 
 To see the available options for when running the script, use:
 ```
 python create_stack_dash.py -h
 ```
 
-Below is a table highlighting all the available options
+Below is a table highlighting all the available options. These options correspond to parameters in the config.env file, they share the same names/descriptions and can be used as a reference when creating your own config.env file.
 
 <table>
 <tr>
-<td width="200"> Option </td> <td> Description </td>
+<td width="200"> Option</td> <td> Config.env Parameter </td> <td> Description </td>
 </tr>
 <tr>
-<td> --total_users, -t </td>
+<td> --total_users, -t </td> <td> TOTAL_USERS </td>
 <td>
 Total number of users for the test, Default value is 4000.
 </td>
 </tr>
 <tr>
-<td> --ramp_up, -r </td>
+<td> --ramp_up_time, -r </td> <td> RAMP_UP_TIME </td>
 <td>
 Ramp up time, default value: 300 seconds
 </td>
 </tr>
 <tr>
-<td> --duration, -d </td>
+<td> --duration, -d </td><td> DURATION </td>
 <td>
 Duration of the test, default value: 900 seconds
 </td>
 </tr>
 <tr>
-<td> --endpoint_url, -e </td>
+<td> --icap_endpoint_url, -e </td><td> ICAP_ENDPOINT_URL </td>
 <td>
 The ICAP server URL
 </td>
 </tr>
 <tr>
-<td> --influx_host, -i </td>
+<td> --influx_host, -i </td><td> INFLUX_HOST </td>
 <td>
 IP address or hostname of the Influx Database
 </td>
 </tr>
 <tr>
-<td> --grafana_url, -g </td>
+<td> --grafana_url, -g </td><td> GRAFANA_URL </td>
 <td>
 The URL to the Grafana database's home page (typically this would be the "MachineIP:3000")
 </td>
 </tr>
 <tr>
-<td> --grafana_key, -k </td>
+<td> --grafana_key, -k </td><td> GRAFANA_KEY </td>
 <td>
 Grafana API Key (<a href="https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/how-to-use-createDashboards-script.md">see prerequisits in this article on how to generate this</a>).
 </td>
 </tr>
 <tr>
-<td> --grafana_file, -f </td>
+<td> --grafana_file, -f </td><td> GRAFANA_FILE </td>
 <td>
 Name/path of JSON file that will be used as a template to create Grafana Dashboards.
 </td>
 </tr>
 <tr>
-<td>--prefix, -p </td>
+<td>--prefix, -p </td><td> PREFIX </td>
 <td>
 The prefix used in both the Cloudformation stack name and the name of the Dashboard and measurements created.
 </td>
 </tr>
 <tr>
-<td> --test_data_file </td>
+<td> --test_data_file </td><td> TEST_DATA_FILE </td>
 <td>
 Test data file name/path
 </td>
 </tr>
 <tr>
-<td> --jmx_script_name </td>
+<td> --jmx_script_name </td><td> JMX_SCRIPT_NAME </td>
 <td>
 JMX script file name/path
 </td>
 </tr>
 <tr>
-<td> --region </td>
+<td> --region </td><td> REGION </td>
 <td>
 AWS Region to use
 </td>
 </tr>
 <tr>
-<td> --preserve_stack, -s </td>
+<td> --preserve_stack, -s </td><td> PRESERVE_STACK (=0 or 1) </td>
 <td>
 This takes no arguments. If set (ex: create_stack_dash -s), it will prevent the stack created from being automatically deleted after the duration period specified above is complete.
 </td>
 </tr>
 <tr>
-<td> --exclude_dashboard, -x </td>
+<td> --exclude_dashboard, -x </td><td> EXCLUDE_DASHBOARD (=0 or 1)</td>
 <td>
 This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script is run.
 </td>
 </tr>
 <tr>
-<td> --grafana_server_tag, -tag </td>
+<td> --grafana_server_tag, -tag </td><td> GRAFANA_SERVER_TAG </td>
 <td>
 This takes the tag of the server containing the Grafana database; this server will automatically be started if it is stopped. Tags in AWS have both a key and a value. The key field should contain "Name", only the value of the tag is what should be provided to this option. The tag must have a value field; it should not be empty. (Note: The --grafana_url option will prevent this option from taking effect, as the Grafana server IP would be obtained directly from that).
 </td>
 </tr>
 <tr>
-<td>--grafana_secret_id, -gsid</td>
+<td>--grafana_secret, -gs</td><td> GRAFANA_SECRET </td>
 <td>
 The secret name of the Grafana API Key inside AWS Secrets Manager. This will be used to retrieve the key for use when generating Grafana dashboards. (Note: The --grafana_key option will prevent this option from taking effect; a user directly providing a key would negate the need for a key lookup).
 </td>
