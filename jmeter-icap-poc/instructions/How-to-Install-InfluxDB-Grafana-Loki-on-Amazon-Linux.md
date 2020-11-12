@@ -36,7 +36,7 @@ sudo chkconfig grafana-server on
 ```
 ## Install Loki and start service
 
-```
+
 ```bash
 cd /home/ec2-user
 sudo wget https://github.com/grafana/loki/releases/download/v2.0.0/loki-linux-amd64.zip
