@@ -25,6 +25,9 @@ def __get_commandline_args():
     parser.add_argument('--users_per_instance', '-u', default=Config.users_per_instance,
                         help='number of users per instance (default: 4000)')
 
+    parser.add_argument('--test_directory', '-td', default=Config.test_directory,
+                        help='the directory containing test files and grafana templates')
+
     parser.add_argument('--ramp_up_time', '-r', default=Config.ramp_up_time,
                         help='ramp up time (default: 300)')
 
@@ -126,6 +129,7 @@ def __exec_create_stack(cl_args, instances_required, users_per_instance):
     Config.jmx_script_name = cl_args.jmx_script_name
     Config.secret_id = cl_args.secret_id
     Config.region = cl_args.region
+    Config.test_directory = cl_args.test_directory
 
     create_stack.main(config=Config)
 
