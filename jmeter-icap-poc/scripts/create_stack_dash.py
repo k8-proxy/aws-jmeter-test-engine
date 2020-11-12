@@ -115,24 +115,6 @@ def __calculate_instances_required(total_users, users_per_instance):
     return instances_required, users_per_instance
 
 
-# Takes arguments from command line, run create_stack script using them
-def __exec_create_stack(cl_args, instances_required, users_per_instance):
-    Config.total_users = cl_args.total_users
-    Config.users_per_instance = users_per_instance
-    Config.ramp_up = cl_args.ramp_up
-    Config.duration = cl_args.duration
-    Config.endpoint_url = cl_args.endpoint_url
-    Config.influx_host = cl_args.influx_host
-    Config.prefix = cl_args.prefix
-    Config.instances_required = instances_required
-    Config.test_data_file = cl_args.test_data_file
-    Config.jmx_script_name = cl_args.jmx_script_name
-    Config.secret_id = cl_args.secret_id
-    Config.region = cl_args.region
-
-    create_stack.main(config=Config)
-
-
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
 def __start_delete_stack(additional_delay, config):
     duration = Config.duration
