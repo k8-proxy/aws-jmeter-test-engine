@@ -202,6 +202,7 @@ if __name__ == "__main__":
     Config.min_age = args.min_age
     Config.grafana_server_tag = args.grafana_server_tag
     Config.test_directory = args.test_directory
+    Config.grafana_file = args.grafana_file
 
     # these are flag/boolean arguments
     if args.exclude_dashboard:
