@@ -44,7 +44,7 @@ def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_ur
 # responsible for posting the dashboard to Grafana and returning the URL to it
 def __post_grafana_dash(config):
     key = config.grafana_key
-    grafana_template = config.grafana_file
+    grafana_template = './' + config.test_directory + '/' + config.grafana_file
     prefix = config.prefix
     grafana_url = config.grafana_url
     instances_required = config.instances_required
