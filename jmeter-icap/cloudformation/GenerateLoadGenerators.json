@@ -1,0 +1,105 @@
+{
+   "AWSTemplateFormatVersion" : "2010-09-09",
+   "Description" : "This script creates EC2 instances from set AMI image. Change parameters accordingly",
+   "Parameters" : {
+    "VpcId": {
+      "Type": "String",
+      "Description" : "VPC ID",
+      "Default" : "vpc-02db6ac5915e8de9b"
+    },
+    "SubnetIds":  {
+      "Type": "CommaDelimitedList",
+      "Description" : "Subnet IDs",
+      "Default" : "subnet-02e0fb935c900d08e"
+    },
+      "AsgName" : {
+         "Description" : "Autoscaling group name",
+         "Type" : "String",
+         "Default" : "LoadTest-1"
+      },
+      "KeyPairName" : {
+         "Description" : "Keypair that will be used to connect to the server",
+         "Type" : "String",
+         "Default" : "AWS-TestEngine-Key"
+      },
+      "AmiImage" : {
+         "Description" : "Ami image that will be used to launch the server",
+         "Default" : "ami-00fd3da75b5e4afa2",
+         "Type" : "String"
+      },
+      "InstanceType" : {
+        "Description" : "Instance Type",
+        "Type" : "String",
+        "Default" : "m4.2xlarge",
+        "AllowedValues" : [ "m4.large", "m4.xlarge","m1.small","t1.micro","t2.micro","t2.small","t3.medium","m3.medium","m3.large","m3.xlarge","m3.2xlarge","m4.2xlarge","c4.2xlarge","c3.xlarge","c4.xlarge","c3.4xlarge","c3.8xlarge","g2.2xlarge","r3.large","r3.xlarge","r3.2xlarge","r3.4xlarge","r3.8xlarge","i2.xlarge","i2.2xlarge","i2.4xlarge","i2.8xlarge","hs1.8xlarge"],
+        "ConstraintDescription" : "must be a valid EC2 instance type."
+      },
+      "InstanceSecurityGroup":{
+        "Type":"String",
+        "Default" : "sg-0c82ddcb24373c694"
+      },
+     "MinInstances": {
+       "Type": "Number",
+       "Default": 1
+     },
+     "MaxInstances": {
+       "Type": "Number",
+       "Default": 1
+     },
+     "UserData": {
+       "Type": "String"
+     }
+   },
+  "Resources" : {
+
+    "LaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+      "ImageId" : { "Ref" : "AmiImage" },
+      "UserData": { "Ref" : "UserData" },
+      "SecurityGroups" :   [
+          {
+            "Ref":"InstanceSecurityGroup"
+          }
+        ],
+      "IamInstanceProfile": "AWS-TestEngine-IAMRole",
+      "InstanceType" : { "Ref" : "InstanceType" },
+      "SpotPrice" : "0.80",
+      "KeyName" : { "Ref" : "KeyPairName" },
+      "AssociatePublicIpAddress" : "true"
+      }
+    },
+    "ServerGroup" : {
+     "Type" : "AWS::AutoScaling::AutoScalingGroup",
+     "Properties" : {
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : { "Ref" : "MinInstances" },
+        "MaxSize" : { "Ref" : "MaxInstances" },
+        "VPCZoneIdentifier" : { "Ref" : "SubnetIds" },
+        "Tags" : [ 
+          {
+            "Key": "Description",
+            "Value": " Autoscaling group",
+            "Key": "Name",
+            "Value": { "Ref" : "AsgName" },
+            "PropagateAtLaunch" : "true"
+          }
+        ]
+     },
+     "UpdatePolicy" : {
+          "AutoScalingScheduledAction" : {
+             "IgnoreUnmodifiedGroupSizeProperties" : "true"
+          },
+          "AutoScalingRollingUpdate" : {
+             "MinInstancesInService" : "0",
+             "MaxBatchSize" : "1",
+             "WaitOnResourceSignals" : "false",
+             "PauseTime" : "PT1M"
+          }
+        }
+    }
+  },
+    "Outputs" : {
+
+  }
+}

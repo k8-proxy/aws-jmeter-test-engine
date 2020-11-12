@@ -1,0 +1,3195 @@
+{
+	"dashboard": {
+		"annotations": {
+			"list": [
+				{
+					"builtIn": 1,
+					"datasource": "-- Grafana --",
+					"enable": true,
+					"hide": true,
+					"iconColor": "rgba(0, 211, 255, 1)",
+					"name": "Annotations & Alerts",
+					"type": "dashboard"
+				}
+			]
+		},
+		"editable": true,
+		"gnetId": null,
+		"graphTooltip": 0,
+		"id": 11,
+		"links": [],
+		"panels": [
+			{
+				"datasource": null,
+				"fieldConfig": {
+					"defaults": {
+						"custom": {}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 2,
+					"w": 24,
+					"x": 0,
+					"y": 0
+				},
+				"id": 20,
+				"options": {
+					"content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \nicap-client.northeurope.cloudapp.azure.com. Total users are 1000. Duration of test is 660 seconds  </p>    ",
+					"mode": "html"
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"groupBy": [
+							{
+								"params": [
+									"$__interval"
+								],
+								"type": "time"
+							},
+							{
+								"params": [
+									"null"
+								],
+								"type": "fill"
+							}
+						],
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"value"
+									],
+									"type": "field"
+								},
+								{
+									"params": [],
+									"type": "mean"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Information",
+				"type": "text"
+			},
+			{
+				"aliasColors": {},
+				"bars": false,
+				"dashLength": 10,
+				"dashes": false,
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {}
+					},
+					"overrides": []
+				},
+				"fill": 1,
+				"fillGradient": 0,
+				"gridPos": {
+					"h": 9,
+					"w": 8,
+					"x": 0,
+					"y": 2
+				},
+				"hiddenSeries": false,
+				"id": 2,
+				"legend": {
+					"avg": false,
+					"current": false,
+					"max": false,
+					"min": false,
+					"show": true,
+					"total": false,
+					"values": false
+				},
+				"lines": true,
+				"linewidth": 1,
+				"nullPointMode": "null",
+				"options": {
+					"alertThreshold": true
+				},
+				"percentage": false,
+				"pluginVersion": "7.3.2",
+				"pointradius": 2,
+				"points": false,
+				"renderer": "flot",
+				"seriesOverrides": [],
+				"spaceLength": 10,
+				"stack": false,
+				"steppedLine": false,
+				"targets": [
+					{
+						"alias": "Number of Users",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"startedT"
+									],
+									"type": "field"
+								},
+								{
+									"params": [
+										"*1"
+									],
+									"type": "math"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "application",
+								"operator": "=",
+								"value": "application name"
+							}
+						]
+					},
+					{
+						"alias": "Number of  Errors",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"countError"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "application",
+								"operator": "=",
+								"value": "application name"
+							}
+						]
+					}
+				],
+				"thresholds": [],
+				"timeFrom": null,
+				"timeRegions": [],
+				"timeShift": null,
+				"title": "Number of Users & Errors",
+				"tooltip": {
+					"shared": true,
+					"sort": 0,
+					"value_type": "individual"
+				},
+				"type": "graph",
+				"xaxis": {
+					"buckets": null,
+					"mode": "time",
+					"name": null,
+					"show": true,
+					"values": []
+				},
+				"yaxes": [
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					},
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					}
+				],
+				"yaxis": {
+					"align": false,
+					"alignLevel": null
+				}
+			},
+			{
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "green",
+									"value": 5
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 9,
+					"w": 4,
+					"x": 8,
+					"y": 2
+				},
+				"id": 6,
+				"options": {
+					"reduceOptions": {
+						"calcs": [
+							"sum"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showThresholdLabels": false,
+					"showThresholdMarkers": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Total Process Successes",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Total Process Successes",
+				"type": "gauge"
+			},
+			{
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 5
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 9,
+					"w": 4,
+					"x": 12,
+					"y": 2
+				},
+				"id": 4,
+				"options": {
+					"reduceOptions": {
+						"calcs": [
+							"sum"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showThresholdLabels": false,
+					"showThresholdMarkers": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Total Process Errors",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Total Process Errors",
+				"type": "gauge"
+			},
+			{
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "green",
+									"value": 5
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 9,
+					"w": 4,
+					"x": 16,
+					"y": 2
+				},
+				"id": 9,
+				"options": {
+					"reduceOptions": {
+						"calcs": [
+							"sum"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showThresholdLabels": false,
+					"showThresholdMarkers": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Total Process Requests",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "statut",
+								"operator": "=",
+								"value": "all"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/ICAP-Document-Process/"
+							}
+						]
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Total Process Requests",
+				"type": "gauge"
+			},
+			{
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "green",
+									"value": 5
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 9,
+					"w": 4,
+					"x": 20,
+					"y": 2
+				},
+				"id": 22,
+				"options": {
+					"reduceOptions": {
+						"calcs": [
+							"sum"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showThresholdLabels": false,
+					"showThresholdMarkers": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Total Requests",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/ICAP-Document-Process/"
+							}
+						]
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Total  Requests",
+				"type": "gauge"
+			},
+			{
+				"aliasColors": {},
+				"bars": false,
+				"dashLength": 10,
+				"dashes": false,
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {}
+					},
+					"overrides": []
+				},
+				"fill": 1,
+				"fillGradient": 0,
+				"gridPos": {
+					"h": 9,
+					"w": 12,
+					"x": 0,
+					"y": 11
+				},
+				"hiddenSeries": false,
+				"id": 3,
+				"legend": {
+					"avg": true,
+					"current": true,
+					"max": false,
+					"min": false,
+					"show": true,
+					"total": false,
+					"values": true
+				},
+				"lines": true,
+				"linewidth": 1,
+				"nullPointMode": "null",
+				"options": {
+					"alertThreshold": true
+				},
+				"percentage": false,
+				"pluginVersion": "7.3.2",
+				"pointradius": 2,
+				"points": false,
+				"renderer": "flot",
+				"seriesOverrides": [],
+				"spaceLength": 10,
+				"stack": false,
+				"steppedLine": false,
+				"targets": [
+					{
+						"alias": "pdf-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "pdf_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "csv-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "csv_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "doc-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "D",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "doc_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "docx-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "E",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "docx_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "dxf-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "F",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "dxf_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "gif-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "G",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "gif_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "html-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "H",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "html_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "jpeg-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "I",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "jpeg_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "odp-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "J",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "odp_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "odt-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "K",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "odt_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "pptx-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "L",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "pptx_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "rtf-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "M",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "rtf_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "xls-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "N",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xls_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "xlsm-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "O",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xlsm_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "xlsx-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "P",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xlsx_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "xml-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "Q",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xml_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "ppt-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "R",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "ppt_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					}
+				],
+				"thresholds": [],
+				"timeFrom": null,
+				"timeRegions": [],
+				"timeShift": null,
+				"title": "Success ICAP Document Process Response Times (ms)",
+				"tooltip": {
+					"shared": true,
+					"sort": 0,
+					"value_type": "individual"
+				},
+				"type": "graph",
+				"xaxis": {
+					"buckets": null,
+					"mode": "time",
+					"name": null,
+					"show": true,
+					"values": []
+				},
+				"yaxes": [
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					},
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					}
+				],
+				"yaxis": {
+					"align": false,
+					"alignLevel": null
+				}
+			},
+			{
+				"aliasColors": {},
+				"bars": false,
+				"dashLength": 10,
+				"dashes": false,
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {}
+					},
+					"overrides": []
+				},
+				"fill": 1,
+				"fillGradient": 0,
+				"gridPos": {
+					"h": 9,
+					"w": 12,
+					"x": 12,
+					"y": 11
+				},
+				"hiddenSeries": false,
+				"id": 21,
+				"legend": {
+					"avg": true,
+					"current": true,
+					"max": false,
+					"min": false,
+					"show": true,
+					"total": false,
+					"values": true
+				},
+				"lines": true,
+				"linewidth": 1,
+				"nullPointMode": "null",
+				"options": {
+					"alertThreshold": true
+				},
+				"percentage": false,
+				"pluginVersion": "7.3.2",
+				"pointradius": 2,
+				"points": false,
+				"renderer": "flot",
+				"seriesOverrides": [],
+				"spaceLength": 10,
+				"stack": false,
+				"steppedLine": false,
+				"targets": [
+					{
+						"alias": "pdf-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "pdf_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "csv-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "csv_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "ppt-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "ppt_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "doc-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "D",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "doc_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "docx-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "E",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "docx_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "dxf-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "F",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "dxf_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "gif-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "G",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "gif_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "html-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "H",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "html_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "jpeg-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "I",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "jpeg_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "odp-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "J",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "odp_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "odt-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "K",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "odt_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "pptx-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "L",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "pptx_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "rtf-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "M",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "rtf_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "xls-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "N",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xls_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "xlsm-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "O",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xlsm_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "xlsx-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "P",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xlsx_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					},
+					{
+						"alias": "xml-ICAP-Document-Process-Fail",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "Q",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "xml_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ko"
+							}
+						]
+					}
+				],
+				"thresholds": [],
+				"timeFrom": null,
+				"timeRegions": [],
+				"timeShift": null,
+				"title": "Failed ICAP Document process Response Times (ms)",
+				"tooltip": {
+					"shared": true,
+					"sort": 0,
+					"value_type": "individual"
+				},
+				"type": "graph",
+				"xaxis": {
+					"buckets": null,
+					"mode": "time",
+					"name": null,
+					"show": true,
+					"values": []
+				},
+				"yaxes": [
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					},
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					}
+				],
+				"yaxis": {
+					"align": false,
+					"alignLevel": null
+				}
+			},
+			{
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": [
+						{
+							"matcher": {
+								"id": "byName",
+								"options": "Time"
+							},
+							"properties": [
+								{
+									"id": "custom.width",
+									"value": null
+								}
+							]
+						}
+					]
+				},
+				"gridPos": {
+					"h": 9,
+					"w": 12,
+					"x": 0,
+					"y": 20
+				},
+				"id": 8,
+				"options": {
+					"showHeader": true,
+					"sortBy": []
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "ICAP-Document-Process",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "ICAP Throughput",
+				"type": "table"
+			},
+			{
+				"aliasColors": {},
+				"bars": false,
+				"dashLength": 10,
+				"dashes": false,
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {},
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"fill": 1,
+				"fillGradient": 0,
+				"gridPos": {
+					"h": 9,
+					"w": 12,
+					"x": 12,
+					"y": 20
+				},
+				"hiddenSeries": false,
+				"id": 7,
+				"legend": {
+					"avg": true,
+					"current": true,
+					"max": true,
+					"min": false,
+					"show": true,
+					"total": false,
+					"values": true
+				},
+				"lines": true,
+				"linewidth": 4,
+				"nullPointMode": "null",
+				"options": {
+					"alertThreshold": true
+				},
+				"percentage": false,
+				"pluginVersion": "7.3.2",
+				"pointradius": 5,
+				"points": true,
+				"renderer": "flot",
+				"seriesOverrides": [],
+				"spaceLength": 10,
+				"stack": false,
+				"steppedLine": false,
+				"targets": [
+					{
+						"alias": "ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								},
+								{
+									"params": [
+										" / 5"
+									],
+									"type": "math"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/ICAP-Document-Process/"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					}
+				],
+				"thresholds": [],
+				"timeFrom": null,
+				"timeRegions": [],
+				"timeShift": null,
+				"title": "Success ICAP Requests over time",
+				"tooltip": {
+					"shared": true,
+					"sort": 0,
+					"value_type": "individual"
+				},
+				"type": "graph",
+				"xaxis": {
+					"buckets": null,
+					"mode": "time",
+					"name": null,
+					"show": true,
+					"values": []
+				},
+				"yaxes": [
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					},
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					}
+				],
+				"yaxis": {
+					"align": false,
+					"alignLevel": null
+				}
+			},
+			{
+				"datasource": "icapserver",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"decimals": 0,
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 9,
+					"w": 12,
+					"x": 0,
+					"y": 29
+				},
+				"id": 11,
+				"options": {
+					"displayMode": "gradient",
+					"orientation": "auto",
+					"reduceOptions": {
+						"calcs": [
+							"mean"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showUnfilled": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Number of Children",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "G",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Children_number"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Used Servers",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Used_Servers"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Free Servers",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Free_Servers"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Running Server Statistics: Servers",
+				"type": "bargauge"
+			},
+			{
+				"aliasColors": {},
+				"bars": false,
+				"dashLength": 10,
+				"dashes": false,
+				"datasource": "InfluxDB",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {}
+					},
+					"overrides": []
+				},
+				"fill": 1,
+				"fillGradient": 0,
+				"gridPos": {
+					"h": 9,
+					"w": 12,
+					"x": 12,
+					"y": 29
+				},
+				"hiddenSeries": false,
+				"id": 5,
+				"legend": {
+					"avg": false,
+					"current": false,
+					"max": false,
+					"min": false,
+					"show": true,
+					"total": false,
+					"values": false
+				},
+				"lines": true,
+				"linewidth": 1,
+				"nullPointMode": "null",
+				"options": {
+					"alertThreshold": true
+				},
+				"percentage": false,
+				"pluginVersion": "7.3.2",
+				"pointradius": 2,
+				"points": false,
+				"renderer": "flot",
+				"seriesOverrides": [],
+				"spaceLength": 10,
+				"stack": false,
+				"steppedLine": false,
+				"targets": [
+					{
+						"alias": "ICAP-Document-Process- Error 403",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "responseCode",
+								"operator": "=",
+								"value": "403"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							}
+						]
+					},
+					{
+						"alias": "ICAP-Document-Process- Error 500",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "responseCode",
+								"operator": "=",
+								"value": "500"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							}
+						]
+					},
+					{
+						"alias": "ICAP-Document-Process- Error 204",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "responseCode",
+								"operator": "=",
+								"value": "204"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							}
+						]
+					},
+					{
+						"alias": "ICAP-Document-Process- Error 502",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "D",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "responseCode",
+								"operator": "=",
+								"value": "502"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							}
+						]
+					},
+					{
+						"alias": "ICAP-Document-Process- Error 522",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "E",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "responseCode",
+								"operator": "=",
+								"value": "522"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							}
+						]
+					},
+					{
+						"alias": "ICAP-Document-Process- Error 555",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "F",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"count"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "responseCode",
+								"operator": "=",
+								"value": "555"
+							},
+							{
+								"condition": "AND",
+								"key": "transaction",
+								"operator": "=~",
+								"value": "/Document-Process/"
+							}
+						]
+					}
+				],
+				"thresholds": [],
+				"timeFrom": null,
+				"timeRegions": [],
+				"timeShift": null,
+				"title": "ICAP  process error codes ",
+				"tooltip": {
+					"shared": true,
+					"sort": 0,
+					"value_type": "individual"
+				},
+				"type": "graph",
+				"xaxis": {
+					"buckets": null,
+					"mode": "time",
+					"name": null,
+					"show": true,
+					"values": []
+				},
+				"yaxes": [
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					},
+					{
+						"format": "short",
+						"label": null,
+						"logBase": 1,
+						"max": null,
+						"min": null,
+						"show": true
+					}
+				],
+				"yaxis": {
+					"align": false,
+					"alignLevel": null
+				}
+			},
+			{
+				"datasource": "icapserver",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"decimals": 0,
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 7,
+					"w": 12,
+					"x": 0,
+					"y": 38
+				},
+				"id": 15,
+				"options": {
+					"displayMode": "gradient",
+					"orientation": "horizontal",
+					"reduceOptions": {
+						"calcs": [
+							"mean"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showUnfilled": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Req Mods",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_REQMODS"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Resp Mods",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_RESPMODS"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Unprocessed",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "G",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_UNPROCESSED"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Unprocessable",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "H",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_UNPROCESSABLE"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Service gw_rebuild Statistics: Requests",
+				"type": "bargauge"
+			},
+			{
+				"datasource": "icapserver",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"decimals": 0,
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 7,
+					"w": 12,
+					"x": 12,
+					"y": 38
+				},
+				"id": 12,
+				"options": {
+					"orientation": "auto",
+					"reduceOptions": {
+						"calcs": [
+							"mean"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showThresholdLabels": false,
+					"showThresholdMarkers": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Started Processes",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Started_Processes"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Closed Processes",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "D",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Closed_Processes"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Closing Processes",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "E",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Closing_Processes"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Crashed Processes",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "F",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Crashed_Processes"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Running Server Statistics: Processes",
+				"type": "gauge"
+			},
+			{
+				"datasource": "icapserver",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"decimals": 0,
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 8,
+					"x": 0,
+					"y": 45
+				},
+				"id": 14,
+				"options": {
+					"colorMode": "value",
+					"graphMode": "area",
+					"justifyMode": "auto",
+					"orientation": "auto",
+					"reduceOptions": {
+						"calcs": [
+							"last"
+						],
+						"fields": "",
+						"values": false
+					},
+					"textMode": "auto"
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Bytes In",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_BYTES_IN"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Bytes Out",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_BYTES_OUT"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Service gw_rebuild Statistics: Bytes In/Out",
+				"type": "stat"
+			},
+			{
+				"datasource": "icapserver",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"decimals": 0,
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 8,
+					"x": 8,
+					"y": 45
+				},
+				"id": 18,
+				"options": {
+					"colorMode": "value",
+					"graphMode": "area",
+					"justifyMode": "auto",
+					"orientation": "auto",
+					"reduceOptions": {
+						"calcs": [
+							"last"
+						],
+						"fields": "",
+						"values": false
+					},
+					"textMode": "auto"
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "HTTP Bytes In",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "C",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_HTTP_BYTES_IN"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "HTTP Bytes Out",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "A",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_HTTP_BYTES_OUT"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Service gw_rebuild Statistics: HTTP Bytes",
+				"type": "stat"
+			},
+			{
+				"datasource": "icapserver",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"decimals": 0,
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 8,
+					"x": 16,
+					"y": 45
+				},
+				"id": 17,
+				"options": {
+					"colorMode": "value",
+					"graphMode": "area",
+					"justifyMode": "auto",
+					"orientation": "auto",
+					"reduceOptions": {
+						"calcs": [
+							"last"
+						],
+						"fields": "",
+						"values": false
+					},
+					"textMode": "auto"
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Body Bytes In",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "E",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_BODY_BYTES_IN"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Body Bytes Out",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "F",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_BODY_BYTES_OUT"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Body Bytes Scanned",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "G",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_BODY_BYTES_SCANNED"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Service gw_rebuild Statistics: Body Bytes",
+				"type": "stat"
+			},
+			{
+				"datasource": "icapserver",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {
+							"align": null,
+							"filterable": false
+						},
+						"decimals": 0,
+						"mappings": [],
+						"thresholds": {
+							"mode": "absolute",
+							"steps": [
+								{
+									"color": "green",
+									"value": null
+								},
+								{
+									"color": "red",
+									"value": 80
+								}
+							]
+						}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 12,
+					"x": 0,
+					"y": 53
+				},
+				"id": 13,
+				"options": {
+					"displayMode": "gradient",
+					"orientation": "auto",
+					"reduceOptions": {
+						"calcs": [
+							"mean"
+						],
+						"fields": "",
+						"values": false
+					},
+					"showUnfilled": true
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"alias": "Requests Scanned",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "B",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_REQUESTS_SCANNED"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Rebuild Failures",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "D",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_REBUILD_FAILURES"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Rebuild Errors",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "E",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_REBUILD_ERRORS"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					},
+					{
+						"alias": "Scans Rebuilt",
+						"groupBy": [],
+						"measurement": "Running_Servers_Statistics",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "F",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"Service_gw_rebuild_SCAN_REBUILT"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": []
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Service gw_rebuild Statistics: Requests Rebuilt",
+				"type": "bargauge"
+			},
+			{
+				"datasource": "Loki",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 12,
+					"x": 12,
+					"y": 53
+				},
+				"id": 24,
+				"options": {
+					"showLabels": false,
+					"showTime": false,
+					"sortOrder": "Descending",
+					"wrapLogMessage": false
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"expr": "{job=\"jmeter\"}",
+						"legendFormat": "",
+						"refId": "B"
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Jmeter Log Output",
+				"type": "logs"
+			}
+		],
+		"refresh": "5s",
+		"schemaVersion": 26,
+		"style": "dark",
+		"tags": [],
+		"templating": {
+			"list": []
+		},
+		"time": {
+			"from": "now-5m",
+			"to": "now"
+		},
+		"timepicker": {
+			"refresh_intervals": [
+				"5s",
+				"10s",
+				"30s",
+				"1m",
+				"5m",
+				"15m",
+				"30m",
+				"1h",
+				"2h",
+				"1d"
+			]
+		},
+		"timezone": "",
+		"title": "ICAP Live Performance Dashboard",
+		"id": null,
+		"uid": null,
+		"version": 21
+	},
+	"folderId": 0,
+	"overwrite": true
+}
