@@ -20,7 +20,7 @@ Before starting make sure to clone https://github.com/k8-proxy/aws-jmeter-test-e
 
 # Step 1. VPC and Subnets creation. 
 
-If there is no existing VPC and Subnets are available then AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
+If there is no existing VPC and Subnets are available then https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/cloudformation/AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
 
 Create 2 security groups : 
 
@@ -52,7 +52,9 @@ VPC and Subnet can be found under the VPC Service.
 
 # Step 2. Setup Performance Dashboard system
 
-ICAPServer-Performance-Analytics-Dashboard - ami-039215eee67c4041e image
+Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-039215eee67c4041e image from AWS community. 
+
+EC2 Instance type =t3.medium is sufficient for average use. 
 
 if you do not wish to use ready image, rather create everything from scratch then follow these instructions:
 https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
@@ -66,6 +68,9 @@ Create private s3 bucket in AWS Ireland region (if you are going to use above re
 Change "aws-testengine-s3" to your own bucket name and run https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
 
 # Step 5. Create IAM User with only programmatic read/write access to S3 and store access keys in AWS Secrets Manager.
+
+This key is used to access s3 bucket where test data is.
+Performance test Jmeter script expects that these keys are passed to it. 
 
 1. Secret Key = Access key ID 
    Secret Value = Your access key here
