@@ -1,5 +1,5 @@
 ## Introduction
-ICAPServer AWS Performance Test Framework is used to verify performance of ICAP. It is based on AWS AutoScale with EC2 instances generating load with Jmeter performance test tool.
+The AWS Performance Test Execution Framework is a custom built auto scalable solution that uses generated EC2 instances with a JMeter test module to simulate user traffic to the ICAP server
 
 Overall, logical structure looks like this:
 
