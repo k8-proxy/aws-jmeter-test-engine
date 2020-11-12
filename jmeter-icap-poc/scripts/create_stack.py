@@ -40,6 +40,7 @@ class Config(object):
         stack_name = os.getenv("STACK_NAME")
         grafana_server_tag = os.getenv("GRAFANA_SERVER_TAG")
         grafana_secret = os.getenv("GRAFANA_SECRET")
+        test_directory = os.getenv("TEST_DIRECTORY")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -99,10 +100,10 @@ def main(config):
 
     # upload jmx script and test data file to S3
     print("Uploading jmx script and test data file to S3")
-    with open(config.jmx_script_name, 'rb') as data:
+    with open(config.test_directory + config.jmx_script_name, 'rb') as data:
         s3_client.upload_fileobj(data, config.script_bucket, "script/" + config.jmx_script_name)
 
-    with open(config.test_data_file, 'rb') as data:
+    with open(config.test_directory + config.test_data_file, 'rb') as data:
         s3_client.upload_fileobj(data, config.script_bucket, "script/" + config.test_data_file)
 
     # Load cloudformation template
