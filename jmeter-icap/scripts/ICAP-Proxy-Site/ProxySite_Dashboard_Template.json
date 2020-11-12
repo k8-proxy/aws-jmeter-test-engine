@@ -120,7 +120,7 @@
 			"targets": [{
 				"alias": "Number of Users",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -138,7 +138,7 @@
 			{
 				"alias": "Number of Errors",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -254,7 +254,7 @@
 			"targets": [{
 				"alias": "Assertion Fail",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -276,7 +276,7 @@
 			{
 				"alias": "Error 500",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -298,7 +298,7 @@
 			{
 				"alias": "Error 503",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "C",
@@ -406,7 +406,7 @@
 			"targets": [{
 				"alias": "csv_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -430,7 +430,7 @@
 			{
 				"alias": "doc_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -454,7 +454,7 @@
 			{
 				"alias": "docx_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "C",
@@ -478,7 +478,7 @@
 			{
 				"alias": "gif_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "D",
@@ -502,7 +502,7 @@
 			{
 				"alias": "html_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "E",
@@ -582,7 +582,7 @@
 			"targets": [{
 				"alias": "csv_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -606,7 +606,7 @@
 			{
 				"alias": "doc_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -630,7 +630,7 @@
 			{
 				"alias": "docx_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "C",
@@ -654,7 +654,7 @@
 			{
 				"alias": "html_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "D",
@@ -733,7 +733,7 @@
 			"targets": [{
 				"alias": "csv_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -757,7 +757,7 @@
 			{
 				"alias": "doc_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -781,7 +781,7 @@
 			{
 				"alias": "docx_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "C",
@@ -805,7 +805,7 @@
 			{
 				"alias": "gif_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "D",
@@ -829,7 +829,7 @@
 			{
 				"alias": "html_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "E",
@@ -942,7 +942,7 @@
 			"targets": [{
 				"alias": "csv_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -966,7 +966,7 @@
 			{
 				"alias": "doc_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -990,7 +990,7 @@
 			{
 				"alias": "docx_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "C",
@@ -1014,7 +1014,7 @@
 			{
 				"alias": "html_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "D",
@@ -1127,7 +1127,7 @@
 			"targets": [{
 				"alias": "csv_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -1151,7 +1151,7 @@
 			{
 				"alias": "doc_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -1175,7 +1175,7 @@
 			{
 				"alias": "docx_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "C",
@@ -1199,7 +1199,7 @@
 			{
 				"alias": "gif_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "D",
@@ -1223,7 +1223,7 @@
 			{
 				"alias": "html_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "E",
@@ -1336,7 +1336,7 @@
 			"targets": [{
 				"alias": "csv_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "A",
@@ -1360,7 +1360,7 @@
 			{
 				"alias": "doc_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "B",
@@ -1384,7 +1384,7 @@
 			{
 				"alias": "docx_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "C",
@@ -1408,7 +1408,7 @@
 			{
 				"alias": "gif_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "D",
@@ -1432,7 +1432,7 @@
 			{
 				"alias": "html_FileProcess",
 				"groupBy": [],
-				"measurement": "demo_jmeterproxysite",
+				"measurement": "jmeterproxysite",
 				"orderByTime": "ASC",
 				"policy": "default",
 				"refId": "E",
@@ -1507,7 +1507,7 @@
 			
 		},
 		"timezone": "",
-		"title": "demo ProxySite-Live-Performance Dashboard",
+		"title": "ProxySite-Live-Performance Dashboard",
 		"id": null,
 		"uid": null,
 		"version": 9
