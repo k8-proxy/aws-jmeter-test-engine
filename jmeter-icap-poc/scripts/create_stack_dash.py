@@ -129,7 +129,6 @@ def __exec_create_stack(cl_args, instances_required, users_per_instance):
     Config.jmx_script_name = cl_args.jmx_script_name
     Config.secret_id = cl_args.secret_id
     Config.region = cl_args.region
-    Config.test_directory = cl_args.test_directory
 
     create_stack.main(config=Config)
 
@@ -202,6 +201,7 @@ if __name__ == "__main__":
     Config.grafana_url = args.grafana_url
     Config.min_age = args.min_age
     Config.grafana_server_tag = args.grafana_server_tag
+    Config.test_directory = args.test_directory
 
     # these are flag/boolean arguments
     if args.exclude_dashboard:

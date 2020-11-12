@@ -177,6 +177,12 @@ The prefix used in both the Cloudformation stack name and the name of the Dashbo
 </td>
 </tr>
 <tr>
+<td> --test_directory </td><td> TEST_DIRECTORY </td>
+<td>
+Test files and Grafana dashboard templates should be placed in the directory passed to this option. The script will use this directory to access these files.
+</td>
+</tr>
+<tr>
 <td> --test_data_file </td><td> TEST_DATA_FILE </td>
 <td>
 Test data file name/path
