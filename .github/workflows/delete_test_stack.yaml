@@ -35,3 +35,4 @@ jobs:
           python3 delete_stack.py
         env:
           PREFIX: "ga" # ${{ secrets.PREFIX }}
+          MIN_AGE: "30"
