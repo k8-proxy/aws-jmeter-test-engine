@@ -107,6 +107,7 @@ def main(config):
 
     with open("config-promtail.yaml", 'r') as data:
         data = re.sub("glasswall_jmeter", config.prefix + "_jmeter", data.read())
+        data = re.sub("http://[a-zA-Z0-9\-\.]*:3100", f"http://{config.influx_host}:3100", data)
         s3_client.put_object(Bucket=config.script_bucket,
                          Body=data,
                          Key=config.prefix + "_script/config-promtail.yaml" )
