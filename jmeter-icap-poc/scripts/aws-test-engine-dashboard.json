@@ -16,7 +16,7 @@
 		"editable": true,
 		"gnetId": null,
 		"graphTooltip": 0,
-		"id": 2,
+		"id": 11,
 		"links": [],
 		"panels": [
 			{
@@ -35,10 +35,10 @@
 				},
 				"id": 20,
 				"options": {
-					"content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \nicap-client.uksouth.cloudapp.azure.com. Total users are 100000. Duration of test is 2100 seconds  </p>    ",
+					"content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \nicap-client.northeurope.cloudapp.azure.com. Total users are 1000. Duration of test is 660 seconds  </p>    ",
 					"mode": "html"
 				},
-				"pluginVersion": "7.1.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"groupBy": [
@@ -119,7 +119,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -146,7 +146,7 @@
 								},
 								{
 									"params": [
-										"*25"
+										"*1"
 									],
 									"type": "math"
 								}
@@ -268,7 +268,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Total Process Successes",
@@ -342,7 +342,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Total Process Errors",
@@ -416,7 +416,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Total Process Requests",
@@ -496,7 +496,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Total Requests",
@@ -568,7 +568,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -1201,7 +1201,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -1845,7 +1845,7 @@
 					"showHeader": true,
 					"sortBy": []
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "ICAP-Document-Process",
@@ -1937,7 +1937,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"pointradius": 5,
 				"points": true,
 				"renderer": "flot",
@@ -2071,7 +2071,7 @@
 					},
 					"showUnfilled": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Number of Children",
@@ -2177,7 +2177,7 @@
 					"alertThreshold": true
 				},
 				"percentage": false,
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"pointradius": 2,
 				"points": false,
 				"renderer": "flot",
@@ -2465,7 +2465,7 @@
 					},
 					"showUnfilled": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Req Mods",
@@ -2598,7 +2598,7 @@
 					"showThresholdLabels": false,
 					"showThresholdMarkers": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Started Processes",
@@ -2733,7 +2733,7 @@
 					},
 					"textMode": "auto"
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Bytes In",
@@ -2828,7 +2828,7 @@
 					},
 					"textMode": "auto"
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "HTTP Bytes In",
@@ -2923,7 +2923,7 @@
 					},
 					"textMode": "auto"
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Body Bytes In",
@@ -3020,7 +3020,7 @@
 				"gridPos": {
 					"h": 8,
 					"w": 12,
-					"x": 5,
+					"x": 0,
 					"y": 53
 				},
 				"id": 13,
@@ -3036,7 +3036,7 @@
 					},
 					"showUnfilled": true
 				},
-				"pluginVersion": "7.2.0",
+				"pluginVersion": "7.3.2",
 				"targets": [
 					{
 						"alias": "Requests Scanned",
@@ -3123,6 +3123,40 @@
 				"timeShift": null,
 				"title": "Service gw_rebuild Statistics: Requests Rebuilt",
 				"type": "bargauge"
+			},
+			{
+				"datasource": "Loki",
+				"fieldConfig": {
+					"defaults": {
+						"custom": {}
+					},
+					"overrides": []
+				},
+				"gridPos": {
+					"h": 8,
+					"w": 12,
+					"x": 12,
+					"y": 53
+				},
+				"id": 24,
+				"options": {
+					"showLabels": false,
+					"showTime": false,
+					"sortOrder": "Descending",
+					"wrapLogMessage": false
+				},
+				"pluginVersion": "7.3.2",
+				"targets": [
+					{
+						"expr": "{job=\"jmeter\"}",
+						"legendFormat": "",
+						"refId": "B"
+					}
+				],
+				"timeFrom": null,
+				"timeShift": null,
+				"title": "Jmeter Log Output",
+				"type": "logs"
 			}
 		],
 		"refresh": "5s",
