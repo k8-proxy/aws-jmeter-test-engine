@@ -22,7 +22,7 @@ Before starting make sure to clone https://github.com/k8-proxy/aws-jmeter-test-e
 
 If there are no existing VPC and Subnets available then https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/cloudformation/AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
 
-* Create 2 security groups : 
+**Create 2 security groups** : 
 
 1. Security group for Load Generators:  ICAP-Performance-LG-SG
 2. Security group for Dashboard instance: ICAP-Performance-Dashboard-SG
