@@ -3,7 +3,7 @@ ICAPServer AWS Performance Test Framework is used to verify performance of ICAP.
 
 Overall, logical structure looks like this:
 
-![vm_load_vision](img/ICAPServer-Performance-Analytics-Dashboard.png)
+![vm_load_vision](jmeter-icap-poc/instructions/img/ICAPServer-Performance-Analytics-Dashboard.png)
 
 In nutshell, user triggers python script to indicate what kind of load needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
 
