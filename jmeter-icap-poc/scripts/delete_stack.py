@@ -15,7 +15,7 @@ def main(config):
 
     now = datetime.now(timezone.utc)
     past_time = now - timedelta(minutes=min_age)
-    stacks_list = client.list_stacks(StackStatusFilter=["CREATE_COMPLETE", "CREATE_FAILED"])
+    stacks_list = client.list_stacks(StackStatusFilter=["CREATE_COMPLETE", "CREATE_FAILED", "ROLLBACK_COMPLETE"])
 
     if config.stack_name in [None, ""]:
         print("finding the stack names with prefix %s" % prefix)
