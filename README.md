@@ -27,9 +27,9 @@ Create 2 security groups :
 1. Security group for Load Generators:  ICAP-Performance-LG-SG
 2. Security group for Dashboard instance: ICAP-Performance-Dashboard-SG
     - Incoming rule: 
-       port 3000 - from your local IP
-       port 3100 - from load generator security group
-       port 8086 - from load generator security group
+       - - port 3000 - from your local IP
+       - - port 3100 - from load generator security group
+       - - port 8086 - from load generator security group
 
 # Checking values in the Cloudformation Script
 
