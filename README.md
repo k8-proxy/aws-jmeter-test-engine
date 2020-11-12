@@ -3,7 +3,7 @@ The AWS Performance Test Execution Framework is a custom built auto scalable sol
 
 Overall, logical structure looks like this:
 
-![vm_load_vision](jmeter-icap-poc/instructions/img/ICAPServer-Performance-Analytics-Dashboard.png)
+![vm_load_vision](jmeter-icap/instructions/img/ICAPServer-Performance-Analytics-Dashboard.png)
 
 In nutshell, user triggers python script to indicate what kind of load needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
 
@@ -20,7 +20,7 @@ Before starting make sure to clone https://github.com/k8-proxy/aws-jmeter-test-e
 
 # Step 1. VPC, Subnets & Security Groups creation. 
 
-If there are no existing VPC and Subnets available then https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/cloudformation/AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
+If there are no existing VPC and Subnets available then https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
 
 **Create 2 security groups** : 
 
@@ -33,7 +33,7 @@ If there are no existing VPC and Subnets available then https://github.com/k8-pr
 
 # Checking values in the Cloudformation Script
 
-In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/cloudformation/GenerateLoadGenerators.json
+In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 
 There are some existing resources that the script uses to generate the required instances
 
@@ -57,7 +57,7 @@ Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-0
 EC2 Instance type =t3.medium is sufficient for average use. 
 
 if you do not wish to use ready image, rather create everything from scratch then follow these instructions:
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
+https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
 
 # Step 3. Create S3 bucket
 
@@ -65,7 +65,7 @@ Create private s3 bucket in AWS Ireland region (if you are going to use above re
 
 # Step 4. Create AWS IAM Role with Access to AWS Secret Manager and to S3 bucket
 
-Change "aws-testengine-s3" to your own bucket name and run https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
+Change "aws-testengine-s3" to your own bucket name and run https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
 
 # Step 5. Create IAM User with only programmatic read/write access to S3 and store access keys in AWS Secrets Manager.
 
@@ -79,7 +79,7 @@ Performance test Jmeter script expects that these keys are passed to it.
 
 # Step 6. Create Grafana API key and store them in AWS Secrets Manager
 
-Follow Prerequisites from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/how-to-use-create_dashboards-script.md this link to create Grafana API key.
+Follow Prerequisites from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_dashboards-script.md this link to create Grafana API key.
 
 Store keys in AWS Secrets Manager using same steps as step 5.
 
@@ -90,7 +90,7 @@ Secret Value = Your grafana api key value here
 
 Next step, please, follow the following instructions to start the load:
 
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap-poc/instructions/how-to-use-create_stack_dash.md
+https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_stack_dash.md
 
 
 
