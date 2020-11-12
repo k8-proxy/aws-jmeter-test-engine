@@ -105,6 +105,12 @@ def main(config):
     with open(config.test_data_file, 'rb') as data:
         s3_client.upload_fileobj(data, config.script_bucket, "script/" + config.test_data_file)
 
+    with open("config-promtail.yaml", 'r') as data:
+        data = re.sub("glasswall_jmeter", config.prefix + "_jmeter", data.read())
+        s3_client.put_object(Bucket=config.script_bucket,
+                         Body=data,
+                         Key=config.prefix + "_script/config-promtail.yaml" )
+
     # Load cloudformation template
     with open("../cloudformation/GenerateLoadGenerators.json", "r") as f:
         asg_template_body = f.read()
@@ -118,7 +124,13 @@ def main(config):
     userdata = base64.b64encode(f"""
     #!/bin/bash
     touch /var/lock/subsys/local
-    sudo aws s3 cp s3://aws-testengine-s3/{file_name} /home/ec2-user/apache-jmeter-5.3/bin/
+    sudo aws s3 cp s3://{config.script_bucket}/{file_name} /home/ec2-user/apache-jmeter-5.3/bin/
+    cd /home/ec2-user
+    sudo wget https://github.com/grafana/loki/releases/download/v2.0.0/promtail-linux-amd64.zip
+    sudo unzip promtail-linux-amd64.zip
+    chmod a+x promtail-linux-amd64
+    aws s3 cp s3://{config.script_bucket}/{config.prefix}_script/config-promtail.yaml /home/ec2-user/
+    sudo ./promtail-linux-amd64 -config.file=config-promtail.yaml > /dev/null 2>&1 &
     cd /home/ec2-user/apache-jmeter-5.3/bin
     sudo chmod +x StartExecution.sh
     ./StartExecution.sh
