@@ -15,6 +15,14 @@ def __add_prefix_to_grafana_json(grafana_json, prefix):
                             k['measurement'] = prefix + '_' + k['measurement']
 
 
+def __add_prefix_to_grafana_loki_source_job(grafana_json, prefix):
+    if 'panels' in grafana_json["dashboard"]:
+        for i in grafana_json["dashboard"]['panels']:
+            if i['datasource'] == 'Loki':
+                for j in i['targets']:
+                    j['expr'] = '{job="' + prefix + '_' + 'jmeter"}'
+
+
 # add instances_required field to Grafana JSON under Number of Users
 def __add_users_req_to_grafana_json(grafana_json, instances_required):
     for i in grafana_json["dashboard"]['panels']:
@@ -46,6 +54,8 @@ def __post_grafana_dash(config):
 
     if grafana_url[len(grafana_url) - 1] != '/':
         grafana_url += '/'
+    if not grafana_url.startswith("http"):
+        grafana_url = "http://" + grafana_url
 
     grafana_api_url = grafana_url + 'api/dashboards/db'
 
@@ -58,6 +68,7 @@ def __post_grafana_dash(config):
         __add_users_req_to_grafana_json(grafana_json, instances_required)
         __add_prefix_to_grafana_json(grafana_json, prefix)
         __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url)
+        __add_prefix_to_grafana_loki_source_job(grafana_json, prefix)
 
     resp = requests.post(grafana_api_url, json=grafana_json, headers=headers)
     d = eval(resp.text)
@@ -69,7 +80,6 @@ def __post_grafana_dash(config):
 
 
 def main(config):
-
     created_dashboard_url = __post_grafana_dash(config)
 
     if created_dashboard_url:
