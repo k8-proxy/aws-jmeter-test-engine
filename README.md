@@ -17,7 +17,7 @@ This document will show simple way to get started utilizing this framework step 
 **Before starting**
 - Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine. 
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
-- Install AWS CLI in your local machine: [go](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html){:target="_blank" rel="noopener"}
+- Install AWS CLI in your local machine: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
 - Ensure that all resources are created (using instructions below) in a single AWS       supported region, not in multi-regions. Mixing them between different regions might    break the automation or also slow it down due to network latency.
 
 
@@ -162,6 +162,12 @@ There are 2 ways to run CloudFormation script in aws:
    - Give stack name
    - Enter Secrets manager Secret ARN created in step 4 above for AWS keys.
    - Click next until it says create and then click create.
+2. Using AWS CLI
+
+```bash
+aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json --parameters SecretManagerArn=enter secret ARN created in step 4
+
+```
 
 # Step 6. Create Grafana API key and store them in AWS Secrets Manager
 
@@ -172,7 +178,16 @@ Store keys in AWS Secrets Manager using same steps as step 4.
 Secret Key = Grafana_Api_Key
 Secret Value = Your grafana api key value here
 
-# Step 7. Run python script to trigger load
+# Step 7. Copy Test Data to S3 & Run python script to trigger load
+
+**Copy Test Data**
+
+- Download gov_uk_files.zip to your local machine from jmeter-icap/test-data/
+- unzip the file
+- upload it's contents to s3 bucket created earlier
+- The folder structure of the test files s3 bucket should be ->  filetype->hashfolders->files
+
+**Run python script to trigger load**
 
 Next step, please, follow the following instructions to start the load:
 
