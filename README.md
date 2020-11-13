@@ -85,6 +85,7 @@ It is important that LoadGenerator EC2 instances and s3 bucket to be in same reg
 
 This key is used to access s3 bucket where test data is.
 Performance test Jmeter script expects that these keys are passed to it. 
+
 **1. Create IAM User**
  - Goto Services 
  - Select IAM
