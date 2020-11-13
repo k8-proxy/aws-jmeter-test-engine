@@ -23,7 +23,7 @@ Before starting
 # Step 1. VPC, Subnets & Security Groups creation. 
 ![vm_load_vision](jmeter-icap/instructions/img/Step1.png)
 
-**Create VPC and Subnets if not existent**
+**Create VPC and Subnets if non existent**
 
 If there are no existing VPC and Subnets available then https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
 
@@ -40,9 +40,7 @@ If there are no existing VPC and Subnets available then https://github.com/k8-pr
 
 In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 
-There are some existing resources that the script uses to generate the required instances. 
-
-Replace the following parameters with your own value:
+**Replace the following parameters with your own value**:
 
 - VpcId - vpc id created above
 
