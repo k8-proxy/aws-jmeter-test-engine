@@ -3,7 +3,7 @@ The AWS Performance Test Execution Framework is a custom built auto scalable sol
 
 Overall, logical structure looks like this:
 
-![vm_load_vision](jmeter-icap/instructions/img/ICAPServer-Performance-Analytics-Dashboard.png)
+![vm_load_vision](jmeter-icap/instructions/img/ICAPServer-Performance-Analytics-Dashboard_v2.png)
 
 In nutshell, user triggers python script to indicate what kind of load needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
 
@@ -14,9 +14,11 @@ There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon 
 
 This document will show simple way to get started utilizing this framework step by step.
 
-Before starting 
-- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo to your local machine. 
-- Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role, CloudFormation and Secrets Manager services in AWS.
+**Before starting**
+- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine. 
+- Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
+- Ensure that all resources are created (using instructions below) in a single AWS       supported region, not in multi-regions. Mixing them between different regions might    break the automation or also slow it down due to network latency.
+
 
 ## How to get started?
 
@@ -77,9 +79,13 @@ https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instr
 
 # Step 3. Create S3 bucket
 
-Create private s3 bucket in one of the regions (Ireland,North Virginia, Oregon, North California, if you are going to use above ready images to generate load). The s3 bucket is used to store performance test scripts and data. 
+Create private s3 bucket in one of the regions (Ireland,North Virginia, Oregon, North California). The s3 bucket is used to store performance test scripts and data. 
 
-It is important that LoadGenerator EC2 instances and s3 bucket to be in same region, it will ensure that LoadGenerator EC2 instance will find script in local region and also in terms of network traffic, it is faster to fetch test data files from same region as EC2 instance is running.
+- Goto Services
+- Select S3
+- Click Create Bucket
+- Give unique bucket name and select desired region (ensure that you select same region as the Performance Dashboard instance AWS region)
+- Click on Create Bucket button
 
 # Step 4. Create IAM User with only programmatic read/write access to S3 and store access keys in AWS Secrets Manager.
 
