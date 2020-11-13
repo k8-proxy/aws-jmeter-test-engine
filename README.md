@@ -1,5 +1,5 @@
 ## Introduction
-The AWS Performance Test Execution Framework is a custom built auto scalable solution that uses generated EC2 instances with a JMeter test module to simulate user traffic to the ICAP server
+The AWS Performance Test Execution Framework is a custom built auto scalable solution that uses generated EC2 instances with a JMeter test module to simulate user traffic to the ICAP server.
 
 Overall, logical structure looks like this:
 
@@ -7,7 +7,7 @@ Overall, logical structure looks like this:
 
 In nutshell, user triggers python script to indicate what kind of load needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
 
-There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon and North California regions in order to make use of this performance test framework more easier
+There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon and North California regions in order to make use of this performance test framework more easier:
 
  - ICAPServer-Performance-Analytics-Dashboard - this image is used to create Performance Dashboard automatically
  - ICAPServer-Performance-Load-Generator - this image is used during Load Generation triggering in EC2 Auto Scale Cloudformation script.
@@ -17,19 +17,30 @@ This document will show simple way to get started utilizing this framework step 
 **Before starting**
 - Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine. 
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
+- Install AWS CLI in your local machine: [go](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html){:target="_blank" rel="noopener"}
 - Ensure that all resources are created (using instructions below) in a single AWS       supported region, not in multi-regions. Mixing them between different regions might    break the automation or also slow it down due to network latency.
 
 
 ## How to get started?
 
-# Step 1. VPC, Subnets & Security Groups creation. 
+# Step 1. VPC, Subnets & Security Groups creation
 ![vm_load_vision](jmeter-icap/instructions/img/Step1.png)
 
 **Create VPC and Subnets if non existent**
 
-If there are no existing VPC and Subnets available then https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
+If there are no existing VPC and Subnets available then there are separate Cloudformation scripts are available to create VPC & Subnets for each of supported regions mentioned above. 
+Scripts are located in jmeter-icap/cloudformation/ repo folder or direct link https://github.com/k8-proxy/aws-jmeter-test-engine/tree/master/jmeter-icap/cloudformation 
 
-**Create 2 security groups** : 
+Ensure that correct region VPC & Subnets cloudformation is used during the stack creation.
+
+The VPC & Subnets cloudformation stack can be created using 2 ways:
+- Using AWS Console -> Goto Services -> CloudFormation->Create Stack (new resources) and follow steps there
+- Using AWS CLI command (this is template command, repo path and CF name needs to be changed)
+```bash
+aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets-change-region.json
+
+```
+**Create 2 security groups**  
 
 1. Security group for Load Generators:  ICAP-Performance-LG-SG
 2. Security group for Dashboard instance: ICAP-Performance-Dashboard-SG
@@ -46,7 +57,7 @@ In your local copy of the repo it's worth checking a few things in the cloudform
 
 - VpcId - vpc id created above
 
-- SubnetIds -public subnets ids list created above
+- SubnetIds - public subnets ids list created above
 
 - KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
 
