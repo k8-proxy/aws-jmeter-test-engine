@@ -15,7 +15,11 @@ There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon 
 This document will show simple way to get started utilizing this framework step by step.
 
 **Before starting**
-- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine. 
+- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo with v1.0.0 release to your local machine.
+```
+git clone --branch v1.0.0 https://github.com/k8-proxy/aws-jmeter-test-engine.git
+```
+
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
 - Install AWS CLI in your local machine: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
 - Ensure that all resources are created (using instructions below) in a single AWS       supported region, not in multi-regions. Mixing them between different regions might    break the automation or also slow it down due to network latency.
