@@ -29,7 +29,7 @@ This document will show simple way to get started utilizing this framework step 
 **Create VPC and Subnets if non existent**
 
 If there are no existing VPC and Subnets available then there are separate Cloudformation scripts are available to create VPC & Subnets for each of supported regions mentioned above. 
-Scripts are located in jmeter-icap/cloudformation/ repo folder or direct link https://github.com/k8-proxy/aws-jmeter-test-engine/tree/master/jmeter-icap/cloudformation 
+Scripts are located in jmeter-icap/cloudformation/ repo folder or direct link https://github.com/k8-proxy/aws-jmeter-test-engine/tree/release_v1.0/jmeter-icap/cloudformation 
 
 Ensure that correct region VPC & Subnets cloudformation is used during the stack creation.
 
@@ -51,7 +51,7 @@ aws cloudformation create-stack --stack-name myteststack --template-body file://
 
 **Checking & replacing values in the GenerateLoadGenerators.json script**
 
-In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/GenerateLoadGenerators.json
+In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/release_v1.0/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 
 **Replace & save the following parameters with your own value**:
 
@@ -86,7 +86,7 @@ Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-0
 - Grafana ui opens and login with username/password: admin/glasswall
 
 If you do not wish to use ready image, rather create everything from scratch then follow these instructions:
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
+https://github.com/k8-proxy/aws-jmeter-test-engine/blob/release_v1.0/jmeter-icap/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
 
 # Step 3. Create S3 bucket
 
@@ -140,7 +140,7 @@ LoadGenerator instances will need to access S3 to fetch data and also access Sec
 In order to have that access we need to assign IAM role to the LoadGenerator Instances.
 
 There is cloudformation in place to automatically create the IAM role. 
-The cloudformation script is located in your local clone of git repo under jmeter-icap/cloudformation/aws-secret-manager-with_iam_role.json or direct url from the repo is: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
+The cloudformation script is located in your local clone of git repo under jmeter-icap/cloudformation/aws-secret-manager-with_iam_role.json or direct url from the repo is: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/release_v1.0/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
 
 One change needs to be done to local copy of this cloudformation script before running it, Find "Resource" as shown below:
 
@@ -171,7 +171,7 @@ aws cloudformation create-stack --stack-name myteststack --template-body file://
 
 # Step 6. Create Grafana API key and store them in AWS Secrets Manager
 
-Follow Prerequisites from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_dashboards-script.md this link to create Grafana API key.
+Follow Prerequisites from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/release_v1.0/jmeter-icap/instructions/how-to-use-create_dashboards-script.md this link to create Grafana API key.
 
 Store keys in AWS Secrets Manager using same steps as step 4.
 
@@ -191,7 +191,7 @@ Secret Value = Your grafana api key value here
 
 Next step, please, follow the following instructions to start the load:
 
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_stack_dash.md
+https://github.com/k8-proxy/aws-jmeter-test-engine/blob/release_v1.0/jmeter-icap/instructions/how-to-use-create_stack_dash.md
 
 
 
