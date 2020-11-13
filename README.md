@@ -15,9 +15,9 @@ There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon 
 This document will show simple way to get started utilizing this framework step by step.
 
 **Before starting**
-- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo with v1.0.0 release to your local machine.
+- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo with release_v1.0 branch to your local machine.
 ```
-git clone --branch v1.0.0 https://github.com/k8-proxy/aws-jmeter-test-engine.git
+git clone --branch release_v1.0 https://github.com/k8-proxy/aws-jmeter-test-engine.git
 ```
 
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
