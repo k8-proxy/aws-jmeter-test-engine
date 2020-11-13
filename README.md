@@ -14,11 +14,16 @@ There are 2 AWS community images created in AWS Ireland region in order to make 
 
 This document will show simple way to get started utilizing this framework step by step.
 
-Before starting make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo to your local machine. 
+Before starting 
+- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo to your local machine. 
+- Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role, CloudFormation and Secrets Manager services in AWS.
 
 ## How to get started?
 
 # Step 1. VPC, Subnets & Security Groups creation. 
+![vm_load_vision](jmeter-icap/instructions/img/Step1.png)
+
+**Create VPC and Subnets if non existent**
 
 If there are no existing VPC and Subnets available then https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets.json CloudFormation script can be used to create one.
 
@@ -31,24 +36,24 @@ If there are no existing VPC and Subnets available then https://github.com/k8-pr
        - port 3100 - from load generator security group
        - port 8086 - from load generator security group
 
-# Checking values in the Cloudformation Script
+**Checking & replacing values in the GenerateLoadGenerators.json script**
 
 In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 
-There are some existing resources that the script uses to generate the required instances
+**Replace the following parameters with your own value**:
 
-ami id - this is id from ICAPServer-Performance-Load-Generator AWS community image
+- VpcId - vpc id created above
 
-sg - ICAP-Performance-LG-SG id
+- SubnetIds -public subnets ids list created above
 
-vpc - vpc id created above
+- KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
 
-sn - public subnet list created above
+- AmiImage - this is id (ami-088f46d6d2a758a97) from ICAPServer-Performance-Load-Generator AWS community image
 
-key pair name - your key pair name used to access AWS EC2 instances
+- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above) security group id
 
 AMI, Security Group, and Key Pair Name can all be found under the EC2 Service.
-VPC and Subnet can be found under the VPC Service.
+VPC and Subnets can be found under the VPC Service.
 
 # Step 2. Setup Performance Dashboard system
 
