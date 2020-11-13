@@ -185,7 +185,7 @@ Secret Value = Your grafana api key value here
 - Download gov_uk_files.zip to your local machine from jmeter-icap/test-data/
 - unzip the file
 - upload it's contents to s3 bucket created earlier
-- Structure of end s3 bucket should be -> filetype->hashfolders->files
+- The folder structure of the test files s3 bucket should be ->  filetype->hashfolders->files
 
 **Run python script to trigger load**
 
