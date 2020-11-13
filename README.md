@@ -40,7 +40,7 @@ If there are no existing VPC and Subnets available then https://github.com/k8-pr
 
 In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 
-**Replace the following parameters with your own value**:
+**Replace & save the following parameters with your own value**:
 
 - VpcId - vpc id created above
 
@@ -57,11 +57,22 @@ VPC and Subnets can be found under the VPC Service.
 
 # Step 2. Setup Performance Dashboard system
 
-Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-039215eee67c4041e image from AWS community. 
+Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-039215eee67c4041e image from AWS community using the following steps:
 
-EC2 Instance type =t3.medium is sufficient for average use. 
+- Click on Launch Instance
+- Type "icapserver" in search field & click enter
+- Click on "Community AMIs"
+- Select "ICAPServer-Performance-Analytics-Dashboard" AMI
+- Select t3.medium (for average use) instance type
+- Select desired VPC and public subnet (created in step1, or existing own one can be used)
+- Auto Assign Public IP & leave all other options as default
+- Click Add Storage, then Click Add Tags : Create Name tag to identify your instance
+- Next Configure security group: Select ICAP-Performance-Dashboard-SG created in step 1
+- Review & Launch. Select your own keypair or create new one.
+- Open Browser and enter http://[instance public ip]:3000
+- Grafana ui opens and login with username/password: admin/glasswall
 
-if you do not wish to use ready image, rather create everything from scratch then follow these instructions:
+If you do not wish to use ready image, rather create everything from scratch then follow these instructions:
 https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
 
 # Step 3. Create S3 bucket
