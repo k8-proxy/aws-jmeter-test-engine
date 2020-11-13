@@ -1,0 +1,347 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "VPC and Subnets",
+
+  "Parameters" : {
+
+  },
+
+  "Mappings" : {
+
+    "SubnetConfig": {
+      "VPC": {
+        "CIDR": "10.114.48.0/20"
+      },
+      "SubnetPubA": { 
+        "CIDR": "10.114.48.0/24",
+        "AvailabilityZone" : "us-west-1a",
+        "NamePostFix": "subnet.pub.a"
+      },
+      "SubnetPubB": {
+        "CIDR": "10.114.49.0/24",
+        "AvailabilityZone" : "us-west-1b",
+        "NamePostFix": "subnet.pub.b"
+      },
+      "SubnetPubC": {
+        "CIDR": "10.114.50.0/24",
+        "AvailabilityZone" : "eu-west-1c",
+        "NamePostFix": "subnet.pub.c"
+      },
+      "SubnetPriA": {
+        "CIDR": "10.114.51.0/24",
+        "AvailabilityZone" : "us-west-1a",
+        "NamePostFix": "subnet.pri.a"
+      },
+      "SubnetPriB": {
+        "CIDR": "10.114.52.0/24",
+        "AvailabilityZone" : "us-west-1b",
+        "NamePostFix": "subnet.pri.b"
+      },
+      "SubnetPriC": {
+        "CIDR": "10.114.53.0/24",
+        "AvailabilityZone" : "us-west-1c",
+        "NamePostFix": "subnet.pri.c"
+      },
+      "SubnetPriNatGateWay": {
+        "CIDR": "10.114.54.0/24",
+        "AvailabilityZone" : "us-west-1c",
+        "NamePostFix": "subnet.pri.nat"
+      }
+    }
+  },
+
+  "Resources" : {
+
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "VPC", "CIDR" ] },
+        "InstanceTenancy": "default",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" : { "Fn::Join" : [ "-", [ { "Ref" : "AWS::StackName" }, "VPC" ] ] }
+          }
+        ]
+      }
+    },
+
+    "InternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" : { "Fn::Join" : [ "-", [ { "Ref" : "AWS::StackName" }, "InternetGateway" ] ] }
+          }
+        ]
+      }
+    },
+
+    "GatewayToInternet" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "InternetGatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+
+    "InternetRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" : { "Fn::Join" : [ "-", [ { "Ref" : "AWS::StackName" }, "InternetRouteTable" ] ] }
+          }
+        ]
+      }
+    },
+
+    "InternetRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "GatewayToInternet",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "InternetRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+
+    "SubnetPubA" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubA", "CIDR" ] },
+        "AvailabilityZone": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubA", "AvailabilityZone" ] },
+        "MapPublicIpOnLaunch" : "true",
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" :  { "Fn::Join" : [ "-", [
+              { "Ref" : "AWS::StackName" },
+              { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubA", "NamePostFix" ] } ] ] }
+          }
+        ]
+      }
+    },
+
+    "SubnetPubARouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "SubnetPubA" },
+        "RouteTableId" : { "Ref" : "InternetRouteTable" }
+      }
+    },
+
+    "SubnetPubB" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubB", "CIDR" ] },
+        "AvailabilityZone": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubB", "AvailabilityZone" ] },
+        "MapPublicIpOnLaunch" : "true",
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" :  { "Fn::Join" : [ "-", [
+              { "Ref" : "AWS::StackName" },
+              { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubB", "NamePostFix" ] } ] ] }
+          }
+        ]
+      }
+    },
+
+    "SubnetPubBRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "SubnetPubB" },
+        "RouteTableId" : { "Ref" : "InternetRouteTable" }
+      }
+    },
+
+    "SubnetPubC" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubC", "CIDR" ] },
+        "AvailabilityZone": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubC", "AvailabilityZone" ] },
+        "MapPublicIpOnLaunch" : "true",
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" :  { "Fn::Join" : [ "-", [
+              { "Ref" : "AWS::StackName" },
+              { "Fn::FindInMap": [ "SubnetConfig", "SubnetPubC", "NamePostFix" ] } ] ] }
+          }
+        ]
+      }
+    },
+
+    "SubnetPubCRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "SubnetPubC" },
+        "RouteTableId" : { "Ref" : "InternetRouteTable" }
+      }
+    },
+    "SubnetPriA" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriA", "CIDR" ] },
+        "AvailabilityZone": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriA", "AvailabilityZone" ] },
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" :  { "Fn::Join" : [ "-", [
+              { "Ref" : "AWS::StackName" },
+              { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriA", "NamePostFix" ] } ] ] }
+          }
+        ]
+      }
+    },
+
+    "SubnetPriARouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "SubnetPriA" },
+        "RouteTableId" : { "Ref" : "InternetRouteTable" }
+      }
+    },
+
+    "SubnetPriB" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriB", "CIDR" ] },
+        "AvailabilityZone": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriB", "AvailabilityZone" ] },
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" :  { "Fn::Join" : [ "-", [
+              { "Ref" : "AWS::StackName" },
+              { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriB", "NamePostFix" ] } ] ] }
+          }
+        ]
+      }
+    },
+
+    "SubnetPriBRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "SubnetPriB" },
+        "RouteTableId" : { "Ref" : "InternetRouteTable" }
+      }
+    },
+
+    "SubnetPriC" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriC", "CIDR" ] },
+        "AvailabilityZone": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriC", "AvailabilityZone" ] },
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" :  { "Fn::Join" : [ "-", [
+              { "Ref" : "AWS::StackName" },
+              { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriC", "NamePostFix" ] } ] ] }
+          }
+        ]
+      }
+    },
+
+    "SubnetPriCRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "SubnetPriC" },
+        "RouteTableId" : { "Ref" : "InternetRouteTable" }
+      }
+    },
+    "SubnetPriNatGateWay" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriNatGateWay", "CIDR" ] },
+        "AvailabilityZone": { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriNatGateWay", "AvailabilityZone" ] },
+        "Tags" : [
+          { "Key" : "Name",
+            "Value" :  { "Fn::Join" : [ "-", [
+              { "Ref" : "AWS::StackName" },
+              { "Fn::FindInMap": [ "SubnetConfig", "SubnetPriNatGateWay", "NamePostFix" ] } ] ] }
+          }
+        ]
+      }
+    },
+
+    "SubnetPriBRouteTableAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "SubnetPriNatGateWay" },
+        "RouteTableId" : { "Ref" : "InternetRouteTable" }
+      }
+    }
+  },
+    
+  
+  "Outputs" : {
+    
+    "VpcId" : {
+      "Description" : "SPH AWS CD VPC ID",
+      "Value" :  { "Ref" : "VPC" },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-VPCId" }}
+    },
+    "SubnetPubA" : {
+      "Description" : "Subnet ID",
+      "Value" :  { "Ref" : "SubnetPubA" },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetPubA" }}
+    },
+    "SubnetPubB" : {
+      "Description" : "Subnet ID",
+      "Value" :  { "Ref" : "SubnetPubB" },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetPubB" }}
+    },
+    "SubnetPubC" : {
+        "Description" : "Subnet ID",
+        "Value" :  { "Ref" : "SubnetPubC" },
+        "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetPubC" }}
+      },
+      "SubnetPriA" : {
+        "Description" : "Subnet ID",
+        "Value" :  { "Ref" : "SubnetPriA" },
+        "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetPriA" }}
+      },
+
+      "SubnetPriB" : {
+        "Description" : "Subnet ID",
+        "Value" :  { "Ref" : "SubnetPriB" },
+        "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetPriB" }}
+      },
+      "SubnetPriC" : {
+        "Description" : "Subnet ID",
+        "Value" :  { "Ref" : "SubnetPriC" },
+        "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetPriC" }}
+      },
+
+    "AwscdSubnetIds" : {
+      "Value" : { "Fn::Join" : [ ", ", [
+        { "Ref" : "SubnetPubA" },
+        { "Ref" : "SubnetPubB" },
+        { "Ref" : "SubnetPubC" },
+        { "Ref" : "SubnetPriA" },
+        { "Ref" : "SubnetPriB" },
+        { "Ref" : "SubnetPriC" },
+        { "Ref" : "SubnetPriC" },
+        { "Ref" : "SubnetPriNatGateWay" }
+      ] ] }
+    },
+
+    "AwscdSubnetCidrs" : {
+      "Value" : { "Fn::Join" : [ ", ", [
+        { "Fn::FindInMap": [ "SubnetConfig",  "SubnetPubA", "CIDR"] },
+        { "Fn::FindInMap": [ "SubnetConfig",  "SubnetPubB", "CIDR"] },
+        { "Fn::FindInMap": [ "SubnetConfig",  "SubnetPubC", "CIDR"] },
+        { "Fn::FindInMap": [ "SubnetConfig",  "SubnetPriA", "CIDR"] },
+        { "Fn::FindInMap": [ "SubnetConfig",  "SubnetPriB", "CIDR"] },
+        { "Fn::FindInMap": [ "SubnetConfig",  "SubnetPriC", "CIDR"] },
+        { "Fn::FindInMap": [ "SubnetConfig",  "SubnetPriNatGateWay", "CIDR"] }
+      ] ] }
+    }
+  }
+}
