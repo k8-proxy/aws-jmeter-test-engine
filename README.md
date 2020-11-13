@@ -68,11 +68,11 @@ Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-0
 - Auto Assign Public IP & leave all other options as default
 - Click Add Storage, then Click Add Tags : Create Name tag to identify your instance
 - Next Configure security group: Select ICAP-Performance-Dashboard-SG created in step 1
-- Review & Launch. Select your own keypair.
+- Review & Launch. Select your own keypair or create new one.
 - Open Browser and enter http://[instance public ip]:3000
 - Grafana ui opens and login with username/password: admin/glasswall
 
-if you do not wish to use ready image, rather create everything from scratch then follow these instructions:
+If you do not wish to use ready image, rather create everything from scratch then follow these instructions:
 https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
 
 # Step 3. Create S3 bucket
