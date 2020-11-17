@@ -74,7 +74,7 @@ VPC and Subnets can be found under the VPC Service.
 
 # Step 2. Setup Performance Dashboard system
 
-Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-039215eee67c4041e image from AWS community using the following steps:
+Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard image from AWS community using the following steps:
 
 - Click on Launch Instance
 - Type "icapserver" in search field & click enter
