@@ -29,7 +29,7 @@ jobs:
       - name: Install required packages and delete stack
         run: |
           pip install boto3 python-dotenv
-          cd jmeter-icap-poc/scripts
+          cd jmeter-icap/scripts
           cp config.env.sample config.env
           sed -i -e '/AWS_PROFILE_NAME/ { d; } ' config.env
           python3 delete_stack.py
