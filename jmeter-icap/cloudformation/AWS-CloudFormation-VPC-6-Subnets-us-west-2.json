@@ -25,7 +25,7 @@
       },
       "SubnetPubC": {
         "CIDR": "10.114.50.0/24",
-        "AvailabilityZone" : "eu-west-1c",
+        "AvailabilityZone" : "us-west-2c",
         "NamePostFix": "subnet.pub.c"
       },
       "SubnetPriA": {
