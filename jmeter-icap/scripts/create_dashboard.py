@@ -3,6 +3,23 @@ import json
 from create_stack import Config
 
 
+# If the grafana file passed does not contain the appropriate elements with appropriate values, modify it
+def __convert_grafana_json_to_template(grafana_json):
+
+    # file must be enclosed in a dashboard tag
+    if not 'dashboard' in grafana_json:
+        grafana_json = {'dashboard': grafana_json}
+
+    # ids must be set to null to prevent duplicate id errors. Grafana generates these automatically.
+    grafana_json['dashboard']['id'] = None
+    grafana_json['dashboard']['uid'] = None
+
+    grafana_json['folderId'] = 0
+    grafana_json['overwrite'] = True
+
+    return grafana_json
+
+
 #  Appends prefix to title and all occurrences of "measurement" value in the Grafana JSON file
 def __add_prefix_to_grafana_json(grafana_json, prefix):
     grafana_json["dashboard"]["title"] = prefix + ' ' + grafana_json["dashboard"]["title"]
@@ -52,19 +69,23 @@ def __post_grafana_dash(config):
     duration = config.duration
     endpoint_url = config.icap_endpoint_url
 
-    if grafana_url[len(grafana_url) - 1] != '/':
-        grafana_url += '/'
     if not grafana_url.startswith("http"):
         grafana_url = "http://" + grafana_url
 
-    grafana_api_url = grafana_url + 'api/dashboards/db'
+    grafana_api_url = grafana_url
 
+    if grafana_url[len(grafana_url) - 1] != '/':
+        grafana_api_url += '/'
+
+    grafana_api_url = grafana_api_url + 'api/dashboards/db'
+    print(grafana_api_url)
     headers = {
         "Authorization": "Bearer " + key,
         "Content-Type": "application/json"}
 
     with open(grafana_template) as json_file:
         grafana_json = json.load(json_file)
+        grafana_json = __convert_grafana_json_to_template(grafana_json)
         __add_users_req_to_grafana_json(grafana_json, instances_required)
         __add_prefix_to_grafana_json(grafana_json, prefix)
         __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url)
@@ -74,6 +95,8 @@ def __post_grafana_dash(config):
     d = eval(resp.text)
     # if the response contains a URL, use it to build a url that links directly to the newly created dashboard
     if "url" in d:
+        if grafana_url[len(grafana_url) - 1] == '/':
+            grafana_url = grafana_url[:-1]
         return grafana_url + d.get('url')
     else:
         print("Dashboard creation failed: {0}".format(resp.text))
