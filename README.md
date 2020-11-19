@@ -201,7 +201,7 @@ https://github.com/k8-proxy/aws-jmeter-test-engine/blob/release_v1.0/jmeter-icap
 
 The following video tutorial shows how Steps 1-6 are done:
 
-[![](http://img.youtube.com/vi/S1r-twJcG64/0.jpg)](http://www.youtube.com/watch?v=S1r-twJcG64 "Steps 1-6 Tutorial")
+[![](http://img.youtube.com/vi/S1r-twJcG64/0.jpg)](http://www.youtube.com/watch?v=7neP05AQSXY "Steps 1-6 Tutorial")
 
 The following video tutorial shows how to generate load using the framework:
 
