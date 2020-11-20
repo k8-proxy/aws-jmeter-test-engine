@@ -36,7 +36,7 @@
           </elementProp>
           <elementProp name="influxHost" elementType="Argument">
             <stringProp name="Argument.name">influxHost</stringProp>
-            <stringProp name="Argument.value">${__P(p_influxHost,34.240.133.65)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_influxHost,localhost)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="aws_access_key" elementType="Argument">
