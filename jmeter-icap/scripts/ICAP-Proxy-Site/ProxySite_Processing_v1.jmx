@@ -36,7 +36,7 @@
           </elementProp>
           <elementProp name="influxHost" elementType="Argument">
             <stringProp name="Argument.name">influxHost</stringProp>
-            <stringProp name="Argument.value">${__P(p_influxHost,34.240.133.65)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_influxHost,localhost)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="aws_access_key" elementType="Argument">
@@ -71,7 +71,7 @@
           </elementProp>
           <elementProp name="filetype" elementType="Argument">
             <stringProp name="Argument.name">filetype</stringProp>
-            <stringProp name="Argument.value">${__P(p_filetype,engineering-site-files.csv)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_filetype,proxysitefiles.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -284,7 +284,7 @@
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
-        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <boolProp name="ResultCollector.error_logging">true</boolProp>
         <objProp>
           <name>saveConfig</name>
           <value class="SampleSaveConfiguration">
