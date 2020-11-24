@@ -214,6 +214,15 @@ if __name__ == "__main__":
     parser.add_argument('--region', default=Config.region,
                         help='AWS Region to use')
 
+    parser.add_argument('--icap_server_port', '-port', default=Config.icap_server_port,
+                        help='Port of ICAP server used for testing')
+
+    parser.add_argument('--tls_verification_method', '-tls', default=Config.tls_verification_method,
+                        help='Verification method used with TLS')
+
+    parser.add_argument('--enable_tls', '-et', default=Config.enable_tls,
+                        help='Whether or not to enable TLS')
+
     args = parser.parse_args()
 
     Config.total_users = int(args.total_users)
@@ -228,5 +237,8 @@ if __name__ == "__main__":
     Config.jmx_script_name = args.jmx_script_name
     Config.test_data_access_secret = args.test_data_access_secret
     Config.region = args.region
+    Config.icap_server_port = args.icap_server_port
+    Config.tls_verification_method = args.tls_verification_method
+    Config.enable_tls = args.enable_tls
 
     main(Config)
