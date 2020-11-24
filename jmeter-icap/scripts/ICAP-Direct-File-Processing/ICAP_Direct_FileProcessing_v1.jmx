@@ -350,11 +350,6 @@ log.info(&quot;File copied to in. &quot;+s3cp);*/
 
 log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
 
-/*if (vars.get&quot;use_tls&quot; === &quot;true&quot;) {
-	String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -tls -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
-	String command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} &quot; +vars.get(&quot;tls&quot;)+ &quot; -v&quot;;
-     log.info(&quot;Use TLS set to: &quot;+vars.get&quot;use_tls&quot;);
-}*/
 String command1 = &quot;&quot;;
 String command2 = &quot;&quot;;
 
@@ -369,13 +364,10 @@ else {
      log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
 }
 
-log.info(&quot;Command 1 is &quot;+command1);
-log.info(&quot;Command 2 is &quot;+command2);
-
 String command=command1+command2;
 // Print the generated status check command
-//log.info(&quot;Command 1 is &quot;+command1);
-//log.info(&quot;Command 2 is &quot;+command2);
+log.info(&quot;Command 1 is &quot;+command1);
+log.info(&quot;Command 2 is &quot;+command2);
 log.info(&quot;Full command is &quot;+command);
 
 // Create a process object and let this object execute the icap client command

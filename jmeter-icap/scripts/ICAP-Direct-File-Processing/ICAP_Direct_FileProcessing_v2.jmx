@@ -334,8 +334,21 @@ s3p.waitFor();
 log.info(&quot;File copied to in. &quot;+s3cp);*/
 
 log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
-String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
-String command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+
+String command1 = &quot;&quot;;
+String command2 = &quot;&quot;;
+
+if (vars.get(&quot;use_tls&quot;) == &quot;true&quot;) {
+	command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -tls -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
+	command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} &quot; +vars.get(&quot;tls&quot;)+ &quot; -v&quot;;
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
+}
+else {
+	command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
+     command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
+}
+
 String command=command1+command2;
 // Print the generated status check command
 log.info(&quot;Command 1 is &quot;+command1);
