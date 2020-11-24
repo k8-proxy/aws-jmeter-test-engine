@@ -41,6 +41,9 @@ class Config(object):
         grafana_server_tag = os.getenv("GRAFANA_SERVER_TAG")
         grafana_secret = os.getenv("GRAFANA_SECRET")
         test_directory = os.getenv("TEST_DIRECTORY")
+        icap_server_port = os.getenv("ICAP_SERVER_PORT")
+        enable_tls = os.getenv("ENABLE_TLS")
+        tls_verification_method = os.getenv("TLS_VERIFICATION_METHOD")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -92,6 +95,9 @@ def main(config):
     script_data = re.sub("SCRIPT=[A-Za-z0-9_\-\.]*", "SCRIPT=" + config.jmx_script_name, script_data)
     script_data = re.sub("SECRET_ID=[A-Za-z0-9_\-]*", "SECRET_ID=" + config.test_data_access_secret, script_data)
     script_data = re.sub("REGION=[A-Za-z0-9_\-]*", "REGION=" + config.region, script_data)
+    script_data = re.sub("-Jp_port=[0-9]*", "-Jp_port=" + str(config.icap_server_port), script_data)
+    script_data = re.sub("-Jp_use_tls=[a-zA-Z]*", "-Jp_use_tls=" + str(config.enable_tls), script_data)
+    script_data = re.sub("-Jp_tls=[a-zA-Z0-9\-\.]*", "-Jp_tls=" + str(config.tls_verification_method), script_data)
 
     s3_client = session.client('s3')
     s3_client.put_object(Bucket=config.script_bucket,
