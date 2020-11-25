@@ -1,0 +1,52 @@
+<h1> ICAP Performance Testing </h1>
+
+<form [formGroup]="configForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+        <label>Total Users:</label>
+        <input type="text" class="form-control" formControlName="total_users" placeholder="Ex: 4000">
+        <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test (default:
+            4000)</small>
+    </div>
+    
+    <div class="form-group">
+        <label>Ramp Up Time:</label>
+        <input type="text" class="form-control" formControlName="ramp_up_time" placeholder="Ex: 300">
+        <small class="form-text text-muted"></small>
+    </div>
+
+    <div class="form-group">
+        <label for="test_data_file">Duration:</label>
+        <input type="text" class="form-control" formControlName="duration" placeholder="Ex: 900">
+        <small class="form-text text-muted"></small>
+    </div>
+
+    <div class="form-group">
+        <label>Icap Endpoint URL:</label>
+        <input type="text" class="form-control" formControlName="icap_endpoint_url"
+            placeholder="icap-client.uk.cloud.com">
+        <small class="form-text text-muted"></small>
+    </div>
+
+    <div class="form-group">
+        <label>Prefix:</label>
+        <input type="text" class="form-control" formControlName="prefix" placeholder="demo-prefix">
+        <small class="form-text text-muted"></small>
+    </div>
+
+    <div class="form-group">
+        <label for="test_data_file">Choose Test Data File:</label>
+        <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
+    </div>
+
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" formControlName="preserve_stack">
+        <label class="form-check-label">Preserve Stack</label>
+    </div>
+
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" formControlName="exclude_dashboard">
+        <label class="form-check-label">Exclude Dashboard</label>
+    </div>
+    <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+</form>
