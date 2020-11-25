@@ -146,6 +146,7 @@ def __get_stack_name(config):
 
     return created_stack_name
 
+def run_using_json(json_params):
     if json_params['total_users']:
         Config.total_users = json_params['total_users']
     if json_params['ramp_up_time']:
