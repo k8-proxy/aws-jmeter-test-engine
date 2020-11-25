@@ -85,6 +85,16 @@ def __get_commandline_args():
     parser.add_argument('--grafana_secret', '-gs', default=Config.grafana_secret,
                         help='The secret ID for the Grafana API Key stored in AWS Secrets')
 
+    parser.add_argument('--icap_server_port', '-port', default=Config.icap_server_port,
+                        help='Port of ICAP server used for testing')
+
+    parser.add_argument('--tls_verification_method', '-tls', default=Config.tls_verification_method,
+                        help='Verification method used with TLS')
+
+    parser.add_argument('--enable_tls', '-et', default=Config.enable_tls,
+                        help='Whether or not to enable TLS')
+
+
     return parser.parse_args()
 
 
@@ -185,6 +195,9 @@ if __name__ == "__main__":
     Config.grafana_server_tag = args.grafana_server_tag
     Config.test_directory = args.test_directory
     Config.grafana_file = args.grafana_file
+    Config.icap_server_port = args.icap_server_port
+    Config.tls_verification_method = args.tls_verification_method
+    Config.enable_tls = args.enable_tls
 
     # these are flag/boolean arguments
     if args.exclude_dashboard:
