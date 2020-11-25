@@ -146,6 +146,22 @@ def __get_stack_name(config):
 
     return created_stack_name
 
+    if json_params['total_users']:
+        Config.total_users = json_params['total_users']
+    if json_params['ramp_up_time']:
+        Config.ramp_up_time = json_params['ramp_up_time']
+    if json_params['duration']:
+        Config.duration = json_params['duration']
+    if json_params['icap_endpoint_url']:
+        Config.icap_endpoint_url = json_params['icap_endpoint_url']
+    if json_params['prefix']:
+        Config.prefix = json_params['prefix']
+
+    Config.preserve_stack = bool(json_params['preserve_stack'])
+    Config.exclude_dashboard = bool(json_params['exclude_dashboard'])
+
+    main(Config)
+
 
 def main(config):
     print("Creating Load Generators...")
