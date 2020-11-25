@@ -356,12 +356,12 @@ String command2 = &quot;&quot;;
 if (vars.get(&quot;use_tls&quot;).equals(&quot;true&quot;)) {
 	command1 = &quot;/usr/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -tls -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
 	command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} &quot; +vars.get(&quot;tls&quot;)+ &quot; -v&quot;;
-     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;) + &quot; and you are using tls&quot;);
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
 }
 else {
 	command1 = &quot;/usr/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
      command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
-     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;) + &quot; and you are not using tls&quot;);
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
 }
 
 String command=command1+command2;
@@ -433,7 +433,7 @@ private static String getFileChecksum(MessageDigest digest, File file) throws IO
 File outFile = new File(&quot;${outputPath}/&quot;+uuid+&quot;_${fileName}&quot;);
  
 //Use MD5 algorithm
-MessageDigest out_Digest = MessageDigest.getInstance(&quot;SHA-1&quot;);
+MessageDigest out_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
 String out_checksum=&quot;out&quot;;
  try {
 //Get the checksum
