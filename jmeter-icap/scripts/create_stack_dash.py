@@ -161,7 +161,9 @@ def run_using_json(json_params):
     Config.preserve_stack = bool(json_params['preserve_stack'])
     Config.exclude_dashboard = bool(json_params['exclude_dashboard'])
 
-    main(Config)
+    dashboard_url = main(Config)
+
+    return dashboard_url
 
 
 def main(config):
@@ -172,13 +174,14 @@ def main(config):
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        create_dashboard.main(config)
+        dashboard_url = create_dashboard.main(config)
 
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")
     else:
         __start_delete_stack(DELETE_TIME_OFFSET, config)
 
+    return dashboard_url
 
 if __name__ == "__main__":
     args = __get_commandline_args()

@@ -1,44 +1,46 @@
 <h1> ICAP Performance Testing </h1>
 
-<form [formGroup]="configForm" (ngSubmit)="onSubmit()">
-
+<form [formGroup]="configForm" (ngSubmit)="onSubmit()" name="configForm">
     <div class="form-group">
-        <label>Total Users:</label>
-        <input type="text" class="form-control" formControlName="total_users" placeholder="Ex: 4000">
-        <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test (default:
-            4000)</small>
+        <label>Total Users</label>
+        <input type="text" class="form-control" formControlName="total_users" placeholder="Ex: 25">
+        <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test</small>
+        <div *ngIf="total_users.touched && total_users.invalid" class="alert alert-danger">Please provide a number value</div>
     </div>
     
     <div class="form-group">
-        <label>Ramp Up Time:</label>
+        <label>Ramp Up Time</label>
         <input type="text" class="form-control" formControlName="ramp_up_time" placeholder="Ex: 300">
-        <small class="form-text text-muted"></small>
+        <small class="form-text text-muted">Ramp up time in seconds</small>
+        <div *ngIf="ramp_up_time.touched && ramp_up_time.invalid" class="alert alert-danger">Please provide a number value</div>
     </div>
 
     <div class="form-group">
-        <label for="test_data_file">Duration:</label>
+        <label>Duration</label>
         <input type="text" class="form-control" formControlName="duration" placeholder="Ex: 900">
-        <small class="form-text text-muted"></small>
+        <small class="form-text text-muted">Duration of test in seconds</small>
+        <div *ngIf="duration.touched && duration.invalid" class="alert alert-danger">Please provide a number value</div>
     </div>
 
     <div class="form-group">
-        <label>Icap Endpoint URL:</label>
+        <label>Icap Endpoint URL*</label>
         <input type="text" class="form-control" formControlName="icap_endpoint_url"
-            placeholder="icap-client.uk.cloud.com">
-        <small class="form-text text-muted"></small>
+            placeholder="Required">
+        <small class="form-text text-muted">ICAP server endpoint *this field is required</small>
+        <div *ngIf="icap_endpoint_url.touched && icap_endpoint_url.invalid" class="alert alert-danger">An ICAP server endpoint is required</div>
     </div>
 
     <div class="form-group">
         <label>Prefix:</label>
-        <input type="text" class="form-control" formControlName="prefix" placeholder="demo-prefix">
+        <input type="text" class="form-control" formControlName="prefix" placeholder="demo">
         <small class="form-text text-muted"></small>
     </div>
-
+<!--
     <div class="form-group">
         <label for="test_data_file">Choose Test Data File:</label>
         <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
     </div>
-
+-->
     <div class="form-group form-check">
         <input type="checkbox" class="form-check-input" formControlName="preserve_stack">
         <label class="form-check-label">Preserve Stack</label>
@@ -48,5 +50,13 @@
         <input type="checkbox" class="form-check-input" formControlName="exclude_dashboard">
         <label class="form-check-label">Exclude Dashboard</label>
     </div>
-    <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Submit</button>
+    <br />
+    <br />
+    <div *ngIf="formSubmitted" class="alert alert-primary" role="alert">
+        Test submitted. Generating Load Balancers...
+      </div>
+      <div *ngIf="gotResponse" class="alert alert-success" role="alert">
+        Success! <a href="{{responseUrl}}">Click here to view Grafana Dashboard</a>
+      </div>
 </form>
