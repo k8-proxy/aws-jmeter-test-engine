@@ -353,15 +353,15 @@ log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Doc
 String command1 = &quot;&quot;;
 String command2 = &quot;&quot;;
 
-if (vars.get(&quot;use_tls&quot;) == &quot;true&quot;) {
+if (vars.get(&quot;use_tls&quot;).equals(&quot;true&quot;)) {
 	command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -tls -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
 	command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} &quot; +vars.get(&quot;tls&quot;)+ &quot; -v&quot;;
-     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;) + &quot; and you are using tls&quot;);
 }
 else {
 	command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
      command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
-     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;) + &quot; and you are not using tls&quot;);
 }
 
 String command=command1+command2;
