@@ -188,7 +188,7 @@ def __determineLoadType(load: str):
     if load == "Direct":
         print("Using direct")
         Config.test_directory = 'ICAP-Direct-File-Processing'
-        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_v3.jmx'
+        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
         Config.grafana_file = 'aws-test-engine-dashboard.json'
         Config.test_data_file = 'gov_uk_files.csv'
         print("Config.test_directory = {0}".format(Config.test_directory))
@@ -208,6 +208,7 @@ def __determineLoadType(load: str):
         print("Config.test_data_file = {0}".format(Config.test_data_file))
 
 def main(config):
+    dashboard_url = ''
     print("Creating Load Generators...")
     create_stack.main(config)
 
