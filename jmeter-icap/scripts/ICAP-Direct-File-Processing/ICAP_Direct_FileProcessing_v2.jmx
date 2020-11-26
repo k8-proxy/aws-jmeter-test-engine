@@ -109,6 +109,21 @@
             <stringProp name="Argument.value">${__P(p_filetype,files)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="port" elementType="Argument">
+            <stringProp name="Argument.name">port</stringProp>
+            <stringProp name="Argument.value">${__P(p_port,1344)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="tls" elementType="Argument">
+            <stringProp name="Argument.name">tls</stringProp>
+            <stringProp name="Argument.value">${__P(p_tls,no-verify)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="use_tls" elementType="Argument">
+            <stringProp name="Argument.name">use_tls</stringProp>
+            <stringProp name="Argument.value">${__P(p_use_tls,false)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
         <stringProp name="TestPlan.comments">aws-testengine-s3  ${__P(p_url,gw-icap01.westeurope.azurecontainer.io)} ${__P(p_influxHost,localhost)}</stringProp>
       </Arguments>
@@ -334,8 +349,21 @@ s3p.waitFor();
 log.info(&quot;File copied to in. &quot;+s3cp);*/
 
 log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
-String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
-String command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+
+String command1 = &quot;&quot;;
+String command2 = &quot;&quot;;
+
+if (vars.get(&quot;use_tls&quot;).equals(&quot;true&quot;)) {
+	command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -tls -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
+	command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} &quot; +vars.get(&quot;tls&quot;)+ &quot; -v&quot;;
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
+}
+else {
+	command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
+     command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+     log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
+}
+
 String command=command1+command2;
 // Print the generated status check command
 log.info(&quot;Command 1 is &quot;+command1);
