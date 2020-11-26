@@ -1,10 +1,7 @@
-import os
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
-from werkzeug.utils import secure_filename
 import json
 from create_stack_dash import run_using_json
-import csv
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}

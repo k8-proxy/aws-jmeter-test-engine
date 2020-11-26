@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-1. Download and install Node.js ([click here to download](https://nodejs.org/en/)). You can check if this was correctly installed by entering "node --version"
+1. Download and install Node.js ([click here to download](https://nodejs.org/en/)). You can check if this was correctly installed by entering "node --version" in terminal.
 
 2. Install Angular CLI using Node Package Manager (npm, already installed with Node.js in step 1). To do this, type in terminal (use sudo on linux systems):
 ```
@@ -17,6 +17,12 @@ npm install -g http-server
 ```
 
 This is a really fast and easy way to get a server up and running from the project's production build folder. Alternatively, an Apache web server could also be used.
+
+4. For back end, install Flask and dependencies (must have [python](https://www.python.org/downloads/) installed on machine):
+```
+pip install Flask
+pip install Flask-Cors
+```
 
 ## Setting up Project from Repository
 
@@ -52,3 +58,10 @@ http-server
 This will start the server from this directory, typically served on http://localhost:8080/
 
 Accessing the above link should take you directly to the UI front end of the application.
+
+## Deploying Back End Flask Server
+
+To deploy the backend, run:
+```
+python flask_server.py
+```
