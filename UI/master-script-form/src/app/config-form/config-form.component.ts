@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ConfigFormComponent implements OnInit {
   regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
+  loadTypes: string[] = ['Direct', 'Proxy'];
   configForm: FormGroup;
   fileToUpload: File = null;
   submitted = false;
@@ -27,11 +28,10 @@ export class ConfigFormComponent implements OnInit {
       total_users: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
       duration: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
       ramp_up_time: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
+      load_type: this.loadTypes[0],
       icap_endpoint_url: new FormControl('', Validators.required),
       prefix: '',
-      test_data_file: '',
-      preserve_stack: false,
-      exclude_dashboard: false
+      test_data_file: ''
     });
   }
 
@@ -77,6 +77,12 @@ export class ConfigFormComponent implements OnInit {
     this.responseReceived = true;
   }
 
+  resetForm() {
+    var oldLoadType = this.configForm.get('load_type').value;
+    this.configForm.reset();
+    this.configForm.get('load_type').setValue(oldLoadType);
+  }
+
   onSubmit(): void {
     if (this.configForm.valid) {
       //append the necessary data to formData and send to Flask server
@@ -87,7 +93,7 @@ export class ConfigFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response));
       this.submitted = true;
-      this.configForm.reset();
+      this.resetForm();
     } 
   }
 }

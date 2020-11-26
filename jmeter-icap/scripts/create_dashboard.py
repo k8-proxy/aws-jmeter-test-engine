@@ -77,7 +77,6 @@ def __post_grafana_dash(config):
         grafana_api_url += '/'
 
     grafana_api_url = grafana_api_url + 'api/dashboards/db'
-    print(grafana_api_url)
     headers = {
         "Authorization": "Bearer " + key,
         "Content-Type": "application/json"}

@@ -30,7 +30,6 @@ def parse_request():
 
     returned_url = run_using_json(data)
     if returned_url:
-        print("hey I got this url: {0}".format(returned_url))
         return make_response(jsonify(returned_url), 201)
 
 CORS(app)
