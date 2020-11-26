@@ -1,0 +1,20 @@
+2020-11-26 21:00:07,802 INFO o.a.j.u.JMeterUtils: Setting Locale to en
+2020-11-26 21:00:07,842 INFO o.a.j.JMeter: Loading user properties from: /mnt/c/Users/I355534/Desktop/apache-jmeter-5.1.1/bin/user.properties
+2020-11-26 21:00:07,847 INFO o.a.j.JMeter: Loading system properties from: /mnt/c/Users/I355534/Desktop/apache-jmeter-5.1.1/bin/system.properties
+2020-11-26 21:00:07,862 INFO o.a.j.JMeter: Copyright (c) 1998-2019 The Apache Software Foundation
+2020-11-26 21:00:07,863 INFO o.a.j.JMeter: Version 5.1.1 r1855137
+2020-11-26 21:00:07,863 INFO o.a.j.JMeter: java.version=1.8.0_272
+2020-11-26 21:00:07,863 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2020-11-26 21:00:07,864 INFO o.a.j.JMeter: os.name=Linux
+2020-11-26 21:00:07,864 INFO o.a.j.JMeter: os.arch=amd64
+2020-11-26 21:00:07,864 INFO o.a.j.JMeter: os.version=4.19.128-microsoft-standard
+2020-11-26 21:00:07,865 INFO o.a.j.JMeter: file.encoding=UTF-8
+2020-11-26 21:00:07,865 INFO o.a.j.JMeter: java.awt.headless=true
+2020-11-26 21:00:07,866 INFO o.a.j.JMeter: Max memory     =5890899968
+2020-11-26 21:00:07,866 INFO o.a.j.JMeter: Available Processors =12
+2020-11-26 21:00:07,875 INFO o.a.j.JMeter: Default Locale=English
+2020-11-26 21:00:07,875 INFO o.a.j.JMeter: JMeter  Locale=English
+2020-11-26 21:00:07,876 INFO o.a.j.JMeter: JMeterHome=/mnt/c/Users/I355534/Desktop/apache-jmeter-5.1.1
+2020-11-26 21:00:07,876 INFO o.a.j.JMeter: user.dir  =/mnt/c/Users/I355534/Desktop/aws-jmeter-test-engine
+2020-11-26 21:00:07,878 INFO o.a.j.JMeter: PWD       =/mnt/c/Users/I355534/Desktop/aws-jmeter-test-engine
+2020-11-26 21:00:07,879 INFO o.a.j.JMeter: IP: 127.0.1.1 Name: W-R90T5KVP FullName: W-R90T5KVP.localdomain
