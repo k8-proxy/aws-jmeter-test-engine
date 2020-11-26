@@ -2,7 +2,6 @@ import requests
 import json
 from create_stack import Config
 
-
 # If the grafana file passed does not contain the appropriate elements with appropriate values, modify it
 def __convert_grafana_json_to_template(grafana_json):
 
@@ -78,7 +77,6 @@ def __post_grafana_dash(config):
         grafana_api_url += '/'
 
     grafana_api_url = grafana_api_url + 'api/dashboards/db'
-    print(grafana_api_url)
     headers = {
         "Authorization": "Bearer " + key,
         "Content-Type": "application/json"}
@@ -108,6 +106,7 @@ def main(config):
     if created_dashboard_url:
         print("Dashboard created at: ")
         print(created_dashboard_url)
+        return created_dashboard_url
 
 
 # main: Gets command line arguments, creates dashboard in grafana, outputs URL in response (if any)
