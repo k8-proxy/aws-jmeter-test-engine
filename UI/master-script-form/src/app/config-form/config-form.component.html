@@ -48,11 +48,11 @@
         <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
     </div>
 -->
-    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Submit</button>
+    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
     <br />
     <br />
     <div *ngIf="formSubmitted" class="alert alert-primary" role="alert">
-        Test submitted. Generating Load Balancers...
+        Test submitted. Generating Load...
       </div>
       <div *ngIf="gotResponse" class="alert alert-success" role="alert">
         Success! <a href="{{responseUrl}}">Click here to view Grafana Dashboard</a>
