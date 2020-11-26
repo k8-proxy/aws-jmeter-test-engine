@@ -112,12 +112,12 @@ def main(config):
     with open("./" + config.test_directory +  "/" + config.test_data_file, 'rb') as data:
         s3_client.upload_fileobj(data, config.script_bucket, "script/" + config.test_data_file)
 
-    with open("config-promtail.yaml", 'r') as data:
+    with open("config-promtail.yml", 'r') as data:
         data = re.sub("glasswall_jmeter", config.prefix + "_jmeter", data.read())
         data = re.sub("http://[a-zA-Z0-9\-\.]*:3100", f"http://{config.influx_host}:3100", data)
         s3_client.put_object(Bucket=config.script_bucket,
                          Body=data,
-                         Key=config.prefix + "_script/config-promtail.yaml" )
+                         Key=config.prefix + "_script/config-promtail.yml" )
 
     # Load cloudformation template
     with open("../cloudformation/GenerateLoadGenerators.json", "r") as f:
@@ -129,19 +129,18 @@ def main(config):
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = prefix + "LoadTest-" + date_suffix
-    userdata = base64.b64encode(f"""
-    #!/bin/bash
-    touch /var/lock/subsys/local
-    sudo aws s3 cp s3://{config.script_bucket}/{file_name} /home/ec2-user/apache-jmeter-5.3/bin/
-    cd /home/ec2-user
-    sudo wget https://github.com/grafana/loki/releases/download/v2.0.0/promtail-linux-amd64.zip
-    sudo unzip promtail-linux-amd64.zip
-    chmod a+x promtail-linux-amd64
-    aws s3 cp s3://{config.script_bucket}/{config.prefix}_script/config-promtail.yaml /home/ec2-user/
-    sudo ./promtail-linux-amd64 -config.file=config-promtail.yaml > /dev/null 2>&1 &
-    cd /home/ec2-user/apache-jmeter-5.3/bin
-    sudo chmod +x StartExecution.sh
-    ./StartExecution.sh
+    userdata = base64.b64encode(f"""#!/bin/bash
+touch /var/lock/subsys/local
+sudo aws s3 cp s3://{config.script_bucket}/{file_name} /home/ec2-user/apache-jmeter-5.3/bin/
+cd /home/ec2-user
+sudo wget https://github.com/grafana/loki/releases/download/v2.0.0/promtail-linux-amd64.zip
+sudo unzip promtail-linux-amd64.zip
+sudo chmod a+x promtail-linux-amd64
+sudo aws s3 cp s3://{config.script_bucket}/{config.prefix}_script/config-promtail.yml /home/ec2-user/
+sudo ./promtail-linux-amd64 -config.file=config-promtail.yml > /dev/null 2>&1 &
+cd /home/ec2-user/apache-jmeter-5.3/bin
+sudo chmod +x StartExecution.sh
+./StartExecution.sh
     """.encode("utf-8")).decode("ascii")
     print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (
         str(config.instances_required), stack_name))

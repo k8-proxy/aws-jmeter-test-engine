@@ -6,10 +6,6 @@ TEST_DATA_BUCKET=icap-perf-test-data
 SECRET_ID=GlasswallDataRepositoryTestUser
 REGION=eu-west-1
 
-###
-sudo yum install jq -y
-###
-
 # Copy Script file
 sudo aws s3 cp s3://$SCRIPT_BUCKET/script/$SCRIPT /home/ec2-user/apache-jmeter-5.3/bin/
 sudo aws s3 cp s3://$SCRIPT_BUCKET/script/$DATA_FILE /home/ec2-user/apache-jmeter-5.3/bin/
