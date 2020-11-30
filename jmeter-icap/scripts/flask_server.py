@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import json
 from create_stack_dash import run_using_json
+import run_local_test
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -25,7 +26,7 @@ def parse_request():
     #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
 
-    returned_url = run_using_json(data)
+    returned_url = run_local_test.main(data)
     if returned_url:
         return make_response(jsonify(returned_url), 201)
 
