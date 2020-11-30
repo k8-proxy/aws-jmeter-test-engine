@@ -14,7 +14,7 @@ from create_stack import Config, get_size
 def main(json_params):
         # Set Config values gotten from front end
     if json_params['total_users']:
-        Config.total_users = json_params['total_users']
+        Config.total_users = int(json_params['total_users'])
         Config.users_per_instance = Config.total_users
         Config.instance_type, jvm_memory = get_size(Config.users_per_instance)
     if json_params['ramp_up_time']:
