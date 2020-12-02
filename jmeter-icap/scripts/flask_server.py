@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import json
 import run_local_test
+from waitress import serve
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -18,4 +19,4 @@ def parse_request():
         return make_response(jsonify(returned_url), 201)
 
 CORS(app)
-app.run(host='0.0.0.0')
+serve(app, host='0.0.0.0', port=5000)

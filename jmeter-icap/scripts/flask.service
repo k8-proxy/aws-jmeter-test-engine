@@ -1,0 +1,14 @@
+# /etc/systemd/system/flask.service
+[Unit]
+Description=WSGI App for ICAP Testing UI Front End
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/usr/local/flaskServer/
+ExecStart=/usr/local/flaskServer/exec.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
