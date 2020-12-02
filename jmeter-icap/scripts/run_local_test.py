@@ -15,18 +15,25 @@ def main(json_params):
         # Set Config values gotten from front end
     if json_params['total_users']:
         Config.total_users = int(json_params['total_users'])
-        Config.users_per_instance = Config.total_users
-        Config.instance_type, jvm_memory = get_size(Config.users_per_instance)
+    else:
+        Config.total_users = 25
+
+    Config.users_per_instance = Config.total_users
+    Config.instance_type, jvm_memory = get_size(Config.users_per_instance)
     if json_params['ramp_up_time']:
         Config.ramp_up_time = json_params['ramp_up_time']
+    else:
+        Config.ramp_up_time = 300
     if json_params['duration']:
         Config.duration = json_params['duration']
+    else:
+        Config.duration = 900
     if json_params['icap_endpoint_url']:
         Config.icap_endpoint_url = json_params['icap_endpoint_url']
     if json_params['prefix']:
         Config.prefix = json_params['prefix']
     if json_params['load_type']:
-        __determineLoadType(json_params['load_type'], Config)
+        __determineLoadType(json_params['load_type'])
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False
@@ -49,7 +56,7 @@ def main(json_params):
         script_data = re.sub("-Jp_port=[0-9]*", "-Jp_port=" + str(Config.icap_server_port), script_data)
         script_data = re.sub("-Jp_use_tls=[a-zA-Z]*", "-Jp_use_tls=" + str(Config.enable_tls), script_data)
         script_data = re.sub("-Jp_tls=[a-zA-Z0-9\-\.]*", "-Jp_tls=" + str(Config.tls_verification_method), script_data)
-    
+
     dir_path = os.path.dirname(os.path.realpath(__file__))
     script_path = os.path.join(dir_path,"RunStartExecution.sh")
     with open(script_path, "w") as f:
@@ -59,7 +66,6 @@ def main(json_params):
     subprocess.Popen([script_path])
 
     # create dashboard
-    Config.grafana_url = "http://localhost:3000/"
     dashboard_url = ""
     if Config.exclude_dashboard:
         print("Dashboard will not be created")

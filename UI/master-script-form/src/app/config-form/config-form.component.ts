@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'config-form',
@@ -17,10 +18,15 @@ export class ConfigFormComponent implements OnInit {
   responseUrl='';
   responseReceived = false;
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router) { }
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
 
   ngOnInit(): void {
     this.initializeForm();
+    this.setTitle("ICAP Performance Test");
+  }
+
+  setTitle(newTitle: string) {
+    this.titleService.setTitle(newTitle);
   }
 
   initializeForm(): void {

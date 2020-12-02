@@ -6,8 +6,8 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/usr/local/flaskServer/
-ExecStart=/usr/local/flaskServer/exec.sh
+WorkingDirectory=/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+ExecStart=/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/exec.sh
 Restart=always
 
 [Install]
