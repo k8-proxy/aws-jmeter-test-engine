@@ -355,12 +355,12 @@ String command2 = &quot;&quot;;
 
 if (vars.get(&quot;use_tls&quot;).equals(&quot;true&quot;)) {
 	command1 = &quot;/usr/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -tls -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
-	command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} &quot; +vars.get(&quot;tls&quot;)+ &quot; -v&quot;;
+	command2=&quot; -f ${inPath}/${path}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} &quot; +vars.get(&quot;tls&quot;)+ &quot; -v&quot;;
      log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
 }
 else {
 	command1 = &quot;/usr/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p &quot; + vars.get(&quot;port&quot;)+ &quot; -s gw_rebuild&quot;;
-     command2=&quot; -f ${inPath}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+     command2=&quot; -f ${inPath}/${path}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
      log.info(&quot;Use TLS set to: &quot;+vars.get(&quot;use_tls&quot;));
 }
 
