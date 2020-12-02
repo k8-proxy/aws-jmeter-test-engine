@@ -1,11 +1,11 @@
-#How to setup OVA ?
+# How to setup OVA ?
 
 The following instructions will help to setup OVA that will include dashboarding and load generation solutions.
 Virtual Machine OS to be used here is Ubuntu 20.04.
 Easiest way to create OVA is to setup everything in EC2 instance in AWS and then export EC2 as OVA.
 
 
-##1. Install Loki
+## 1. Install Loki
 
 ```bash
 cd /usr/local/bin
@@ -41,13 +41,13 @@ sudo service loki start
 sudo service loki status
 sudo systemctl enable loki.service
 ```
-#Install ICAP client
+# Install ICAP client
 ```bash
 sudo apt-get update
 sudo apt-get install c-icap -y
 ```
 
-##Install InfluxDB
+## Install InfluxDB
 
 ```bash
 echo "deb https://repos.influxdata.com/ubuntu bionic stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
@@ -70,7 +70,7 @@ InfluxDB shell version: 1.8.3
 > exit
 
 ```
-##Install grafana
+## Install grafana
 
 ```bash
 
@@ -88,19 +88,19 @@ InfluxDB shell version: 1.8.3
  systemctl status grafana-server.service 
 ```
 
- #Install Java
+ ## Install Java
 
 ```bash
   sudo apt -y install openjdk-8-jdk
 ```
 
-##Install useful tools
+## Install useful tools
 ```bash
    apt -y install telnet
    apt -y install unzip
    apt -y install jq
 ```
-##Install jmeter
+## Install jmeter
 
 ```bash
 mkdir /opt/jmeter
@@ -122,7 +122,7 @@ Clone repo
 cd git
 git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
 ```
-# Setting UP Generate Load ui
+## Setting UP Generate Load ui
 
 ```bash
 install node js
@@ -165,7 +165,7 @@ sudo apt install apache2
 sudo systemctl status apache2
 sudo systemctl enable apache2
 ```
-#Export EC2 as OVA.
+## Export EC2 as OVA.
 
 -Ensure that aws cli v2 is setup with access to AWS. 
 -S3 bucket is created 
