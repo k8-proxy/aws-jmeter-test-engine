@@ -11,7 +11,7 @@ npm install -g @angular/cli
 
 The '-g' option is used to make the installation global, so it can be used anywhere and not just in the current folder. This process will take a little while. This can also be checked with "ng --version"
 
-4. For back end, install Flask and dependencies (must have [python](https://www.python.org/downloads/) installed on machine). A requirements file is already set up and can be used to install the necessary packages:
+3. For back end, install Flask and dependencies (must have [python](https://www.python.org/downloads/) installed on machine). A requirements file is already set up and can be used to install the necessary packages:
 ```
 pip install -r requirements.txt
 ```
