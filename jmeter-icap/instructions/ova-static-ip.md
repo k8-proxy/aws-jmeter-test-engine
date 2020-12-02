@@ -28,7 +28,7 @@ network:
               addresses: [8.8.4.4,8.8.8.8]
     version: 2
 ```
-- Disable `cloud-int` network config. Add below setting to this file `/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg`
+- Disable `cloud-init` network config. Add below setting to this file `/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg`
 
 ```json
 network: {config: disabled}
