@@ -39,7 +39,7 @@
 
     <div class="form-group">
         <label>Prefix:</label>
-        <input type="text" class="form-control" formControlName="prefix" placeholder="demo">
+        <input type="text" class="form-control" formControlName="prefix" placeholder="Ex: example-prefix">
         <small class="form-text text-muted"></small>
     </div>
 <!--
@@ -55,6 +55,6 @@
         Test submitted. Generating Load...
       </div>
       <div *ngIf="gotResponse" class="alert alert-success" role="alert">
-        Success! <a href="{{responseUrl}}">Click here to view Grafana Dashboard</a>
+        Success! <a href="{{responseUrl}}" target="_blank">Click here to view Grafana Dashboard</a>
       </div>
 </form>
