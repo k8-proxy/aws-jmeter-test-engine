@@ -66,6 +66,7 @@ def main(json_params):
     subprocess.Popen([script_path])
 
     # create dashboard
+    Config.grafana_url = "http://localhost:3000/"
     dashboard_url = ""
     if Config.exclude_dashboard:
         print("Dashboard will not be created")
