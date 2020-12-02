@@ -8,18 +8,26 @@ import subprocess
 from dotenv import load_dotenv
 from create_stack_dash import __determineLoadType
 import create_dashboard
-from create_stack import Config
+from create_stack import Config, get_size
 
 
 def main(json_params):
         # Set Config values gotten from front end
     if json_params['total_users']:
-        Config.total_users = json_params['total_users']
-        Config.users_per_instance = Config.total_users
+        Config.total_users = int(json_params['total_users'])
+    else:
+        Config.total_users = 25
+
+    Config.users_per_instance = Config.total_users
+    Config.instance_type, jvm_memory = get_size(Config.users_per_instance)
     if json_params['ramp_up_time']:
         Config.ramp_up_time = json_params['ramp_up_time']
+    else:
+        Config.ramp_up_time = 300
     if json_params['duration']:
         Config.duration = json_params['duration']
+    else:
+        Config.duration = 900
     if json_params['icap_endpoint_url']:
         Config.icap_endpoint_url = json_params['icap_endpoint_url']
     if json_params['prefix']:
@@ -29,22 +37,26 @@ def main(json_params):
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False
-    Config.exclude_dashboard = True # update to False
+    Config.exclude_dashboard = False
 
     # set jmeter parameters
-    with open("LocalStartExecution.sh") as f:
+    with open("LocalStartExecution.sh", "r") as f:
         script_data = f.read()
 
         script_data = re.sub("-Jp_vuserCount=[0-9]*", "-Jp_vuserCount=" + str(Config.users_per_instance), script_data)
         script_data = re.sub("-Jp_rampup=[0-9]*", "-Jp_rampup=" + str(Config.ramp_up_time), script_data)
         script_data = re.sub("-Jp_duration=[0-9]*", "-Jp_duration=" + str(Config.duration), script_data)
         script_data = re.sub("-Jp_url=[a-zA-Z0-9\-\.]*", "-Jp_url=" + str(Config.icap_endpoint_url), script_data)
+        script_data = re.sub("Xms[0-9]*m", "Xms" + str(jvm_memory), script_data)
+        script_data = re.sub("Xmx[0-9]*m", "Xmx" + str(jvm_memory), script_data)
         script_data = re.sub("-Jp_influxHost=[a-zA-Z0-9\.]*", "-Jp_influxHost=" + Config.influx_host, script_data)
         script_data = re.sub("-Jp_prefix=[A-Za-z0-9_\-]*", "-Jp_prefix=" + Config.prefix, script_data)
+        script_data = re.sub("DATA_FILE=[A-Za-z0-9_\-\.]*", "DATA_FILE=" + Config.test_data_file, script_data)
+        script_data = re.sub("SCRIPT=[A-Za-z0-9_\-\.]*", "SCRIPT=" + Config.jmx_script_name, script_data)
         script_data = re.sub("-Jp_port=[0-9]*", "-Jp_port=" + str(Config.icap_server_port), script_data)
         script_data = re.sub("-Jp_use_tls=[a-zA-Z]*", "-Jp_use_tls=" + str(Config.enable_tls), script_data)
         script_data = re.sub("-Jp_tls=[a-zA-Z0-9\-\.]*", "-Jp_tls=" + str(Config.tls_verification_method), script_data)
-    
+
     dir_path = os.path.dirname(os.path.realpath(__file__))
     script_path = os.path.join(dir_path,"RunStartExecution.sh")
     with open(script_path, "w") as f:
@@ -54,7 +66,6 @@ def main(json_params):
     subprocess.Popen([script_path])
 
     # create dashboard
-    Config.grafana_url = "http://localhost:3000/"
     dashboard_url = ""
     if Config.exclude_dashboard:
         print("Dashboard will not be created")
@@ -67,10 +78,10 @@ def main(json_params):
 
 if __name__ == "__main__":
     # test this script
-    json_params = {"total_users": 4000,
-                   "ramp_up_time": 180,
-                   "duration": 900,
-                   "icap_endpoint_url": "eu.icap.glasswall-icap.com",
+    json_params = {"total_users": 20,
+                   "ramp_up_time": 20,
+                   "duration": 60,
+                   "icap_endpoint_url": "us.icap.glasswall-icap.com",
                    "prefix": "ga",
                    "load_type": "Direct"}
     main(json_params)
