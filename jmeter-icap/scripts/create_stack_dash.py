@@ -158,14 +158,12 @@ def __get_stack_name(config):
 
 def __determineLoadType(load: str):
     if load == "Direct":
-        print("Using direct")
         Config.test_directory = 'ICAP-Direct-File-Processing'
         Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
         Config.grafana_file = 'aws-test-engine-dashboard.json'
         Config.test_data_file = 'gov_uk_files.csv'
 
     elif load == "Proxy":
-        print("Using proxy")
         Config.test_directory = 'ICAP-Proxy-Site'
         Config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
         Config.grafana_file = 'ProxySite_Dashboard_Template.json'

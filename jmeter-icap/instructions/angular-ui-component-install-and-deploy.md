@@ -11,17 +11,9 @@ npm install -g @angular/cli
 
 The '-g' option is used to make the installation global, so it can be used anywhere and not just in the current folder. This process will take a little while. This can also be checked with "ng --version"
 
-3. Install http-server:
+4. For back end, install Flask and dependencies (must have [python](https://www.python.org/downloads/) installed on machine). A requirements file is already set up and can be used to install the necessary packages:
 ```
-npm install -g http-server
-```
-
-This is a really fast and easy way to get a server up and running from the project's production build folder. Alternatively, an Apache web server could also be used.
-
-4. For back end, install Flask and dependencies (must have [python](https://www.python.org/downloads/) installed on machine):
-```
-pip install Flask
-pip install Flask-Cors
+pip install -r requirements.txt
 ```
 
 ## Setting up Project from Repository
@@ -46,22 +38,54 @@ ng build --prod
 
 This will generate a folder in the project directory named "dist". Dist will contain another folder that holds the index.html page that will serve the application. See example path: "(localRepo)/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form".
 
-### Deployment Using
+## Running Backend Server
 
-Navigate to the master-script-form folder in dist and start the server by simply entering "http-server":
-
-```
-cd dist/master-script-form
-http-server
-```
-
-This will start the server from this directory, typically served on http://localhost:8080/
-
-Accessing the above link should take you directly to the UI front end of the application.
-
-## Deploying Back End Flask Server
-
-To deploy the backend, run:
+To run the backend, use:
 ```
 python flask_server.py
+```
+However it is preferable to have this running as a service. See section below for information on how to do this.
+
+## Setting Up Backend Server as a Service
+
+This project comes with a file named "flask.service", this will need to be placed in a certain directory in the Ubuntu OS in order to run the flask server as a service. That directory is as follows:
+
+```
+/etc/systemd/system/
+```
+
+Flask.service's contents point to the directory where the rest of the project's python scripts exist:
+
+```
+# /etc/systemd/system/flask.service
+[Unit]
+Description=WSGI App for ICAP Testing UI Front End
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+ExecStart=/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/exec.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+See entries for *WorkingDirectory* and *ExecStart*. *WorkingDirectory* must point to the folder in the repo containing the python scripts (called "scripts" by default in the repository). The project also comes with an exec.sh file in "scripts" which contains the command used to run the flask server, and that is what *ExecStart* points to.
+
+Once flask.service is put into "/etc/systemd/system/" and contains the correct directory information, it will have to be enabled then started.
+
+To do this, run the following commands separately:
+
+```
+sudo systemctl enable flask
+sudo systemctl start flask
+```
+
+The service should now be started and running in the background. Output from the flask server will not be sent to stdout or stderr (it runs silently). To check the output logs of the service as well as its status, use:
+
+```
+sudo journalctl -u flask
 ```
