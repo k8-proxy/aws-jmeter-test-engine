@@ -30,7 +30,7 @@ def main(json_params):
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False
-    Config.exclude_dashboard = True # update to False
+    Config.exclude_dashboard = False
 
     # set jmeter parameters
     with open("LocalStartExecution.sh", "r") as f:
