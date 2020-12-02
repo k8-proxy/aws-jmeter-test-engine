@@ -73,7 +73,7 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-See entries for *WorkingDirectory* and *ExecStart*. *WorkingDirectory* must point to the folder in the repo containing the python scripts (called "scripts" by default in the repository). The project also comes with an exec.sh file in "scripts" which contains the command used to run the flask server, and that is what *ExecStart* points to.
+See entries for *WorkingDirectory* and *ExecStart*. *WorkingDirectory* must point to the folder in the repo containing the python scripts (called "scripts" by default in the repository). *ExecStart* points to a file in the "scripts" folder called named "exec.sh", which contains the command used to run the python script "flask_server.py" (the script we want running as a service).
 
 Once flask.service is put into "/etc/systemd/system/" and contains the correct directory information, it will have to be enabled then started.
 
