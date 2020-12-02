@@ -170,7 +170,7 @@ def run_using_json(json_params):
     if json_params['prefix']:
         Config.prefix = json_params['prefix']
     if json_params['load_type']:
-        __determineLoadType(json_params['load_type'])
+       __determineLoadType(json_params['load_type'], Config)
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False
@@ -184,28 +184,29 @@ def run_using_json(json_params):
 
     return dashboard_url
 
-def __determineLoadType(load: str):
+def __determineLoadType(load: str, config: object):
     if load == "Direct":
         print("Using direct")
-        Config.test_directory = 'ICAP-Direct-File-Processing'
-        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
-        Config.grafana_file = 'aws-test-engine-dashboard.json'
-        Config.test_data_file = 'gov_uk_files.csv'
-        print("Config.test_directory = {0}".format(Config.test_directory))
-        print("Config.jmx_script_name = {0}".format(Config.jmx_script_name))
-        print("Config.grafana_file = {0}".format(Config.grafana_file))
-        print("Config.test_data_file = {0}".format(Config.test_data_file))
+        config.test_directory = 'ICAP-Direct-File-Processing'
+        config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
+        config.grafana_file = 'aws-test-engine-dashboard.json'
+        config.test_data_file = 'gov_uk_files.csv'
+        print("config.test_directory = {0}".format(config.test_directory))
+        print("config.jmx_script_name = {0}".format(config.jmx_script_name))
+        print("config.grafana_file = {0}".format(config.grafana_file))
+        print("config.test_data_file = {0}".format(config.test_data_file))
 
     elif load == "Proxy":
         print("Using proxy")
-        Config.test_directory = 'ICAP-Proxy-Site'
-        Config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
-        Config.grafana_file = 'ProxySite_Dashboard_Template.json'
-        Config.test_data_file = 'proxysitefiles.csv'
-        print("Config.test_directory = {0}".format(Config.test_directory))
-        print("Config.jmx_script_name = {0}".format(Config.jmx_script_name))
-        print("Config.grafana_file = {0}".format(Config.grafana_file))
-        print("Config.test_data_file = {0}".format(Config.test_data_file))
+        config.test_directory = 'ICAP-Proxy-Site'
+        config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
+        config.grafana_file = 'ProxySite_Dashboard_Template.json'
+        config.test_data_file = 'proxysitefiles.csv'
+        print("config.test_directory = {0}".format(config.test_directory))
+        print("config.jmx_script_name = {0}".format(config.jmx_script_name))
+        print("config.grafana_file = {0}".format(config.grafana_file))
+        print("config.test_data_file = {0}".format(config.test_data_file))
+    return config
 
 def main(config):
     dashboard_url = ''
