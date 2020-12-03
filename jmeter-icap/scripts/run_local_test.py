@@ -95,7 +95,7 @@ def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_i
     if input_load_type == "Direct":
 
         # enable/disable tls based on user input
-        Config.enable_tls = input_enable_tls
+        Config.enable_tls = str(input_enable_tls).lower()
 
         # if user entered a port, use that. Otherwise port will be set depending on tls_enabled below.
         if input_port:
