@@ -240,6 +240,7 @@ Reboot & Confirm that changes are in effect:
 1048576
 ```
 ## Add new user with password authentication
+Ensure to run the following as root user.
 
 ```bash
 adduser glasswall
