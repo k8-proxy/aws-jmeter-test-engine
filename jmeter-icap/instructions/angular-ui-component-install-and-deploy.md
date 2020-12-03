@@ -2,59 +2,76 @@
 
 ## Prerequisites
 
-1. Download and install Node.js ([click here to download](https://nodejs.org/en/)). You can check if this was correctly installed by entering "node --version" in terminal.
+Install Node.js
 
-2. Install Angular CLI using Node Package Manager (npm, already installed with Node.js in step 1). To do this, type in terminal (use sudo on linux systems):
-```
+```bash
+install node js
+apt install nodejs -y
+apt install npm -y
 npm install -g @angular/cli
+npm install -g http-server
+```
+Install python
+
+```bash
+sudo apt update
+sudo apt -y upgrade
+sudo apt install -y python3-pip
+sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
 ```
 
-The '-g' option is used to make the installation global, so it can be used anywhere and not just in the current folder. This process will take a little while. This can also be checked with "ng --version"
+Install apache
 
-3. For back end, install Flask and dependencies (must have [python](https://www.python.org/downloads/) installed on machine). A requirements file is already set up and can be used to install the necessary packages:
-```
-pip install -r requirements.txt
+```bash
+sudo apt update
+sudo apt install apache2
+sudo systemctl status apache2
+sudo systemctl enable apache2
 ```
 
-## Setting up Project from Repository
+For back end, install Flask and dependencies. A requirements file is already set up and can be used to get the necessary packages. Navigate to folder and install:
 
-To install the Angular project and all dependencies, navigate to the folder containing the project files in the repository: "(YourLocalRepository)/aws-jmeter-test-engine/UI/master-script-form". Once inside, enter in terminal:
 ```
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+pip3 install -r requirements.txt
+```
+
+## Setting up UI Project from Repository
+
+To install the Angular project and all dependencies, navigate to the folder containing the project files in the repository and use npm like so:
+```
+cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
 npm install
 ```
 
-This will automatically download all dependencies and setup files/folders required to test/develop/deploy this angular project. Once this is done, you can test the app by typing:
-```
-ng serve
-```
-In the terminal within the project folder shown above (it has to be inside that directory). This will boot up a test server at 'http://localhost:4200/' (this is just a test server and should not be used in production).
+This will automatically download all dependencies and setup files/folders required to test/develop/deploy this angular project. It could take a couple of minutes to install.
 
 ## Deploying Angular Project to Web Server
 
 The project must first be built in order to be deployed. In the project directory, in the terminal, run:
 ```
+cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
 ng build --prod
 ```
 
-This will generate a folder in the project directory named "dist". Dist will contain another folder that holds the index.html page that will serve the application. See example path: "(localRepo)/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form".
+This will generate a dist folder that contains the files that need to be copied into the apache server.
 
-## Running Backend Server
+```
+cp -a /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form/. /var/www/html/
+```
 
-To run the backend, use:
-```
-python flask_server.py
-```
-However it is preferable to have this running as a service. See section below for information on how to do this.
+Now the UI should be accessible via the virtual machine's IP (i.e. http://virtual-macine-ip)
 
 ## Setting Up Backend Server as a Service
 
-This project comes with a file named "flask.service", this will need to be placed in a certain directory in the Ubuntu OS in order to run the flask server as a service. That directory is as follows:
-
+To setup the backend service, navigate to the folder containing the project files in the repository and copy the flask.service file to the system folder, and provide "exec.sh" with the correct permissions as shown below:
 ```
-/etc/systemd/system/
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+chmod +x exec.sh
+cp flask.service /etc/systemd/system/
 ```
 
-Flask.service's contents point to the directory where the rest of the project's python scripts exist:
+Flask.service's contents point to the directory where the project's python server scripts exist and to exec.sh, which runs those scripts. Please ensure that *WorkingDirectory* and *ExecStart* paths match the project repository path (they should by default):
 
 ```
 # /etc/systemd/system/flask.service
@@ -73,18 +90,22 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
-See entries for *WorkingDirectory* and *ExecStart*. *WorkingDirectory* must point to the folder in the repo containing the python scripts (called "scripts" by default in the repository). *ExecStart* points to a file in the "scripts" folder called named "exec.sh", which contains the command used to run the python script "flask_server.py" (the script we want running as a service).
 
 Once flask.service is put into "/etc/systemd/system/" and contains the correct directory information, it will have to be enabled then started.
-
-To do this, run the following commands separately:
+To do this, run the following:
 
 ```
 sudo systemctl enable flask
 sudo systemctl start flask
 ```
 
-The service should now be started and running in the background. Output from the flask server will not be sent to stdout or stderr (it runs silently). To check the output logs of the service as well as its status, use:
+Check if the service is running correctly using:
+
+```
+sudo systemctl status flask
+```
+
+The service should now be started and running in the background. To view this service's logs, use the following:
 
 ```
 sudo journalctl -u flask
