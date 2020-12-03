@@ -101,7 +101,7 @@ InfluxDB shell version: 1.8.3
    sudo apt -y install unzip
  
 ```
-## Install jmeter
+## Install jmeter and set up data
 
 ```bash
 sudo mkdir /opt/jmeter
@@ -109,6 +109,22 @@ cd /opt/jmeter/
 sudo wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
 
 sudo unzip apache-jmeter-5.3.zip 
+```
+Create in and out folders
+```bash
+cd /opt/jmeter/apache-jmeter-5.3/bin
+sudo mkdir in
+sudo mkdir out
+```
+Prepara test data in correct place
+```bash
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/test-data/
+sudo unzip gov_uk_files.zip
+```
+Move files to jmeter bin/in folder
+```bash
+cd gov_uk_files
+sudo cp -R * /opt/jmeter/apache-jmeter-5.3/bin/in/
 ```
 
 ## Install & Setup git
