@@ -124,47 +124,88 @@ git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
 ```
 ## Setting UP Generate Load ui
 
-```bash
-install node js
-apt install nodejs -y
-apt install npm -y
-npm install -g @angular/cli
-npm install -g http-server
-```
--Install python
+Follow Instructions from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/angular-ui-component-install-and-deploy.md link to setup UI.
+
+## Install Promtail and setup as service
 
 ```bash
-sudo apt update
-sudo apt -y upgrade
-sudo apt install -y python3-pip
-sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
+cd /usr/local/bin
+sudo curl -fSL -o promtail.gz "https://github.com/grafana/loki/releases/download/v1.6.1/promtail-linux-amd64.zip"
+
 ```
--Install Flask
+```bash
+sudo gunzip promtail.gz
+```
+```bash
+sudo chmod a+x promtail
+```
+Now we will create promtail config file:
 
 ```bash
-pip3 install Flask
-pip3 install Flask-Cors
+sudo nano config-promtail.yml
 ```
-build UI:
-```bash
-   cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
-   npm install
-   ng build --prod
-```
-Copy all UI files:
+And add this script,
 
 ```bash
-cd /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form
-cp * /var/www/html/
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+positions:
+  filename: /tmp/positions.yaml
+clients:
+  - url: http://127.0.0.1:3100/loki/api/v1/push
+scrape_configs:
+- job_name: glasswall_jmeter
+  static_configs:
+  - targets:
+      - glasswall_jmeter
+    labels:
+      job: glasswall_jmeter
+      __path__: "/opt/jmeter/apache-jmeter-5.3/bin/jmeter.log"
+```
+Create user specifically for the Promtail service
+```bash
+sudo useradd --system promtail
+```
+Create a file called promtail.service
+
+and add this script
+```bash
+sudo nano /etc/systemd/system/promtail.service
+```
+Add this to the file:
+
+```bash
+[Unit]
+Description=Promtail service
+After=network.target
+
+[Service]
+Type=simple
+User=promtail
+ExecStart=/usr/local/bin/promtail -config.file /usr/local/bin/config-promtail.yml
+
+[Install]
+WantedBy=multi-user.target
+```
+Run the service:
+```bash
+sudo service promtail start
+sudo service promtail status
+usermod -a -G systemd-journal promtail
+```
+Give necessary correct permissions in case if promtail service does not run
+
+```bash
+usermod -a -G systemd-journal promtail
+chown promtail:promtail /tmp/positions.yaml
+```
+Set the service autorun during boot:
+
+```bash
+sudo systemctl enable promtail.service
 ```
 
-- Install apache
-```bash
-sudo apt update
-sudo apt install apache2
-sudo systemctl status apache2
-sudo systemctl enable apache2
-```
 ## Export EC2 as OVA.
 
 -Ensure that aws cli v2 is setup with access to AWS. 
