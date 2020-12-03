@@ -35,7 +35,9 @@ The Load Generator UI form has the following options:
 - Rampup time: How fast you would like to ramp up total users? Default is 300.
 - Duration: How long would you like to generate load? Default is 900
 - Load Type: It is possible to generate load directly to ICAP Server or to a Proxy site
+- TLS and TLS Ignore Cert Errors: These settings will enable/disable TLS and ignoring of certification errors. Default is both values are on. 
 - ICAP/Proxy end point URL: end point url against which load should be run.
+- Port: ICAP Server port. For TLS default port is 443. For non-TLS default port is 1344
 - Prefix: prefix is used to distinquish different dashboards and measurements. For different kind of load scenarios it is good to use their own prefix so that dashboard view would be unique for that specific scenario
 
 ## How to generate load?
