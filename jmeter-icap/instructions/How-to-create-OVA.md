@@ -205,7 +205,39 @@ Set the service autorun during boot:
 ```bash
 sudo systemctl enable promtail.service
 ```
+# Linux tuning & install useful applications
 
+Ulimit tuning.
+
+In order to be able to generate high traffic, there is a need to tune Linux ulimit parameters:
+
+sudo nano /etc/security/limits.conf
+ Edit the following file
+ ```bash
+ sudo nano /etc/sysctl.conf
+```
+Add & save:
+```bash
+net.ipv4.ip_local_port_range = 12000 65535
+fs.file-max = 1048576
+```
+Edit the following file:
+ ```bash
+sudo nano /etc/security/limits.conf
+```
+Add & Save:
+```bash
+*           soft      nofile     1048576
+*           hard      nofile     1048576
+root        soft      nofile     1048576
+root        hard      nofile     1048576
+```
+
+Reboot & Confirm that changes are in effect:
+```bash
+[root@ip-10-112-4-96 ec2-user]# ulimit -n
+1048576
+```
 ## Export EC2 as OVA.
 
 -Ensure that aws cli v2 is setup with access to AWS. 
