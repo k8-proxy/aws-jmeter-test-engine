@@ -1,6 +1,6 @@
 # How to generate load with OVA ?
 
-This instruction assumes that Load Generator OVA is deployed to Vmware as Virtual Machine using provided instructions.
+This instruction assumes that Load Generator OVA is deployed to Vmware as Virtual Machine using provided instructions. See this link how to deploy OVA: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Deploy-OVA.md
 
 The load generator comes with 2 features:
 
