@@ -62,4 +62,5 @@ Enter admin/glasswall and then dashboard ui will be visible with your own set pr
 
 Note: Ensure that only one test scenario is running at a time. 
 Note: Log panel in performance dashboard will show traffic log lines in coming releases.
+Note: if you would like to stop the test, ssh to VM and find the java process pid , for example, by top commmand and kill it "sudo kill pid"
 
