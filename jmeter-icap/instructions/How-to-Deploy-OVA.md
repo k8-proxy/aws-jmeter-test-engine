@@ -20,7 +20,7 @@ Step 8. Once VM is ready, Shutdown and then go to Actions->Edit Settings and set
 ![vm_load_vision](img/VM-Memory-Change.png)
 Step 8. Login to VM with glasswall/glasswall credentials and remember to change password
 
-Step 9. Assign Static IP address by following : link here
+Step 9. Assign Static IP address by following : https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/ova-static-ip.md
 
 Step 10. Run the following shell script to change IP address to correct places:
 
