@@ -4,6 +4,9 @@ The following instructions will help to setup OVA that will include dashboarding
 Virtual Machine OS to be used here is Ubuntu 20.04.
 Easiest way to create OVA is to setup everything in EC2 instance in AWS and then export EC2 as OVA.
 
+The following diagram shows generic view of what processes are running and how are they connected:
+
+![vm_load_vision](img/Icap-Performance-Traffic-Generator-OVA.png)
 
 ## 1. Install Loki
 
@@ -70,7 +73,7 @@ InfluxDB shell version: 1.8.3
 > exit
 
 ```
-## Install grafana
+## Install grafana and setup datasources
 
 ```bash
 
@@ -88,6 +91,20 @@ InfluxDB shell version: 1.8.3
 
  systemctl status grafana-server.service 
 ```
+**Setup datasource**
+
+Open grafana UI in your browser: http://ip:3000/datasources. 
+Default credentials is admin/admin. Change it to admin/glasswall, for example.
+
+https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Integrate-Jmeter-With-Influxdb-and-Grafana.md these instructions show how a datasource can be added to Grafana.
+
+There are 3 datasources to be created in Grafana. Click Add Datasource and add the following:
+
+- Source name: InfluxDB, database: jmeter, url: http://localhost:8086
+- Source name: icapserver, database: jmeter, url: http://localhost:8086
+- Source name: Loki, url: http://localhost:3100
+
+![vm_load_vision](img/Grafana-Datasource.png)
 
  ## Install Java
 
