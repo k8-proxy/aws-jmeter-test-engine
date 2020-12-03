@@ -4,7 +4,7 @@ The following instructions will help to setup OVA that will include dashboarding
 Virtual Machine OS to be used here is Ubuntu 20.04.
 Easiest way to create OVA is to setup everything in EC2 instance in AWS and then export EC2 as OVA.
 
-The following diagram shows generic view of what processes are running and how are they connected:
+The following diagram shows generic view of what processes are going to run and how are they connected:
 
 ![vm_load_vision](img/Icap-Performance-Traffic-Generator-OVA.png)
 
