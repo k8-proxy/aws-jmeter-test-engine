@@ -1,6 +1,6 @@
 # How to deploy OVA to VMware ?
 
-Step 1. Download OVA from 
+Step 1. Download OVA from https://glasswall-sow-ova.s3-eu-west-1.amazonaws.com/vms/Traffic-Generator/Traffic-Generator.ova
 Step 2. Login to VMware and 
 Step 3. Create new VM from OVA:
 
