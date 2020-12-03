@@ -53,8 +53,8 @@ sudo apt-get install c-icap -y
 echo "deb https://repos.influxdata.com/ubuntu bionic stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 
 curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
-apt-get update
-apt-get install influxdb
+sudo apt-get update
+sudo apt-get install influxdb
 systemctl start influxdb
 systemctl status influxdb
 systemctl enable --now influxdb
@@ -74,9 +74,10 @@ InfluxDB shell version: 1.8.3
 
 ```bash
 
- apt install net-tools
+ sudo apt install net-tools
 
  sudo apt-get install -y gnupg2 curl  software-properties-common
+ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 
  sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
  sudo apt-get update
@@ -96,74 +97,171 @@ InfluxDB shell version: 1.8.3
 
 ## Install useful tools
 ```bash
-   apt -y install telnet
-   apt -y install unzip
-   apt -y install jq
+   sudo apt -y install telnet
+   sudo apt -y install unzip
+ 
 ```
 ## Install jmeter
 
 ```bash
-mkdir /opt/jmeter
+sudo mkdir /opt/jmeter
 cd /opt/jmeter/
-wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
+sudo wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
 
-unzip apache-jmeter-5.3.zip 
+sudo unzip apache-jmeter-5.3.zip 
 ```
 
 ## Install & Setup git
 ```bash
 cd /opt
-mkdir git
-apt install git
+sudo mkdir git
+sudo apt install git -y
 ```
 Clone repo
 
 ```bash
 cd git
-git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
+sudo git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
 ```
 ## Setting UP Generate Load ui
 
-```bash
-install node js
-apt install nodejs -y
-apt install npm -y
-npm install -g @angular/cli
-npm install -g http-server
-```
--Install python
+Follow Instructions from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/angular-ui-component-install-and-deploy.md link to setup UI.
+
+## Install Promtail and setup as service
 
 ```bash
-sudo apt update
-sudo apt -y upgrade
-sudo apt install -y python3-pip
-sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
+cd /usr/local/bin
+sudo curl -fSL -o promtail.gz "https://github.com/grafana/loki/releases/download/v1.6.1/promtail-linux-amd64.zip"
+
 ```
--Install Flask
+```bash
+sudo gunzip promtail.gz
+```
+```bash
+sudo chmod a+x promtail
+```
+Now we will create promtail config file:
 
 ```bash
-pip3 install Flask
-pip3 install Flask-Cors
+sudo nano config-promtail.yml
 ```
-build UI:
-```bash
-   cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
-   npm install
-   ng build --prod
-```
-Copy all UI files:
+And add this script,
 
 ```bash
-cd /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form
-cp * /var/www/html/
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+positions:
+  filename: /tmp/positions.yaml
+clients:
+  - url: http://127.0.0.1:3100/loki/api/v1/push
+scrape_configs:
+- job_name: glasswall_jmeter
+  static_configs:
+  - targets:
+      - glasswall_jmeter
+    labels:
+      job: glasswall_jmeter
+      __path__: "/opt/jmeter/apache-jmeter-5.3/bin/jmeter.log"
+```
+Create user specifically for the Promtail service
+```bash
+sudo useradd --system promtail
+```
+Create a file called promtail.service
+
+and add this script
+```bash
+sudo nano /etc/systemd/system/promtail.service
+```
+Add this to the file:
+
+```bash
+[Unit]
+Description=Promtail service
+After=network.target
+
+[Service]
+Type=simple
+User=promtail
+ExecStart=/usr/local/bin/promtail -config.file /usr/local/bin/config-promtail.yml
+
+[Install]
+WantedBy=multi-user.target
+```
+Run the service:
+```bash
+sudo service promtail start
+sudo service promtail status
+usermod -a -G systemd-journal promtail
+```
+Give necessary correct permissions in case if promtail service does not run
+
+```bash
+usermod -a -G systemd-journal promtail
+chown promtail:promtail /tmp/positions.yaml
+```
+Set the service autorun during boot:
+
+```bash
+sudo systemctl enable promtail.service
+```
+# Linux tuning & install useful applications
+
+Ulimit tuning.
+
+In order to be able to generate high traffic, there is a need to tune Linux ulimit parameters:
+
+sudo nano /etc/security/limits.conf
+ Edit the following file
+ ```bash
+ sudo nano /etc/sysctl.conf
+```
+Add & save:
+```bash
+net.ipv4.ip_local_port_range = 12000 65535
+fs.file-max = 1048576
+```
+Edit the following file:
+ ```bash
+sudo nano /etc/security/limits.conf
+```
+Add & Save:
+```bash
+*           soft      nofile     1048576
+*           hard      nofile     1048576
+root        soft      nofile     1048576
+root        hard      nofile     1048576
 ```
 
-- Install apache
+Reboot & Confirm that changes are in effect:
 ```bash
-sudo apt update
-sudo apt install apache2
-sudo systemctl status apache2
-sudo systemctl enable apache2
+[root@ip-10-112-4-96 ec2-user]# ulimit -n
+1048576
+```
+## Add new user with password authentication
+Ensure to run the following as root user.
+
+```bash
+adduser glasswall
+usermod -aG sudo glasswall
+
+```
+Modify sshd config to allow 
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+Ensure that 
+```bash
+PasswordAuthentication yes
+```
+```bash
+service ssh restart
+```
+try new user
+
+```bash
+su - glasswall
 ```
 ## Export EC2 as OVA.
 
