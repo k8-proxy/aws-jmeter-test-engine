@@ -5,11 +5,10 @@
 Install Node.js
 
 ```bash
-install node js
-apt install nodejs -y
-apt install npm -y
-npm install -g @angular/cli
-npm install -g http-server
+sudo apt install nodejs -y
+sudo apt install npm -y
+sudo npm install -g @angular/cli
+sudo npm install -g http-server
 ```
 Install python
 
@@ -40,8 +39,8 @@ sudo pip3 install -r requirements.txt
 
 To install the Angular project and all dependencies, navigate to the folder containing the project files in the repository and use npm like so:
 ```
-cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
-npm install
+sudo cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
+sudo npm install
 ```
 
 This will automatically download all dependencies and setup files/folders required to test/develop/deploy this angular project. It could take a couple of minutes to install.
@@ -50,14 +49,14 @@ This will automatically download all dependencies and setup files/folders requir
 
 The project must first be built in order to be deployed. In the project directory, in the terminal, run:
 ```
-cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
-ng build --prod
+sudo cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
+sudo ng build --prod
 ```
 
 This will generate a dist folder that contains the files that need to be copied into the apache server.
 
 ```
-cp -a /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form/. /var/www/html/
+sudo cp -a /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form/. /var/www/html/
 ```
 
 Now the UI should be accessible via the virtual machine's IP (i.e. http://virtual-macine-ip)
@@ -66,9 +65,9 @@ Now the UI should be accessible via the virtual machine's IP (i.e. http://virtua
 
 To setup the backend service, navigate to the folder containing the project files in the repository and copy the flask.service file to the system folder, and provide "exec.sh" with the correct permissions as shown below:
 ```
-cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
-chmod +x exec.sh
-cp flask.service /etc/systemd/system/
+sudo cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+sudo chmod +x exec.sh
+sudo cp flask.service /etc/systemd/system/
 ```
 
 Flask.service's contents point to the directory where the project's python server scripts exist and to exec.sh, which runs those scripts. Please ensure that *WorkingDirectory* and *ExecStart* paths match the project repository path (they should by default):
