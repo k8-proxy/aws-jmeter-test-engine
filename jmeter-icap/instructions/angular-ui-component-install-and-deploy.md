@@ -65,7 +65,7 @@ Now the UI should be accessible via the virtual machine's IP (i.e. http://virtua
 
 To setup the backend service, navigate to the folder containing the project files in the repository and copy the flask.service file to the system folder, and provide "exec.sh" with the correct permissions as shown below:
 ```
-sudo cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo chmod +x exec.sh
 sudo cp flask.service /etc/systemd/system/
 ```
