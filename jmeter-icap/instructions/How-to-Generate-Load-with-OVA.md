@@ -2,13 +2,17 @@
 
 This instruction assumes that Load Generator OVA is deployed to Vmware as Virtual Machine using provided instructions. See this link how to deploy OVA: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Deploy-OVA.md
 
-The load generator comes with 2 features:
+The following diagram shows generic view of what processes are running and how are they connected:
+
+![vm_load_vision](img/Icap-Performance-Traffic-Generator-OVA.png)
+
+The load/traffic generator comes with 2 features:
 
 - Load Generation Capability
 - Performance Dashboard
 
 
-## 1. How to use load generation capability
+## 1. How to use load/traffic generation capability
 
 Load generation can be triggered via provided UI interface.
 
