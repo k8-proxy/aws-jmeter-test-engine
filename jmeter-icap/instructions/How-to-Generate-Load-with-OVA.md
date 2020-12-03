@@ -14,7 +14,7 @@ Load generation can be triggered via provided UI interface.
 
 UI interface looks like this and accessible via http://virtual-machine-ip
 
-![vm_load_vision](img/Load-Generator-UI.png){ width=50% height=50% }
+![vm_load_vision](img/Load-Generator-UI.png)
 
 The Load Generator UI form has the following options:
 
