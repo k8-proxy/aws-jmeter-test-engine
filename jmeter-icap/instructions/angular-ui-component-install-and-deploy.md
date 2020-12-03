@@ -39,7 +39,7 @@ sudo pip3 install -r requirements.txt
 
 To install the Angular project and all dependencies, navigate to the folder containing the project files in the repository and use npm like so:
 ```
-sudo cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
+cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
 sudo npm install
 ```
 
