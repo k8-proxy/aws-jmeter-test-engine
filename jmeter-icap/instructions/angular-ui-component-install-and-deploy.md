@@ -20,19 +20,6 @@ sudo apt install -y python3-pip
 sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
 ```
 
-build UI:
-```bash
-   cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
-   npm install
-   ng build --prod
-```
-Copy all UI files:
-
-```bash
-cd /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form
-cp * /var/www/html/
-```
-
 Install apache
 
 ```bash
@@ -73,7 +60,7 @@ This will generate a dist folder that contains the files that need to be copied 
 cp -a /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form/. /var/www/html/
 ```
 
-Now the ICAP Server Testing page should be accessible from the server's IP address.
+Now the UI should be accessible via the virtual machine's IP (i.e. http://virtual-macine-ip)
 
 ## Setting Up Backend Server as a Service
 
