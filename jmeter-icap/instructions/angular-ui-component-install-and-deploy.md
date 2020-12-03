@@ -33,7 +33,7 @@ For back end, install Flask and dependencies. A requirements file is already set
 
 ```
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
-pip3 install -r requirements.txt
+sudo pip3 install -r requirements.txt
 ```
 
 ## Setting up UI Project from Repository

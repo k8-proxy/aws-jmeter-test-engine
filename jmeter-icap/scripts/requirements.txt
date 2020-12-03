@@ -3,3 +3,4 @@ botocore~=1.19.28
 python-dotenv~=0.15.0
 Flask~=1.1.2
 waitress~=1.4.4
+Flask-Cors==3.0.9
