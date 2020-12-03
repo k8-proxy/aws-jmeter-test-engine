@@ -5,14 +5,16 @@
         <label>Total Users</label>
         <input type="text" class="form-control" formControlName="total_users" placeholder="Ex: 25">
         <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test</small>
-        <div *ngIf="total_users.touched && total_users.invalid" class="alert alert-danger">Please provide a number value</div>
+        <div *ngIf="total_users.touched && total_users.invalid" class="alert alert-danger">Please provide a number value
+        </div>
     </div>
-    
+
     <div class="form-group">
         <label>Ramp Up Time</label>
         <input type="text" class="form-control" formControlName="ramp_up_time" placeholder="Ex: 300">
         <small class="form-text text-muted">Ramp up time in seconds</small>
-        <div *ngIf="ramp_up_time.touched && ramp_up_time.invalid" class="alert alert-danger">Please provide a number value</div>
+        <div *ngIf="ramp_up_time.touched && ramp_up_time.invalid" class="alert alert-danger">Please provide a number
+            value</div>
     </div>
 
     <div class="form-group">
@@ -24,17 +26,37 @@
 
     <div class="form-group">
         <label>Load Type:</label>
-        <select class="form-control" formControlName="load_type">
+        <select class="form-control" formControlName="load_type" (change)="onLoadTypeChange()">
             <option *ngFor="let load of loadTypes" [ngValue]="load">{{load}}</option>
-          </select>
+        </select>
+    </div>
+
+    <div *ngIf="enableCheckboxes">
+        <div class="form-group">
+            <label>
+                <input type="checkbox" formControlName="enable_tls" type="checkbox" (change)="onTlsChange()"> TLS
+            </label>
+
+        </div>
+        <div class="form-group" *ngIf="enableIgnoreErrorCheckbox"><label>
+                <input type="checkbox" formControlName="tls_ignore_error" type="checkbox"> TLS Ignore Cert Errors
+            </label>
+        </div>
     </div>
 
     <div class="form-group">
         <label>ICAP Server/Proxy Endpoint URL*</label>
-        <input type="text" class="form-control" formControlName="icap_endpoint_url"
-            placeholder="Required">
+        <input type="text" class="form-control" formControlName="icap_endpoint_url" placeholder="Required">
         <small class="form-text text-muted">ICAP server/Proxy endpoint *this field is required</small>
-        <div *ngIf="icap_endpoint_url.touched && icap_endpoint_url.invalid" class="alert alert-danger">An ICAP server endpoint is required</div>
+        <div *ngIf="icap_endpoint_url.touched && icap_endpoint_url.invalid" class="alert alert-danger">An ICAP server
+            endpoint is required</div>
+    </div>
+
+    <div class="form-group">
+        <label>Port</label>
+        <input type="text" class="form-control" formControlName="port" placeholder="default: {{portDefault}}">
+        <small class="form-text text-muted"></small>
+        <div *ngIf="port.touched && port.invalid" class="alert alert-danger">Please provide a number value</div>
     </div>
 
     <div class="form-group">
@@ -42,7 +64,7 @@
         <input type="text" class="form-control" formControlName="prefix" placeholder="Ex: example-prefix">
         <small class="form-text text-muted"></small>
     </div>
-<!--
+    <!--
     <div class="form-group">
         <label for="test_data_file">Choose Test Data File:</label>
         <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
@@ -53,8 +75,8 @@
     <br />
     <div *ngIf="formSubmitted" class="alert alert-primary" role="alert">
         Test submitted. Generating Load...
-      </div>
-      <div *ngIf="gotResponse" class="alert alert-success" role="alert">
+    </div>
+    <div *ngIf="gotResponse" class="alert alert-success" role="alert">
         Success! <a href="{{responseUrl}}" target="_blank">Click here to view Grafana Dashboard</a>
-      </div>
+    </div>
 </form>

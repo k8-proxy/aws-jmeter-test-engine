@@ -17,6 +17,9 @@ export class ConfigFormComponent implements OnInit {
   submitted = false;
   responseUrl='';
   responseReceived = false;
+  portDefault = '443';
+  enableCheckboxes = true;
+  enableIgnoreErrorCheckbox = true;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
 
@@ -37,8 +40,29 @@ export class ConfigFormComponent implements OnInit {
       load_type: this.loadTypes[0],
       icap_endpoint_url: new FormControl('', Validators.required),
       prefix: '',
-      test_data_file: ''
+      test_data_file: '',
+      enable_tls: true,
+      tls_ignore_error: true,
+      port: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
     });
+  }
+
+  onLoadTypeChange() {
+    if(this.configForm.get('load_type').value == this.loadTypes[0]) {
+      this.enableCheckboxes = true;
+    } else if (this.configForm.get('load_type').value == this.loadTypes[1]) {
+      this.enableCheckboxes = false;
+    }
+  }
+
+  onTlsChange() {
+    if(this.configForm.get('enable_tls').value == true) {
+      this.portDefault = '443';
+      this.enableIgnoreErrorCheckbox = true;
+    } else {
+      this.portDefault = '1344';
+      this.enableIgnoreErrorCheckbox = false;
+    }
   }
 
   //getter methods used in html so we can refer cleanly and directly to these fields 
@@ -56,6 +80,9 @@ export class ConfigFormComponent implements OnInit {
   }
   get test_data_file() {
     return this.configForm.get('test_data_file');
+  }
+  get port() {
+    return this.configForm.get('port');
   }
 
   get isValid () {
@@ -85,8 +112,13 @@ export class ConfigFormComponent implements OnInit {
 
   resetForm() {
     var oldLoadType = this.configForm.get('load_type').value;
+    var oldTls = this.configForm.get('enable_tls').value;
+    var oldTlsIgnoreError = this.configForm.get('tls_ignore_error').value;
     this.configForm.reset();
     this.configForm.get('load_type').setValue(oldLoadType);
+    this.configForm.get('enable_tls').setValue(oldTls);
+    this.configForm.get('tls_ignore_error').setValue(oldTlsIgnoreError);
+
   }
 
   onSubmit(): void {

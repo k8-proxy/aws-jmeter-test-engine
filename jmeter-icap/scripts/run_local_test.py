@@ -12,7 +12,7 @@ from create_stack import Config, get_size
 
 
 def main(json_params):
-        # Set Config values gotten from front end
+    # Set Config values gotten from front end
     if json_params['total_users']:
         Config.total_users = int(json_params['total_users'])
     else:
@@ -39,6 +39,8 @@ def main(json_params):
     Config.preserve_stack = False
     Config.exclude_dashboard = False
 
+    determine_tls_and_port_params(json_params['load_type'], json_params['enable_tls'], json_params['tls_ignore_error'], json_params['port'])
+
     # set jmeter parameters
     with open("LocalStartExecution.sh", "r") as f:
         script_data = f.read()
@@ -58,7 +60,7 @@ def main(json_params):
         script_data = re.sub("-Jp_tls=[a-zA-Z0-9\-\.]*", "-Jp_tls=" + str(Config.tls_verification_method), script_data)
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    script_path = os.path.join(dir_path,"RunStartExecution.sh")
+    script_path = os.path.join(dir_path, "RunStartExecution.sh")
     with open(script_path, "w") as f:
         f.write(script_data)
     os.chmod(script_path, 0o771)
@@ -87,3 +89,25 @@ if __name__ == "__main__":
                    "load_type": "Direct"}
     main(json_params)
 
+
+def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_verification, input_port):
+
+    if input_load_type == "Direct":
+
+        # enable/disable tls based on user input
+        Config.enable_tls = input_enable_tls
+
+        # if user entered a port, use that. Otherwise port will be set depending on tls_enabled below.
+        if input_port:
+            Config.icap_server_port = input_port
+
+        # if user did not provide port, set one depending on whether or not tls is enabled
+        if not input_port:
+            if input_enable_tls:
+                Config.icap_server_port = "443"
+            else:
+                Config.icap_server_port = "1344"
+
+        # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
+        if input_enable_tls:
+            Config.tls_verification_method = "verify" if input_tls_verification else "no-verify"
