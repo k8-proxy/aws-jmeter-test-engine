@@ -244,7 +244,7 @@ Reboot & Confirm that changes are in effect:
 ```bash
 adduser glasswall
 usermod -aG sudo glasswall
-su - glasswall
+
 ```
 Modify sshd config to allow 
 ```bash
@@ -256,6 +256,11 @@ PasswordAuthentication yes
 ```
 ```bash
 service ssh restart
+```
+try new user
+
+```bash
+su - glasswall
 ```
 ## Export EC2 as OVA.
 
