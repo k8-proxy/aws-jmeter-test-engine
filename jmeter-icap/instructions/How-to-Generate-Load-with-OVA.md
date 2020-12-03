@@ -20,12 +20,14 @@ The Load Generator UI form has the following options:
 
 - Total Users: 
     - How many total concurrent requests would you like to send? Default: 25
-    - Maximum number of total users depends on the Virtual Machine resources
+    - Maximum number of total users depends on the Virtual Machine resources:
+
 | vCPU     | RAM | Total Users    | 
 | :----:   | :----:   |    :----: |
 | 2-4      | 2-4 GB     | 50-500   |
 | 4-6  | 8-16  GB      | 500-1000| 
 | 8+ | 32+  GB      | 4000| 
+
 - Rampup time: How fast you would like to ramp up total users? Default is 300.
 - Duration: How long would you like to generate load? Default is 900
 - Load Type: It is possible to generate load directly to ICAP Server or to a Proxy site
