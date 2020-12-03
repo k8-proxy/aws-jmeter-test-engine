@@ -90,7 +90,7 @@ if __name__ == "__main__":
     main(json_params)
 
 
-def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_verification, input_port):
+def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_ignore_verification, input_port):
 
     if input_load_type == "Direct":
 
@@ -110,4 +110,4 @@ def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_v
 
         # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
         if input_enable_tls:
-            Config.tls_verification_method = "verify" if input_tls_verification else "no-verify"
+            Config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
