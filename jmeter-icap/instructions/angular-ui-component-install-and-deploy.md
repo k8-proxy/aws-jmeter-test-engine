@@ -49,7 +49,7 @@ This will automatically download all dependencies and setup files/folders requir
 
 The project must first be built in order to be deployed. In the project directory, in the terminal, run:
 ```
-sudo cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
+cd /opt/git/aws-jmeter-test-engine/UI/master-script-form
 sudo ng build --prod
 ```
 
