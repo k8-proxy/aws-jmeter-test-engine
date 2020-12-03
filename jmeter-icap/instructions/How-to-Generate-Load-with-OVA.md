@@ -60,4 +60,5 @@ Enter admin/glasswall and then dashboard ui will be visible with your own set pr
 
 ![vm_load_vision](img/Dashboard-sample.png)
 
+Note: Ensure that only one test scenario is running at a time.
 
