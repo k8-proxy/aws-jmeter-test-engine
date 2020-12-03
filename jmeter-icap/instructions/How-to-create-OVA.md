@@ -53,8 +53,8 @@ sudo apt-get install c-icap -y
 echo "deb https://repos.influxdata.com/ubuntu bionic stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
 
 curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
-apt-get update
-apt-get install influxdb
+sudo apt-get update
+sudo apt-get install influxdb
 systemctl start influxdb
 systemctl status influxdb
 systemctl enable --now influxdb
@@ -74,9 +74,10 @@ InfluxDB shell version: 1.8.3
 
 ```bash
 
- apt install net-tools
+ sudo apt install net-tools
 
  sudo apt-get install -y gnupg2 curl  software-properties-common
+ wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
 
  sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
  sudo apt-get update
@@ -96,31 +97,31 @@ InfluxDB shell version: 1.8.3
 
 ## Install useful tools
 ```bash
-   apt -y install telnet
-   apt -y install unzip
-   apt -y install jq
+   sudo apt -y install telnet
+   sudo apt -y install unzip
+ 
 ```
 ## Install jmeter
 
 ```bash
-mkdir /opt/jmeter
+sudo mkdir /opt/jmeter
 cd /opt/jmeter/
-wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
+sudo wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
 
-unzip apache-jmeter-5.3.zip 
+sudo unzip apache-jmeter-5.3.zip 
 ```
 
 ## Install & Setup git
 ```bash
 cd /opt
-mkdir git
-apt install git
+sudo mkdir git
+sudo apt install git -y
 ```
 Clone repo
 
 ```bash
 cd git
-git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
+sudo git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
 ```
 ## Setting UP Generate Load ui
 
@@ -237,6 +238,24 @@ Reboot & Confirm that changes are in effect:
 ```bash
 [root@ip-10-112-4-96 ec2-user]# ulimit -n
 1048576
+```
+## Add new user with password authentication
+
+```bash
+adduser glasswall
+usermod -aG sudo glasswall
+su - glasswall
+```
+Modify sshd config to allow 
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+Ensure that 
+```bash
+PasswordAuthentication yes
+```
+```bash
+service ssh restart
 ```
 ## Export EC2 as OVA.
 
