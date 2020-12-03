@@ -17,7 +17,7 @@ Step 6. Click Finish button
 Step 7. Wait until VM is ready. 
 
 Step 8. Once VM is ready, Shutdown and then go to Actions->Edit Settings and set 4vCPU and 6GB of RAM at least.
-
+![vm_load_vision](img/VM-Memory-Change.png)
 Step 8. Login to VM with glasswall/glasswall credentials and remember to change password
 
 Step 9. Assign Static IP address by following : link here
