@@ -16,4 +16,11 @@ export class ConfigFormValidators {
         return null;
     }
 
+    static cannotContainSpaces(control: AbstractControl) : ValidationErrors | null {
+        if((control.value as string).indexOf(' ') >= 0){
+            return {cannotContainSpaces: true}
+        }
+  
+        return null;
+    }
 }
