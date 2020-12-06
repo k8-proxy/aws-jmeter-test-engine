@@ -57,7 +57,7 @@ Load generation process is simple:
 
 After you click Generate Load button, dashboard link for that specific prefix will be shown in the page.
 
-![vm_load_vision|1238 × 1570,20%](img/Load-generator-sample.png)
+![vm_load_vision](img/Load-generator-sample.png){:height="36px" width="36px"}
 
 Click that link and it will open dashboard login page:
 
