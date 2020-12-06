@@ -57,7 +57,7 @@ Load generation process is simple:
 
 After you click Generate Load button, dashboard link for that specific prefix will be shown in the page.
 
-![vm_load_vision|1238 × 1570,1%](img/Load-generator-sample.png)
+![vm_load_vision](img/Load-generator-sample.png)
 
 Click that link and it will open dashboard login page:
 
@@ -65,7 +65,7 @@ Click that link and it will open dashboard login page:
 
 Enter admin/glasswall and then dashboard ui will be visible with your own set prefix:
 
-![vm_load_vision|2742 × 1500,20%](img/Dashboard-sample.png)
+![vm_load_vision](img/Dashboard-sample.png)
 
 **Note**: Ensure that only one test scenario is running at a time. 
 
