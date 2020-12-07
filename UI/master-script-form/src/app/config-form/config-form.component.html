@@ -5,7 +5,9 @@
         <label>Total Users</label>
         <input type="text" class="form-control" formControlName="total_users" placeholder="Ex: 25">
         <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test</small>
-        <div *ngIf="total_users.touched && total_users.invalid" class="alert alert-danger">Please provide a number value
+        <div *ngIf="total_users.touched && total_users.invalid">
+            <div class="alert alert-danger" *ngIf="total_users.errors.pattern">Please provide only number values.</div>
+            <div class="alert alert-danger" *ngIf="total_users.errors.cannotContainSpaces">Field cannot contain spaces.</div>
         </div>
     </div>
 
@@ -13,15 +15,21 @@
         <label>Ramp Up Time</label>
         <input type="text" class="form-control" formControlName="ramp_up_time" placeholder="Ex: 300">
         <small class="form-text text-muted">Ramp up time in seconds</small>
-        <div *ngIf="ramp_up_time.touched && ramp_up_time.invalid" class="alert alert-danger">Please provide a number
-            value</div>
+        <div *ngIf="ramp_up_time.touched && ramp_up_time.invalid">
+            <div class="alert alert-danger" *ngIf="ramp_up_time.errors.pattern">Please provide only number values.</div>
+            <div class="alert alert-danger" *ngIf="ramp_up_time.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+        </div>
+        
     </div>
 
     <div class="form-group">
         <label>Duration</label>
         <input type="text" class="form-control" formControlName="duration" placeholder="Ex: 900">
         <small class="form-text text-muted">Duration of test in seconds</small>
-        <div *ngIf="duration.touched && duration.invalid" class="alert alert-danger">Please provide a number value</div>
+        <div *ngIf="duration.touched && duration.invalid">
+            <div class="alert alert-danger" *ngIf="duration.errors.pattern">Please provide only number values.</div>
+            <div class="alert alert-danger" *ngIf="duration.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+        </div>
     </div>
 
     <div class="form-group">
@@ -48,21 +56,29 @@
         <label>ICAP Server/Proxy Endpoint URL*</label>
         <input type="text" class="form-control" formControlName="icap_endpoint_url" placeholder="Required">
         <small class="form-text text-muted">ICAP server/Proxy endpoint *this field is required</small>
-        <div *ngIf="icap_endpoint_url.touched && icap_endpoint_url.invalid" class="alert alert-danger">An ICAP server
-            endpoint is required</div>
+        <div *ngIf="icap_endpoint_url.touched && icap_endpoint_url.invalid">
+            <div class="alert alert-danger" *ngIf="icap_endpoint_url.errors.required">An ICAP server endpoint is required</div>
+            <div class="alert alert-danger" *ngIf="icap_endpoint_url.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+        </div>
     </div>
 
     <div class="form-group">
         <label>Port</label>
         <input type="text" class="form-control" formControlName="port" placeholder="default: {{portDefault}}">
         <small class="form-text text-muted">Port used to connect ICAP endpoint</small>
-        <div *ngIf="port.touched && port.invalid" class="alert alert-danger">Please provide a number value</div>
+        <div *ngIf="port.touched && port.invalid">
+            <div class="alert alert-danger" *ngIf="port.errors.pattern">Please provide a number value.</div>
+            <div class="alert alert-danger" *ngIf="port.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+        </div>
     </div>
 
     <div class="form-group">
         <label>Prefix:</label>
         <input type="text" class="form-control" formControlName="prefix" placeholder="Ex: example-prefix">
-        <small class="form-text text-muted"></small>
+        <small class="form-text text-muted">Prefix must not contain spaces</small>
+        <div *ngIf="prefix.touched && prefix.invalid">
+            <div class="alert alert-danger" *ngIf="prefix.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+        </div>
     </div>
     <!--
     <div class="form-group">

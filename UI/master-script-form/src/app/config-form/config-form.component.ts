@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
+import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 
 @Component({
   selector: 'config-form',
@@ -34,16 +35,15 @@ export class ConfigFormComponent implements OnInit {
 
   initializeForm(): void {
     this.configForm = this.fb.group({
-      total_users: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
-      duration: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
-      ramp_up_time: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
+      total_users: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
+      duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
+      ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: this.loadTypes[0],
-      icap_endpoint_url: new FormControl('', Validators.required),
-      prefix: '',
-      test_data_file: '',
+      icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
+      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces]),
       enable_tls: true,
       tls_ignore_error: true,
-      port: new FormControl('', Validators.pattern(/^[0-9]\d*$/)),
+      port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
     });
   }
 
@@ -78,11 +78,11 @@ export class ConfigFormComponent implements OnInit {
   get icap_endpoint_url() {
     return this.configForm.get('icap_endpoint_url');
   }
-  get test_data_file() {
-    return this.configForm.get('test_data_file');
-  }
   get port() {
     return this.configForm.get('port');
+  }
+  get prefix() {
+    return this.configForm.get('prefix');
   }
 
   get isValid () {
