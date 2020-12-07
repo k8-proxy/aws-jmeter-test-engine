@@ -76,6 +76,9 @@
         <label>Prefix:</label>
         <input type="text" class="form-control" formControlName="prefix" placeholder="Ex: example-prefix">
         <small class="form-text text-muted"></small>
+        <div *ngIf="prefix.touched && prefix.invalid">
+            <div class="alert alert-danger" *ngIf="prefix.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+        </div>
     </div>
     <!--
     <div class="form-group">

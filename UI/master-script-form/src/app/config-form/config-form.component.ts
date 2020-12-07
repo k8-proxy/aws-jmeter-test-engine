@@ -40,7 +40,7 @@ export class ConfigFormComponent implements OnInit {
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: this.loadTypes[0],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
-      prefix: '',
+      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces]),
       test_data_file: '',
       enable_tls: true,
       tls_ignore_error: true,
@@ -84,6 +84,9 @@ export class ConfigFormComponent implements OnInit {
   }
   get port() {
     return this.configForm.get('port');
+  }
+  get prefix() {
+    return this.configForm.get('prefix');
   }
 
   get isValid () {
