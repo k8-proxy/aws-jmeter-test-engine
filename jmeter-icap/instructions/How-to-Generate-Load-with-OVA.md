@@ -16,7 +16,7 @@ The load/traffic generator comes with 2 features:
 
 Load generation can be triggered via provided UI interface.
 
-UI interface looks like this and accessible via http://virtual-machine-ip
+UI interface looks like this and accessible via http://give-virtual-machine-ip
 
 ![vm_load_vision](img/Load-Generator-UI.png)
 
@@ -73,3 +73,4 @@ Enter admin/glasswall and then dashboard ui will be visible with your own set pr
 
 **Note**: if you would like to stop the test, ssh to VM and find the java process pid , for example, by "top| grep java" commmand and kill it "sudo kill pid"
 
+**Note**: Instructions video can be downloaded from https://github.com/k8-proxy/GW-proxy/blob/master/OVAs-creation/OVA-Videos/ICAP-Performance-Traffic-Generator.mp4
