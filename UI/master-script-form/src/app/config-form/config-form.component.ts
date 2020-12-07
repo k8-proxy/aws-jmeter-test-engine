@@ -41,7 +41,6 @@ export class ConfigFormComponent implements OnInit {
       load_type: this.loadTypes[0],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces]),
-      test_data_file: '',
       enable_tls: true,
       tls_ignore_error: true,
       port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
@@ -78,9 +77,6 @@ export class ConfigFormComponent implements OnInit {
   }
   get icap_endpoint_url() {
     return this.configForm.get('icap_endpoint_url');
-  }
-  get test_data_file() {
-    return this.configForm.get('test_data_file');
   }
   get port() {
     return this.configForm.get('port');
