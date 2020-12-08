@@ -14,11 +14,19 @@ Note: These instructions are based on Ubuntu 20.04.
 
 The following needs to be in place by default in Load Generator image:
 
+- Install useful applications
 - Java version 8
 - JMeter  
 - ICAP Client
 - Linux tuning & install useful applications
 
+# Install useful applications
+
+```bash
+sudo apt -y install telnet
+sudo apt -y install jq 
+sudo apt -y install unzip
+```
 # Setup Java 8 
 
 ```bash
@@ -57,7 +65,7 @@ OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
 ```bash
 sudo mkdir /home/ec2-user
 cd /home/ec2-user/
-wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
+sudo sudo wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
 unzip apache-meter-5.3.zip
 ```
 create necessary in and out folders:
@@ -108,9 +116,3 @@ Reboot & Confirm that changes are in effect:
 1048576
 ```
 
-## Install useful applications
-
-```bash
-sudo yum -y install telnet
-sudo yum -y install jq 
-```
