@@ -11,6 +11,28 @@ import create_dashboard
 from create_stack import Config, get_size
 
 
+def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_ignore_verification, input_port):
+
+    if input_load_type == "Direct":
+
+        # enable/disable tls based on user input
+        Config.enable_tls = str(input_enable_tls).lower()
+
+        # if user entered a port, use that. Otherwise port will be set depending on tls_enabled below.
+        if input_port:
+            Config.icap_server_port = input_port
+
+        # if user did not provide port, set one depending on whether or not tls is enabled
+        if not input_port:
+            if input_enable_tls:
+                Config.icap_server_port = "443"
+            else:
+                Config.icap_server_port = "1344"
+
+        # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
+        if input_enable_tls:
+            Config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
+
 def main(json_params):
     # Set Config values gotten from front end
     if json_params['total_users']:
@@ -59,6 +81,13 @@ def main(json_params):
         script_data = re.sub("-Jp_use_tls=[a-zA-Z]*", "-Jp_use_tls=" + str(Config.enable_tls), script_data)
         script_data = re.sub("-Jp_tls=[a-zA-Z0-9\-\.]*", "-Jp_tls=" + str(Config.tls_verification_method), script_data)
 
+    with open("config-promtail.yml", 'r') as data:
+        data = re.sub("glasswall_jmeter", Config.prefix + "_jmeter", data.read())
+        data = re.sub("http://[a-zA-Z0-9\-\.]*:3100", f"http://{Config.influx_host}:3100", data)
+
+    with open("/usr/local/bin/config-promtail.yml", "w") as f:
+        f.write(data)
+
     dir_path = os.path.dirname(os.path.realpath(__file__))
     script_path = os.path.join(dir_path, "RunStartExecution.sh")
     with open(script_path, "w") as f:
@@ -86,28 +115,8 @@ if __name__ == "__main__":
                    "duration": 60,
                    "icap_endpoint_url": "us.icap.glasswall-icap.com",
                    "prefix": "ga",
-                   "load_type": "Direct"}
+                   "load_type": "Direct",
+                   "enable_tls": True,
+                   "tls_ignore_error": True,
+                   "port": 443}
     main(json_params)
-
-
-def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_ignore_verification, input_port):
-
-    if input_load_type == "Direct":
-
-        # enable/disable tls based on user input
-        Config.enable_tls = str(input_enable_tls).lower()
-
-        # if user entered a port, use that. Otherwise port will be set depending on tls_enabled below.
-        if input_port:
-            Config.icap_server_port = input_port
-
-        # if user did not provide port, set one depending on whether or not tls is enabled
-        if not input_port:
-            if input_enable_tls:
-                Config.icap_server_port = "443"
-            else:
-                Config.icap_server_port = "1344"
-
-        # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
-        if input_enable_tls:
-            Config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
