@@ -7,21 +7,35 @@ The end goal of the overall full solution is visioned to look like this:
 
 In order to utilize full automated framework, there needs to be ready load generator AMI image with required software and tuning. The image then used together with CloudFormation to start needed number of EC2 Instances. 
 
+
 ## How to setup the Load Generator?
 
-Note: These instructions are based on Amazon Linux.
+Note: These instructions are based on Ubuntu 20.04.
 
 The following needs to be in place by default in Load Generator image:
 
+- Install useful applications
 - Java version 8
 - JMeter  
 - ICAP Client
 - Linux tuning & install useful applications
 
-# Setup Java 8 in Amazon Linux
+# Install useful applications
 
 ```bash
-sudo yum -y install java-1.8.0-openjdk
+sudo apt -y install telnet
+sudo apt -y install jq 
+sudo apt -y install unzip
+```
+# Setup Java 8 
+
+```bash
+  sudo apt -y install openjdk-8-jdk
+```
+Check java version with "java -version" command. 
+If Java version is not 8 then:
+
+```bash
 sudo alternatives --config java
 ```
 Simply enter the a selection number to choose which java executable should be used by default.
@@ -46,46 +60,28 @@ openjdk version "1.8.0_265"
 OpenJDK Runtime Environment (build 1.8.0_265-b01)
 OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
 ```
-# Setup Jmeter Amazon Linux
+# Setup Jmeter and necessary folders
 
 ```bash
+sudo mkdir /home/ec2-user
 cd /home/ec2-user/
-wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
+sudo sudo wget https://www.nic.funet.fi/pub/mirrors/apache.org//jmeter/binaries/apache-jmeter-5.3.zip
 unzip apache-meter-5.3.zip
 ```
 create necessary in and out folders:
 ```bash
-mkdir /home/ec2-user/apache-jmeter-5.3/bin/in
-mkdir /home/ec2-user/apache-jmeter-5.3/bin/out
+sudo mkdir /home/ec2-user/apache-jmeter-5.3/bin/in
+sudo mkdir /home/ec2-user/apache-jmeter-5.3/bin/out
 ```
 
 # Setup ICAP Client
 
-Reference : https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
-
-Use the following commands to setup icap client in the load generator machine:
-
 ```bash
-sudo yum install git -y sudo yum install gcc doxygen make automake automake 1.11 -y sudo yum install automake1.11 -y 
-cd
-git clone https://github.com/filetrust/mvp-icap-service.git
-cd mvp-icap-service/
-cd c-icap
-aclocal
-autoconf
-automake --add-missing
-./configure --prefix=/usr/local/c-icap
-sudo make install
-cd ..
-cp c-icap/ltmain.sh c-icap-modules/
-cd c-icap-modules/
-aclocal
-autoconf
-automake --add-missing
-./configure --with-c-icap=/usr/local/c-icap --prefix=/usr/local/c-icap
-sudo make install
-sudo /usr/local/c-icap/bin/c-icap -N -D -d 10
+sudo apt-get update
+sudo apt-get install c-icap -y
 ```
+ICAP Client is installed in /usr/bin/c-icap-client this folder.
+
 # Linux tuning & install useful applications
 
 Ulimit tuning.
@@ -120,9 +116,3 @@ Reboot & Confirm that changes are in effect:
 1048576
 ```
 
-Install useful applications
-
-```bash
-sudo yum -y install telnet
-sudo yum -y install jq 
-```
