@@ -84,6 +84,7 @@ def main(json_params):
     with open("config-promtail.yml", 'r') as data:
         data = re.sub("glasswall_jmeter", Config.prefix + "_jmeter", data.read())
         data = re.sub("http://[a-zA-Z0-9\-\.]*:3100", f"http://{Config.influx_host}:3100", data)
+        data = re.sub("/home/ec2-user/apache-jmeter-5.3/bin/jmeter.log", "/opt/jmeter/apache-jmeter-5.3/bin/jmeter.log", data)
 
     with open("/usr/local/bin/config-promtail.yml", "w") as f:
         f.write(data)
