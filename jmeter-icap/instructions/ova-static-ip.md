@@ -16,7 +16,7 @@
 # sudo ifconfig ens32 up
 ```
 
-- Add below content to `/etc/netplan/50-cloud-init.yaml`. Mention network interface name and other network details accordingly.
+- Add below content(reference) to `/etc/netplan/50-cloud-init.yaml`. Mention your network interface name, IP address and gateway.  
 
 ```yaml
 network:
