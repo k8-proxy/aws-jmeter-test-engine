@@ -1,6 +1,5 @@
 import os
 import subprocess
-import stat
 
 # runs a shell script containing command "killall -9 java"
 def terminate_java_processes():
