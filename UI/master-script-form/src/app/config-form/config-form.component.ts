@@ -14,8 +14,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     trigger('animationState', [
       state('show', style({opacity: 1})),
       state('show', style({opacity: 0})),
-      transition('show => hide', animate('600ms ease-out')),
-      transition('hide => show', animate('1000ms ease-in'))
+      transition('show => hide', animate('150ms ease-out')),
+      transition('hide => show', animate('400ms ease-in'))
     ])
   ]
 })

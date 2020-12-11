@@ -88,7 +88,7 @@
 -->
     <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
     <button id="stop-tests" type="button" class="btn btn-danger" (click)="onStopTests()">Terminate All Tests</button>
-    <div [@animationState]="animState" class="alert alert-primary" role="alert" style="opacity: 0; display:inline-block;" type="text">
+    <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;" type="text">
         All tests have been terminated.
     </div>
     <br />
