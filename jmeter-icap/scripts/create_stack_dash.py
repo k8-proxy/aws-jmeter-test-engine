@@ -175,6 +175,7 @@ def main(config):
 
     return dashboard_url
 
+
 if __name__ == "__main__":
     args = __get_commandline_args()
 
