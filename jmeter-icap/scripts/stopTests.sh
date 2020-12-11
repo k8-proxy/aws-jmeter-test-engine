@@ -1,2 +1,2 @@
 #!/bin/bash
-killall -9 java
+sudo killall -9 java
