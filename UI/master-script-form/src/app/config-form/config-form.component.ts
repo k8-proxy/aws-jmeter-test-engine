@@ -144,7 +144,6 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log("this ran");
     if (this.configForm.valid) {
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
