@@ -4,12 +4,20 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
-import { timer } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'config-form',
   templateUrl: './config-form.component.html',
-  styleUrls: ['./config-form.component.css']
+  styleUrls: ['./config-form.component.css'],
+  animations: [
+    trigger('animationState', [
+      state('show', style({opacity: 1})),
+      state('show', style({opacity: 0})),
+      transition('show => hide', animate('600ms ease-out')),
+      transition('hide => show', animate('1000ms ease-in'))
+    ])
+  ]
 })
 export class ConfigFormComponent implements OnInit {
   regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
@@ -22,7 +30,7 @@ export class ConfigFormComponent implements OnInit {
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
-  testStoppedAlert = false;
+  hideStoppedAlert = true;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
 
@@ -103,6 +111,10 @@ export class ConfigFormComponent implements OnInit {
     return this.responseUrl;
   }
 
+  get animState() {
+    return this.hideStoppedAlert ? 'show' : 'hide';
+  }
+
   onFileChange(files: FileList) {
     this.fileToUpload = files.item(0);
   }
@@ -151,11 +163,11 @@ export class ConfigFormComponent implements OnInit {
     const formData = new FormData();
     formData.append("button", "stop_tests");
     this.postStopRequestToServer(formData);
-    this.testStoppedAlert = true;
-    setTimeout(() => this.switchOffTerminationAlert(), 3000);
+    this.toggleTerminationAlert();
+    setTimeout(() => this.toggleTerminationAlert(), 3000);
   }
 
-  switchOffTerminationAlert() {
-    this.testStoppedAlert = false;
+  toggleTerminationAlert() {
+    this.hideStoppedAlert = !this.hideStoppedAlert;
   }
 }
