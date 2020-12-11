@@ -6,9 +6,22 @@ import re
 import os
 import subprocess
 from dotenv import load_dotenv
-from create_stack_dash import __determineLoadType
 import create_dashboard
 from create_stack import Config, get_size
+
+
+def determine_load_type(load: str):
+    if load == "Direct":
+        Config.test_directory = 'ICAP-Direct-File-Processing'
+        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
+        Config.grafana_file = 'aws-test-engine-dashboard.json'
+        Config.test_data_file = 'gov_uk_files.csv'
+
+    elif load == "Proxy":
+        Config.test_directory = 'ICAP-Proxy-Site'
+        Config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
+        Config.grafana_file = 'ProxySite_Dashboard_Template.json'
+        Config.test_data_file = 'proxysitefiles.csv'
 
 
 def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_ignore_verification, input_port):
@@ -33,6 +46,7 @@ def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_i
         if input_enable_tls:
             Config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
 
+
 def main(json_params):
     # Set Config values gotten from front end
     if json_params['total_users']:
@@ -55,7 +69,7 @@ def main(json_params):
     if json_params['prefix']:
         Config.prefix = json_params['prefix']
     if json_params['load_type']:
-        __determineLoadType(json_params['load_type'])
+        determine_load_type(json_params['load_type'])
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False

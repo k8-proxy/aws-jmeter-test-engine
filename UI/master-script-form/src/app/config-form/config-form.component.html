@@ -87,6 +87,7 @@
     </div>
 -->
     <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
+    <button id="stop-tests" type="button" class="btn btn-danger" (click)="onStopTests()">Terminate All Tests</button>
     <br />
     <br />
     <div *ngIf="formSubmitted" class="alert alert-primary" role="alert">
