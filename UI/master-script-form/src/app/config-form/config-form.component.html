@@ -90,6 +90,9 @@
     <button id="stop-tests" type="button" class="btn btn-danger" (click)="onStopTests()">Terminate All Tests</button>
     <br />
     <br />
+    <div *ngIf="testStoppedAlert" class="alert alert-primary" role="alert">
+        Test processes have been terminated.
+    </div>
     <div *ngIf="formSubmitted" class="alert alert-primary" role="alert">
         Test submitted. Generating Load...
     </div>

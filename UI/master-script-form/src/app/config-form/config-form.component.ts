@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'config-form',
@@ -21,6 +22,7 @@ export class ConfigFormComponent implements OnInit {
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
+  testStoppedAlert = false;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
 
@@ -146,9 +148,14 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onStopTests() {
-    console.log("stopping tests");
     const formData = new FormData();
     formData.append("button", "stop_tests");
     this.postStopRequestToServer(formData);
+    this.testStoppedAlert = true;
+    setTimeout(() => this.switchOffTerminationAlert(), 3000);
+  }
+
+  switchOffTerminationAlert() {
+    this.testStoppedAlert = false;
   }
 }
