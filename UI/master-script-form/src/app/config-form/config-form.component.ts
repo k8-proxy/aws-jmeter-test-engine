@@ -22,6 +22,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class ConfigFormComponent implements OnInit {
   regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
   loadTypes: string[] = ['Direct', 'Proxy'];
+  urlChoices: string[] = ["ICAP Server Endpoint URL*", "Proxy IP Address*"];
   configForm: FormGroup;
   fileToUpload: File = null;
   submitted = false;
@@ -31,6 +32,7 @@ export class ConfigFormComponent implements OnInit {
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
   hideStoppedAlert = true;
+  IcapOrProxy = this.urlChoices[0];
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
 
@@ -58,10 +60,13 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onLoadTypeChange() {
+    //if direct, else proxy
     if (this.configForm.get('load_type').value == this.loadTypes[0]) {
       this.enableCheckboxes = true;
+      this.IcapOrProxy = this.urlChoices[0];
     } else if (this.configForm.get('load_type').value == this.loadTypes[1]) {
       this.enableCheckboxes = false;
+      this.IcapOrProxy = this.urlChoices[1];
     }
   }
 

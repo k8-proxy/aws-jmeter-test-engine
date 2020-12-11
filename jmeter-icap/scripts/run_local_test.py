@@ -8,6 +8,7 @@ import subprocess
 from dotenv import load_dotenv
 import create_dashboard
 from create_stack import Config, get_size
+from ui_tasks import modify_hosts_file
 
 
 def determine_load_type(load: str):
@@ -47,6 +48,7 @@ def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_i
             Config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
 
 
+
 def main(json_params):
     # Set Config values gotten from front end
     if json_params['total_users']:
@@ -70,6 +72,9 @@ def main(json_params):
         Config.prefix = json_params['prefix']
     if json_params['load_type']:
         determine_load_type(json_params['load_type'])
+
+        if json_params['load_type'] == 'Proxy':
+            modify_hosts_file(json_params['icap_endpoint_url'])
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False
