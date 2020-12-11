@@ -3,7 +3,7 @@ from flask_cors import CORS
 import json
 import run_local_test
 from waitress import serve
-from stop_tests import terminate_java_processes
+from ui_tasks import terminate_java_processes
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
