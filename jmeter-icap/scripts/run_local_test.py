@@ -8,7 +8,24 @@ import subprocess
 from dotenv import load_dotenv
 from create_stack_dash import __determineLoadType
 import create_dashboard
-from create_stack import Config, get_size
+from create_stack import Config
+
+
+def get_jvm_memory(users_per_instance):
+    # Determine the size of ec2 instance and jvm memory
+    jvm_memory = "9216m"
+    if 0 < users_per_instance <= 50:
+        jvm_memory = "1024m"
+    elif 50 < users_per_instance < 500:
+        jvm_memory = "2048m"
+    elif 500 <= users_per_instance < 1000:
+        jvm_memory = "3072m"
+    elif 1000 <= users_per_instance < 2500:
+        jvm_memory = "4096m"
+    elif 2500 <= users_per_instance:
+        jvm_memory = "9216m"
+
+    return jvm_memory
 
 
 def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_ignore_verification, input_port):
@@ -41,7 +58,7 @@ def main(json_params):
         Config.total_users = 25
 
     Config.users_per_instance = Config.total_users
-    Config.instance_type, jvm_memory = get_size(Config.users_per_instance)
+    jvm_memory = get_jvm_memory(Config.users_per_instance)
     if json_params['ramp_up_time']:
         Config.ramp_up_time = json_params['ramp_up_time']
     else:
