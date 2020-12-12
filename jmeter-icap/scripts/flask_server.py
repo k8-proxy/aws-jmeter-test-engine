@@ -10,6 +10,8 @@ ALLOWED_EXTENSIONS = {'csv'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 @app.route('/', methods=["POST"])
 def parse_request():
     button_pressed = request.form.get('button')
@@ -26,6 +28,7 @@ def parse_request():
     elif button_pressed == 'stop_tests':
         terminate_java_processes()
         return make_response(jsonify("Tests terminated"), 201)
+
 
 CORS(app)
 serve(app, host='0.0.0.0', port=5000)
