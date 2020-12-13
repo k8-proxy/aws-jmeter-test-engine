@@ -7,7 +7,7 @@ import os
 import subprocess
 from dotenv import load_dotenv
 import create_dashboard
-from create_stack import Config, get_size
+from create_stack import Config
 from create_stack_dash import __determine_load_type
 
 
