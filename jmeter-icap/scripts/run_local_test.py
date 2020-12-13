@@ -10,6 +10,7 @@ import create_dashboard
 from create_stack import Config, get_size
 from create_stack_dash import __determine_load_type
 
+
 def get_jvm_memory(users_per_instance):
     # Determine the size of ec2 instance and jvm memory
     jvm_memory = "9216m"
@@ -58,7 +59,7 @@ def main(json_params):
         Config.total_users = 25
 
     Config.users_per_instance = Config.total_users
-    Config.instance_type, jvm_memory = get_size(Config.users_per_instance)
+    jvm_memory = get_jvm_memory(Config.users_per_instance)
     if json_params['ramp_up_time']:
         Config.ramp_up_time = json_params['ramp_up_time']
     else:
