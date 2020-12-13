@@ -11,6 +11,23 @@ from create_stack import Config, get_size
 from ui_tasks import modify_hosts_file
 
 
+def get_jvm_memory(users_per_instance):
+    # Determine the size of ec2 instance and jvm memory
+    jvm_memory = "9216m"
+    if 0 < users_per_instance <= 50:
+        jvm_memory = "1024m"
+    elif 50 < users_per_instance < 500:
+        jvm_memory = "2048m"
+    elif 500 <= users_per_instance < 1000:
+        jvm_memory = "3072m"
+    elif 1000 <= users_per_instance < 2500:
+        jvm_memory = "4096m"
+    elif 2500 <= users_per_instance:
+        jvm_memory = "9216m"
+
+    return jvm_memory
+
+
 def determine_load_type(load: str):
     if load == "Direct":
         Config.test_directory = 'ICAP-Direct-File-Processing'
