@@ -156,6 +156,18 @@ def __get_stack_name(config):
 
     return created_stack_name
 
+def __determineLoadType(load: str):
+    if load == "Direct":
+        Config.test_directory = 'ICAP-Direct-File-Processing'
+        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
+        Config.grafana_file = 'aws-test-engine-dashboard.json'
+        Config.test_data_file = 'gov_uk_files.csv'
+
+    elif load == "Proxy":
+        Config.test_directory = 'ICAP-Proxy-Site'
+        Config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
+        Config.grafana_file = 'ProxySite_Dashboard_Template.json'
+        Config.test_data_file = 'proxysitefiles.csv'
 
 def main(config):
     dashboard_url = ''
@@ -174,7 +186,6 @@ def main(config):
         __start_delete_stack(DELETE_TIME_OFFSET, config)
 
     return dashboard_url
-
 
 if __name__ == "__main__":
     args = __get_commandline_args()
