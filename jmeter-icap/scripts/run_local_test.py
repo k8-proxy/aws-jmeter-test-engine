@@ -6,9 +6,9 @@ import re
 import os
 import subprocess
 from dotenv import load_dotenv
+from create_stack_dash import __determineLoadType
 import create_dashboard
 from create_stack import Config
-from create_stack_dash import __determine_load_type
 
 
 def get_jvm_memory(users_per_instance):
@@ -50,7 +50,6 @@ def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_i
         if input_enable_tls:
             Config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
 
-
 def main(json_params):
     # Set Config values gotten from front end
     if json_params['total_users']:
@@ -73,7 +72,7 @@ def main(json_params):
     if json_params['prefix']:
         Config.prefix = json_params['prefix']
     if json_params['load_type']:
-        __determine_load_type(json_params['load_type'])
+        __determineLoadType(json_params['load_type'])
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False
