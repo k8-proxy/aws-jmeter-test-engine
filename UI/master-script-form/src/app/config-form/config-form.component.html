@@ -87,9 +87,23 @@
     </div>
 -->
     <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
-    <button id="stop-tests" type="button" class="btn btn-danger" (click)="onStopTests()">Terminate All Tests</button>
+
+
+    <button id="stop-tests" 
+    class="btn btn-danger"
+    mwlConfirmationPopover
+    [popoverTitle]="popoverTitle"
+    [popoverMessage]="popoverMessage"
+    placement="right"
+    (confirm)="onStopTests()"
+    (cancel)="cancelClicked = true"
+     type="button">
+        Stop Test
+    </button>
+
+
     <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;" type="text">
-        All tests have been terminated.
+        Test has been stopped.
     </div>
     <br />
     <br />

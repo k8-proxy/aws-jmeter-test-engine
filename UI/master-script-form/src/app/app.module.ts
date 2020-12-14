@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConfigFormComponent } from './config-form/config-form.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,10 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CommonModule
+    CommonModule,
+    ConfirmationPopoverModule.forRoot({
+      confirmButtonType: 'warning'
+    })
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [FormBuilder],
