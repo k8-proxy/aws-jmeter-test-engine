@@ -31,6 +31,10 @@ export class ConfigFormComponent implements OnInit {
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
   hideStoppedAlert = true;
+  public popoverTitle: string = "Please Confirm";
+  public popoverMessage: string = "Are you sure you wish to stop the test?";
+  public confirmClicked: boolean = false;
+  public cancelClicked: boolean = false;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
 
