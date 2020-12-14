@@ -32,6 +32,7 @@ export class ConfigFormComponent implements OnInit {
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
   hideStoppedAlert = true;
+  IcapOrProxy = this.urlChoices[0];
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "Are you sure you wish to stop the test?";
   public confirmClicked: boolean = false;
