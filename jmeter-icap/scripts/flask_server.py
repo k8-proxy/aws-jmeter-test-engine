@@ -29,6 +29,5 @@ def parse_request():
         terminate_java_processes()
         return make_response(jsonify("Tests terminated"), 201)
 
-
 CORS(app)
 serve(app, host='0.0.0.0', port=5000)

@@ -80,7 +80,7 @@ export class ConfigFormComponent implements OnInit {
     }
   }
 
-  //getter methods used in html so we can refer cleanly and directly to these fields 
+  //getter methods used in html so we can refer cleanly and directly to these fields
   get total_users() {
     return this.configForm.get('total_users');
   }
