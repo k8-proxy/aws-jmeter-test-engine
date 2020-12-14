@@ -4,11 +4,20 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'config-form',
   templateUrl: './config-form.component.html',
-  styleUrls: ['./config-form.component.css']
+  styleUrls: ['./config-form.component.css'],
+  animations: [
+    trigger('animationState', [
+      state('show', style({opacity: 1})),
+      state('show', style({opacity: 0})),
+      transition('show => hide', animate('150ms ease-out')),
+      transition('hide => show', animate('400ms ease-in'))
+    ])
+  ]
 })
 export class ConfigFormComponent implements OnInit {
   regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
@@ -16,11 +25,12 @@ export class ConfigFormComponent implements OnInit {
   configForm: FormGroup;
   fileToUpload: File = null;
   submitted = false;
-  responseUrl='';
+  responseUrl = '';
   responseReceived = false;
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
+  hideStoppedAlert = true;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
 
@@ -48,7 +58,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onLoadTypeChange() {
-    if(this.configForm.get('load_type').value == this.loadTypes[0]) {
+    if (this.configForm.get('load_type').value == this.loadTypes[0]) {
       this.enableCheckboxes = true;
     } else if (this.configForm.get('load_type').value == this.loadTypes[1]) {
       this.enableCheckboxes = false;
@@ -56,7 +66,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onTlsChange() {
-    if(this.configForm.get('enable_tls').value == true) {
+    if (this.configForm.get('enable_tls').value == true) {
       this.portDefault = '443';
       this.enableIgnoreErrorCheckbox = true;
     } else {
@@ -85,7 +95,7 @@ export class ConfigFormComponent implements OnInit {
     return this.configForm.get('prefix');
   }
 
-  get isValid () {
+  get isValid() {
     return this.configForm.valid;
   }
 
@@ -99,6 +109,10 @@ export class ConfigFormComponent implements OnInit {
 
   get getUrl() {
     return this.responseUrl;
+  }
+
+  get animState() {
+    return this.hideStoppedAlert ? 'show' : 'hide';
   }
 
   onFileChange(files: FileList) {
@@ -121,17 +135,38 @@ export class ConfigFormComponent implements OnInit {
 
   }
 
+  postFormToServer(formData: FormData) {
+    this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response));
+  }
+
+  postStopRequestToServer(formData: FormData) {
+    this.http.post('http://127.0.0.1:5000/', formData).toPromise();
+  }
+
   onSubmit(): void {
     if (this.configForm.valid) {
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
+      formData.append("button", "generate_load");
       if (this.fileToUpload) {
         formData.append('file', this.fileToUpload, this.fileToUpload.name);
-      } 
+      }
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
-      this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response));
+      this.postFormToServer(formData);
       this.submitted = true;
       this.resetForm();
-    } 
+    }
+  }
+
+  onStopTests() {
+    const formData = new FormData();
+    formData.append("button", "stop_tests");
+    this.postStopRequestToServer(formData);
+    this.toggleTerminationAlert();
+    setTimeout(() => this.toggleTerminationAlert(), 3000);
+  }
+
+  toggleTerminationAlert() {
+    this.hideStoppedAlert = !this.hideStoppedAlert;
   }
 }

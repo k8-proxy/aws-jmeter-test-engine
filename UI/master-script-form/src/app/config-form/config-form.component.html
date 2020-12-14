@@ -87,8 +87,13 @@
     </div>
 -->
     <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
+    <button id="stop-tests" type="button" class="btn btn-danger" (click)="onStopTests()">Terminate All Tests</button>
+    <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;" type="text">
+        All tests have been terminated.
+    </div>
     <br />
     <br />
+    
     <div *ngIf="formSubmitted" class="alert alert-primary" role="alert">
         Test submitted. Generating Load...
     </div>

@@ -4,13 +4,9 @@ export class ConfigFormValidators {
 
     static limitedNumber(control: AbstractControl) : ValidationErrors | null {
         if(isNaN(control.value)) {
-            console.log("that's NOT a number");
             return {isNumber: false};
         }  else if(control.value <= 0) {
-            console.log("that's a number, but it's not the right kind of number");
             return {isMoreThanZero: false};
-        } else {
-            console.log("that's a correct number");
         }
 
         return null;
