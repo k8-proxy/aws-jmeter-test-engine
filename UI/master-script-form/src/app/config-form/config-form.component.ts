@@ -32,6 +32,7 @@ export class ConfigFormComponent implements OnInit {
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
   showStoppedAlert = false;
+  hideSubmitMessages = false;
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "Are you sure you wish to stop tests?";
   public confirmClicked: boolean = false;
@@ -43,7 +44,9 @@ export class ConfigFormComponent implements OnInit {
     this.initializeForm();
     this.setTitle("ICAP Performance Test");
     console.log(this.cookieService.getAll());
-    
+    this.configForm.valueChanges.subscribe((data) => {
+      this.hideSubmitMessages = true;
+    });
   }
 
   setTitle(newTitle: string) {
@@ -152,7 +155,7 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.get('enable_tls').setValue(oldTls);
     this.configForm.get('tls_ignore_error').setValue(oldTlsIgnoreError);
     this.configForm.get('icap_endpoint_url').setValue(oldEndPtValue);
-
+    this.hideSubmitMessages = false;
   }
 
   postFormToServer(formData: FormData) {
@@ -164,6 +167,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.hideSubmitMessages = false;
     if (this.configForm.valid) {
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
