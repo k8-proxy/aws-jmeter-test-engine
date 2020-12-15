@@ -141,7 +141,8 @@ export class ConfigFormComponent implements OnInit {
   storeTest(url) {
     var currentTime = new Date();
     var expireTime = new Date(currentTime.getTime() + this.duration.value*1000 + this.ramp_up_time.value*1000);
-    this.cookieService.set(this.prefix.value, url, expireTime);
+    let key = this.prefix.value === null ? "ICAP Live Performance Dashboard" : this.prefix.value + " ICAP Live Performance Dashboard";
+    this.cookieService.set(key, url, expireTime);
     // console.log("created cookie at " + new Date(currentTime.getTime()) + ". It will expire at " + expireTime + ". Contents are (key,val): (" + this.prefix.value + ", " + url + ")");
     // console.log("Attempting to actually retrieve cookie gets us: " + this.cookieService.get(this.prefix.value));
   }

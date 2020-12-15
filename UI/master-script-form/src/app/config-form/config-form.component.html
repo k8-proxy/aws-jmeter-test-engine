@@ -118,8 +118,7 @@
     <div *ngIf="cookiesExist()" class="form-group">
         <label>Currently Running Tests:</label>
         <div *ngFor="let item of getCookies() | keyvalue">
-            <a href="{{item.value}}" target="_blank">{{item.key}} ICAP Live Performance Dashboard</a>
+            <a href="{{item.value}}" target="_blank">{{item.key}}</a>
         </div>
     </div>
-
 </form>
