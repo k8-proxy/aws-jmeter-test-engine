@@ -13,8 +13,8 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./config-form.component.css'],
   animations: [
     trigger('animationState', [
-      state('show', style({opacity: 1})),
-      state('hide', style({opacity: 0})),
+      state('show', style({ opacity: 1 })),
+      state('hide', style({ opacity: 0 })),
       transition('show => hide', animate('150ms ease-out')),
       transition('hide => show', animate('400ms ease-in'))
     ])
@@ -47,6 +47,8 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.valueChanges.subscribe((data) => {
       this.hideSubmitMessages = true;
     });
+    setInterval(() => { this.getCookies(); }, 1000); //used to refresh list and remove expired tests.
+    
   }
 
   setTitle(newTitle: string) {
@@ -138,7 +140,7 @@ export class ConfigFormComponent implements OnInit {
 
   storeTest(url) {
     var currentTime = new Date();
-    var expireTime = new Date(currentTime.getTime() + this.duration.value*1000 + this.ramp_up_time.value*1000);
+    var expireTime = new Date(currentTime.getTime() + this.duration.value * 1000 + this.ramp_up_time.value * 1000);
     let key = this.prefix.value === null ? "ICAP Live Performance Dashboard" : this.prefix.value + " ICAP Live Performance Dashboard";
     this.cookieService.set(key, url, expireTime);
     // console.log("created cookie at " + new Date(currentTime.getTime()) + ". It will expire at " + expireTime + ". Contents are (key,val): (" + this.prefix.value + ", " + url + ")");
