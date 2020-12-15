@@ -14,7 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
   animations: [
     trigger('animationState', [
       state('show', style({opacity: 1})),
-      state('show', style({opacity: 0})),
+      state('hide', style({opacity: 0})),
       transition('show => hide', animate('150ms ease-out')),
       transition('hide => show', animate('400ms ease-in'))
     ])
@@ -31,7 +31,7 @@ export class ConfigFormComponent implements OnInit {
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
-  hideStoppedAlert = true;
+  showStoppedAlert = false;
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "Are you sure you wish to stop tests?";
   public confirmClicked: boolean = false;
@@ -43,6 +43,7 @@ export class ConfigFormComponent implements OnInit {
     this.initializeForm();
     this.setTitle("ICAP Performance Test");
     console.log(this.cookieService.getAll());
+    
   }
 
   setTitle(newTitle: string) {
@@ -118,7 +119,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   get animState() {
-    return this.hideStoppedAlert ? 'show' : 'hide';
+    return this.showStoppedAlert ? 'show' : 'hide';
   }
 
   onFileChange(files: FileList) {
@@ -145,10 +146,12 @@ export class ConfigFormComponent implements OnInit {
     var oldLoadType = this.configForm.get('load_type').value;
     var oldTls = this.configForm.get('enable_tls').value;
     var oldTlsIgnoreError = this.configForm.get('tls_ignore_error').value;
+    var oldEndPtValue = this.configForm.get('icap_endpoint_url').value;
     this.configForm.reset();
     this.configForm.get('load_type').setValue(oldLoadType);
     this.configForm.get('enable_tls').setValue(oldTls);
     this.configForm.get('tls_ignore_error').setValue(oldTlsIgnoreError);
+    this.configForm.get('icap_endpoint_url').setValue(oldEndPtValue);
 
   }
 
@@ -186,7 +189,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   toggleTerminationAlert() {
-    this.hideStoppedAlert = !this.hideStoppedAlert;
+    this.showStoppedAlert = !this.showStoppedAlert;
   }
 
   cookiesExist(): boolean {
