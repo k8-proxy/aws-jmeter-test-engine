@@ -44,7 +44,7 @@ export class ConfigFormComponent implements OnInit {
     this.initializeForm();
     this.setTitle("ICAP Performance Test");
     this.populateCookiesMap();
-    console.log(this.cookieService.getAll())
+    console.log(this.cookieService.getAll());
   }
 
   setTitle(newTitle: string) {
