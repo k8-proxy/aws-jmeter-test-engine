@@ -36,23 +36,17 @@ export class ConfigFormComponent implements OnInit {
   public popoverMessage: string = "Are you sure you wish to stop tests?";
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
-  cookiesMap;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, public cookieService: CookieService) { }
 
   ngOnInit(): void {
     this.initializeForm();
     this.setTitle("ICAP Performance Test");
-    this.populateCookiesMap();
     console.log(this.cookieService.getAll());
   }
 
   setTitle(newTitle: string) {
     this.titleService.setTitle(newTitle);
-  }
-
-  populateCookiesMap() {
-    this.cookiesMap = this.cookieService.getAll();
   }
 
   initializeForm(): void {
