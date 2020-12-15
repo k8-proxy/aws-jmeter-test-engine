@@ -89,7 +89,7 @@
     <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
 
 
-    <button id="stop-tests" 
+    <button id="stop-tests" [disabled]="!cookiesExist()"
     class="btn btn-danger"
     mwlConfirmationPopover
     [popoverTitle]="popoverTitle"
@@ -98,12 +98,12 @@
     (confirm)="onStopTests()"
     (cancel)="cancelClicked = true"
      type="button">
-        Stop Test
+        Stop Tests
     </button>
 
 
     <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;" type="text">
-        Test has been stopped.
+        Tests have been stopped.
     </div>
     <br />
     <br />
@@ -114,4 +114,12 @@
     <div *ngIf="gotResponse" class="alert alert-success" role="alert">
         Success! <a href="{{responseUrl}}" target="_blank">Click here to view Grafana Dashboard</a>
     </div>
+
+    <div *ngIf="cookiesExist()" class="form-group">
+        <label>Currently Running Tests:</label>
+        <div *ngFor="let item of getCookies() | keyvalue">
+            <a href="{{item.value}}" target="_blank">{{item.key}} ICAP Live Performance Dashboard</a>
+        </div>
+    </div>
+
 </form>

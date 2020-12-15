@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'config-form',
@@ -32,19 +33,26 @@ export class ConfigFormComponent implements OnInit {
   enableIgnoreErrorCheckbox = true;
   hideStoppedAlert = true;
   public popoverTitle: string = "Please Confirm";
-  public popoverMessage: string = "Are you sure you wish to stop the test?";
+  public popoverMessage: string = "Are you sure you wish to stop tests?";
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
+  cookiesMap;
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, public cookieService: CookieService) { }
 
   ngOnInit(): void {
     this.initializeForm();
     this.setTitle("ICAP Performance Test");
+    this.populateCookiesMap();
+    console.log(this.cookieService.getAll())
   }
 
   setTitle(newTitle: string) {
     this.titleService.setTitle(newTitle);
+  }
+
+  populateCookiesMap() {
+    this.cookiesMap = this.cookieService.getAll();
   }
 
   initializeForm(): void {
@@ -126,6 +134,16 @@ export class ConfigFormComponent implements OnInit {
   processResponse(response: object) {
     this.responseUrl = response.toString();
     this.responseReceived = true;
+    this.storeTest(this.responseUrl);
+    this.resetForm();
+  }
+
+  storeTest(url) {
+    var currentTime = new Date();
+    var expireTime = new Date(currentTime.getTime() + this.duration.value*1000 + this.ramp_up_time.value*1000);
+    this.cookieService.set(this.prefix.value, url, expireTime);
+    // console.log("created cookie at " + new Date(currentTime.getTime()) + ". It will expire at " + expireTime + ". Contents are (key,val): (" + this.prefix.value + ", " + url + ")");
+    // console.log("Attempting to actually retrieve cookie gets us: " + this.cookieService.get(this.prefix.value));
   }
 
   resetForm() {
@@ -158,7 +176,6 @@ export class ConfigFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
-      this.resetForm();
     }
   }
 
@@ -166,11 +183,22 @@ export class ConfigFormComponent implements OnInit {
     const formData = new FormData();
     formData.append("button", "stop_tests");
     this.postStopRequestToServer(formData);
+    this.cookieService.deleteAll();
     this.toggleTerminationAlert();
+    this.submitted = false;
+    this.responseReceived = false;
     setTimeout(() => this.toggleTerminationAlert(), 3000);
   }
 
   toggleTerminationAlert() {
     this.hideStoppedAlert = !this.hideStoppedAlert;
+  }
+
+  cookiesExist(): boolean {
+    return !(Object.keys(this.cookieService.getAll()).length === 0 && this.cookieService.getAll().constructor === Object);
+  }
+
+  getCookies() {
+    return this.cookieService.getAll()
   }
 }
