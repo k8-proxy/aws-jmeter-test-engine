@@ -89,11 +89,7 @@
         <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
     </div>
 -->
-    <button *ngIf="!cookiesExist()" id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
-
-    <button *ngIf="cookiesExist()" type="submit" class="btn btn-primary" [disabled]="!isValid" mwlConfirmationPopover
-    [popoverTitle]="popoverGenLoadTitle" [popoverMessage]="popoverGenLoadMessage" placement="right" (confirm)="onSubmit()"
-     type="button">Generate Load</button>
+    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
 
     <button id="stop-tests" [disabled]="!cookiesExist()" class="btn btn-danger" mwlConfirmationPopover
         [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
