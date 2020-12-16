@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class ConfigFormComponent implements OnInit {
   regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
   loadTypes: string[] = ['Direct', 'Proxy'];
+  urlChoices: string[] = ["ICAP Server Endpoint URL*", "Proxy IP Address*"];
   configForm: FormGroup;
   fileToUpload: File = null;
   submitted = false;
@@ -50,7 +51,7 @@ export class ConfigFormComponent implements OnInit {
       this.hideSubmitMessages = true;
     });
     setInterval(() => { this.getCookies(); }, 1000); //used to refresh list and remove expired tests.
-    
+
   }
 
   setTitle(newTitle: string) {
@@ -72,10 +73,13 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onLoadTypeChange() {
+    //if direct, else proxy
     if (this.configForm.get('load_type').value == this.loadTypes[0]) {
       this.enableCheckboxes = true;
+      this.IcapOrProxy = this.urlChoices[0];
     } else if (this.configForm.get('load_type').value == this.loadTypes[1]) {
       this.enableCheckboxes = false;
+      this.IcapOrProxy = this.urlChoices[1];
     }
   }
 
@@ -89,7 +93,7 @@ export class ConfigFormComponent implements OnInit {
     }
   }
 
-  //getter methods used in html so we can refer cleanly and directly to these fields 
+  //getter methods used in html so we can refer cleanly and directly to these fields
   get total_users() {
     return this.configForm.get('total_users');
   }

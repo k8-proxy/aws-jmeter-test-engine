@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from create_stack_dash import __determineLoadType
 import create_dashboard
 from create_stack import Config
+from ui_tasks import modify_hosts_file
 
 
 def get_jvm_memory(users_per_instance):
@@ -73,6 +74,9 @@ def main(json_params):
         Config.prefix = json_params['prefix']
     if json_params['load_type']:
         __determineLoadType(json_params['load_type'])
+
+        if json_params['load_type'] == 'Proxy':
+            modify_hosts_file(json_params['icap_endpoint_url'])
 
     # ensure that preserve stack and create_dashboard are at default values
     Config.preserve_stack = False
