@@ -91,19 +91,22 @@
         <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
     </div>
 -->
-    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
+    <button *ngIf="!cookiesExist()" id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
 
+    <button *ngIf="cookiesExist()" type="submit" class="btn btn-primary" [disabled]="!isValid" mwlConfirmationPopover
+    [popoverTitle]="popoverGenLoadTitle" [popoverMessage]="popoverGenLoadMessage" placement="right" (confirm)="onSubmit()"
+     type="button">Generate Load</button>
 
     <button id="stop-tests" [disabled]="!cookiesExist()" class="btn btn-danger" mwlConfirmationPopover
         [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
-        (cancel)="cancelClicked = true" type="button">
-        Stop Tests
+        type="button">
+        Stop Load
     </button>
 
 
     <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;"
         type="text">
-        Tests have been stopped.
+        Load generation stopped.
     </div>
     <br />
     <br />
@@ -113,15 +116,7 @@
     </div>
     <div *ngIf="gotResponse && !hideSubmitMessages" class="alert alert-success" role="alert">
         Success! View test dashboard below.
-        <!-- <a href="{{responseUrl}}" target="_blank">Click here to view Grafana Dashboard</a> -->
     </div>
-
-    <!-- <div *ngIf="cookiesExist()" class="form-group">
-        <label>Currently Running Tests:</label>
-        <div *ngFor="let item of getCookies() | keyvalue">
-            <a href="{{item.value}}" target="_blank">{{item.key}}</a>
-        </div>
-    </div> -->
 
     <div *ngIf="cookiesExist()">
         <table class="table">

@@ -34,7 +34,9 @@ export class ConfigFormComponent implements OnInit {
   showStoppedAlert = false;
   hideSubmitMessages = false;
   public popoverTitle: string = "Please Confirm";
-  public popoverMessage: string = "Are you sure you wish to stop tests?";
+  public popoverMessage: string = "Are you sure you wish to stop all load?";
+  public popoverGenLoadTitle: string = "Warning";
+  public popoverGenLoadMessage: string = "You are currently generating load. Generating too much load can cause a system crash. Do you wish to continue?";
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
 
