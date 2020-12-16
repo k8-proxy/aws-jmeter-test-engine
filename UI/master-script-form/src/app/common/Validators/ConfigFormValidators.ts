@@ -2,11 +2,9 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 export class ConfigFormValidators {
 
-    static limitedNumber(control: AbstractControl) : ValidationErrors | null {
-        if(isNaN(control.value)) {
-            return {isNumber: false};
-        }  else if(control.value <= 0) {
-            return {isMoreThanZero: false};
+    static hasNumberLimit(control: AbstractControl) : ValidationErrors | null {
+        if(control.value > 4000) {
+            return {exceedsNumberLimit: true};
         }
 
         return null;

@@ -3,18 +3,20 @@
 <form [formGroup]="configForm" (ngSubmit)="onSubmit()" name="configForm">
     <div class="form-group">
         <label>Total Users</label>
-        <input type="text" class="form-control" formControlName="total_users" placeholder="Ex: 25">
-        <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test</small>
+        <input type="text" class="form-control" formControlName="total_users" placeholder="Default: 25">
+        <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test (minimum 1 user, maximum 4000 users)</small>
         <div *ngIf="total_users.touched && total_users.invalid">
             <div class="alert alert-danger" *ngIf="total_users.errors.pattern">Please provide only number values.</div>
             <div class="alert alert-danger" *ngIf="total_users.errors.cannotContainSpaces">Field cannot contain spaces.
+            </div>
+            <div class="alert alert-danger" *ngIf="total_users.errors.exceedsNumberLimit">Value cannot exceed 4000.
             </div>
         </div>
     </div>
 
     <div class="form-group">
         <label>Ramp Up Time</label>
-        <input type="text" class="form-control" formControlName="ramp_up_time" placeholder="Ex: 300">
+        <input type="text" class="form-control" formControlName="ramp_up_time" placeholder="Default: 300">
         <small class="form-text text-muted">Ramp up time in seconds</small>
         <div *ngIf="ramp_up_time.touched && ramp_up_time.invalid">
             <div class="alert alert-danger" *ngIf="ramp_up_time.errors.pattern">Please provide only number values.</div>
@@ -26,8 +28,8 @@
 
     <div class="form-group">
         <label>Duration</label>
-        <input type="text" class="form-control" formControlName="duration" placeholder="Ex: 900">
-        <small class="form-text text-muted">Duration of test in seconds</small>
+        <input type="text" class="form-control" formControlName="duration" placeholder="Default: 900">
+        <small class="form-text text-muted">Duration of test in seconds (minimum 60 seconds)</small>
         <div *ngIf="duration.touched && duration.invalid">
             <div class="alert alert-danger" *ngIf="duration.errors.pattern">Please provide only number values.</div>
             <div class="alert alert-danger" *ngIf="duration.errors.cannotContainSpaces">Field cannot contain spaces.

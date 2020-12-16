@@ -59,7 +59,7 @@ export class ConfigFormComponent implements OnInit {
 
   initializeForm(): void {
     this.configForm = this.fb.group({
-      total_users: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
+      total_users: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.hasNumberLimit]),
       duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: this.loadTypes[0],
@@ -144,6 +144,8 @@ export class ConfigFormComponent implements OnInit {
     this.resetForm();
   }
 
+  
+
   storeTestAsCookie(dashboardUrl) {
     let currentTime = new Date();
     let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000 + this.ramp_up_time.value * 1000);
@@ -171,6 +173,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.setFormDefaults();
     this.hideSubmitMessages = false;
     if (this.configForm.valid) {
       //append the necessary data to formData and send to Flask server
@@ -182,6 +185,28 @@ export class ConfigFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
+    }
+  }
+
+  setFormDefaults() {
+    //if user enters less that 1 total_users, default to 1. Otherwise if no input, default to 25.
+    if(this.total_users.value === '') {
+      this.total_users.setValue('25');
+    } else if (this.total_users.value < 1) {
+      this.total_users.setValue('1');
+    } 
+
+    //if user enters no ramp up time, default is 300.
+    if(this.ramp_up_time.value === '') {
+      this.ramp_up_time.setValue('300');
+    }
+
+    //if user enters no duration, default is 900. If they enter a less than 60 second duration, default to 60.
+    if(this.duration.value === '') {
+      this.duration.setValue('900');
+    }
+    else if (this.duration.value < 60) {
+      this.duration.setValue('60');
     }
   }
 
