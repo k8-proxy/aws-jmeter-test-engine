@@ -140,25 +140,19 @@ export class ConfigFormComponent implements OnInit {
 
   storeTestAsCookie(dashboardUrl) {
     let currentTime = new Date();
-    let storageDuration = this.duration.value === '' ? '300' : this.duration.value;
-    storageDuration = storageDuration > 60 ? storageDuration : '60';
-    let expireTime = new Date(currentTime.getTime() + storageDuration * 1000 + this.ramp_up_time.value * 1000);
+    let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000 + this.ramp_up_time.value * 1000);
     let key = this.prefix.value === null ? "ICAP Live Performance Dashboard" : this.prefix.value + " ICAP Live Performance Dashboard";
     this.cookieService.set(key, dashboardUrl, expireTime);
-    // console.log("created cookie at " + new Date(currentTime.getTime()) + ". It will expire at " + expireTime + ". Contents are (key,val): (" + this.prefix.value + ", " + dashboardUrl + ")");
-    // console.log("Attempting to actually retrieve cookie gets us: " + this.cookieService.get(this.prefix.value));
   }
 
   resetForm() {
     var oldLoadType = this.configForm.get('load_type').value;
     var oldTls = this.configForm.get('enable_tls').value;
     var oldTlsIgnoreError = this.configForm.get('tls_ignore_error').value;
-    var oldEndPtValue = this.configForm.get('icap_endpoint_url').value;
     this.configForm.reset();
     this.configForm.get('load_type').setValue(oldLoadType);
     this.configForm.get('enable_tls').setValue(oldTls);
     this.configForm.get('tls_ignore_error').setValue(oldTlsIgnoreError);
-    this.configForm.get('icap_endpoint_url').setValue(oldEndPtValue);
     this.hideSubmitMessages = false;
   }
 
