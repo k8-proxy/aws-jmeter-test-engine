@@ -32,12 +32,13 @@ export class ConfigFormComponent implements OnInit {
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
+  IcapOrProxy = this.urlChoices[0];
   showStoppedAlert = false;
   hideSubmitMessages = false;
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "Are you sure you wish to stop all load?";
   public popoverGenLoadTitle: string = "Warning";
-  public popoverGenLoadMessage: string = "You are currently generating load. Generating too much load can cause a system crash. Do you wish to continue?";
+  public popoverGenLoadMessage: string = "You already have tests in progress. Starting too many tests may overload the system. Are you sure you wish to continue?";
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
 
@@ -51,7 +52,7 @@ export class ConfigFormComponent implements OnInit {
       this.hideSubmitMessages = true;
     });
     setInterval(() => { this.getCookies(); }, 1000); //used to refresh list and remove expired tests.
-
+    
   }
 
   setTitle(newTitle: string) {
@@ -83,6 +84,7 @@ export class ConfigFormComponent implements OnInit {
     }
   }
 
+
   onTlsChange() {
     if (this.configForm.get('enable_tls').value == true) {
       this.portDefault = '443';
@@ -93,7 +95,7 @@ export class ConfigFormComponent implements OnInit {
     }
   }
 
-  //getter methods used in html so we can refer cleanly and directly to these fields
+  //getter methods used in html so we can refer cleanly and directly to these fields 
   get total_users() {
     return this.configForm.get('total_users');
   }
