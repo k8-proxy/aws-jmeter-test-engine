@@ -10,6 +10,8 @@ ALLOWED_EXTENSIONS = {'csv'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
 @app.route('/', methods=["POST"])
 def parse_request():
     button_pressed = request.form.get('button')
