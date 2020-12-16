@@ -141,7 +141,6 @@ export class ConfigFormComponent implements OnInit {
     this.responseUrl = response.toString();
     this.responseReceived = true;
     this.storeTestAsCookie(this.responseUrl);
-    this.resetForm();
   }
 
   
@@ -154,14 +153,10 @@ export class ConfigFormComponent implements OnInit {
   }
 
   resetForm() {
-    var oldLoadType = this.configForm.get('load_type').value;
-    var oldTls = this.configForm.get('enable_tls').value;
-    var oldTlsIgnoreError = this.configForm.get('tls_ignore_error').value;
     this.configForm.reset();
-    this.configForm.get('load_type').setValue(oldLoadType);
-    this.configForm.get('enable_tls').setValue(oldTls);
-    this.configForm.get('tls_ignore_error').setValue(oldTlsIgnoreError);
-    this.hideSubmitMessages = false;
+    this.initializeForm();
+    this.onLoadTypeChange();
+    this.hideSubmitMessages = true;
   }
 
   postFormToServer(formData: FormData) {
