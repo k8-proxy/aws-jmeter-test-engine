@@ -7,7 +7,8 @@
         <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test</small>
         <div *ngIf="total_users.touched && total_users.invalid">
             <div class="alert alert-danger" *ngIf="total_users.errors.pattern">Please provide only number values.</div>
-            <div class="alert alert-danger" *ngIf="total_users.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+            <div class="alert alert-danger" *ngIf="total_users.errors.cannotContainSpaces">Field cannot contain spaces.
+            </div>
         </div>
     </div>
 
@@ -17,9 +18,10 @@
         <small class="form-text text-muted">Ramp up time in seconds</small>
         <div *ngIf="ramp_up_time.touched && ramp_up_time.invalid">
             <div class="alert alert-danger" *ngIf="ramp_up_time.errors.pattern">Please provide only number values.</div>
-            <div class="alert alert-danger" *ngIf="ramp_up_time.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+            <div class="alert alert-danger" *ngIf="ramp_up_time.errors.cannotContainSpaces">Field cannot contain spaces.
+            </div>
         </div>
-        
+
     </div>
 
     <div class="form-group">
@@ -28,7 +30,8 @@
         <small class="form-text text-muted">Duration of test in seconds</small>
         <div *ngIf="duration.touched && duration.invalid">
             <div class="alert alert-danger" *ngIf="duration.errors.pattern">Please provide only number values.</div>
-            <div class="alert alert-danger" *ngIf="duration.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+            <div class="alert alert-danger" *ngIf="duration.errors.cannotContainSpaces">Field cannot contain spaces.
+            </div>
         </div>
     </div>
 
@@ -88,30 +91,39 @@
 -->
     <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
 
-
-    <button id="stop-tests" 
-    class="btn btn-danger"
-    mwlConfirmationPopover
-    [popoverTitle]="popoverTitle"
-    [popoverMessage]="popoverMessage"
-    placement="right"
-    (confirm)="onStopTests()"
-    (cancel)="cancelClicked = true"
-     type="button">
-        Stop Test
+    <button id="stop-tests" [disabled]="!cookiesExist()" class="btn btn-danger" mwlConfirmationPopover
+        [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
+        type="button">
+        Stop Load
     </button>
 
 
-    <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;" type="text">
-        Test has been stopped.
+    <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;"
+        type="text">
+        Load generation stopped.
     </div>
     <br />
     <br />
-    
-    <div *ngIf="formSubmitted" class="alert alert-primary" role="alert">
+
+    <div *ngIf="formSubmitted && !hideSubmitMessages" class="alert alert-primary" role="alert">
         Test submitted. Generating Load...
     </div>
-    <div *ngIf="gotResponse" class="alert alert-success" role="alert">
-        Success! <a href="{{responseUrl}}" target="_blank">Click here to view Grafana Dashboard</a>
+    <div *ngIf="gotResponse && !hideSubmitMessages" class="alert alert-success" role="alert">
+        Success! View test dashboard below.
+    </div>
+
+    <div *ngIf="cookiesExist()">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Currently Running Tests</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of getCookies() | keyvalue">
+                    <td><a href="{{item.value}}" target="_blank">{{item.key}}</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </form>

@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { ConfigFormComponent } from './config-form/config-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,7 @@ import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
     })
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [FormBuilder],
+  providers: [FormBuilder, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

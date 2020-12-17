@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'config-form',
@@ -12,8 +13,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   styleUrls: ['./config-form.component.css'],
   animations: [
     trigger('animationState', [
-      state('show', style({opacity: 1})),
-      state('show', style({opacity: 0})),
+      state('show', style({ opacity: 1 })),
+      state('hide', style({ opacity: 0 })),
       transition('show => hide', animate('150ms ease-out')),
       transition('hide => show', animate('400ms ease-in'))
     ])
@@ -31,18 +32,25 @@ export class ConfigFormComponent implements OnInit {
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
-  hideStoppedAlert = true;
   IcapOrProxy = this.urlChoices[0];
+  showStoppedAlert = false;
+  hideSubmitMessages = false;
   public popoverTitle: string = "Please Confirm";
-  public popoverMessage: string = "Are you sure you wish to stop the test?";
+  public popoverMessage: string = "Are you sure you wish to stop all load?";
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title) { }
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, public cookieService: CookieService) { }
 
   ngOnInit(): void {
     this.initializeForm();
     this.setTitle("ICAP Performance Test");
+    console.log(this.cookieService.getAll());
+    this.configForm.valueChanges.subscribe((data) => {
+      this.hideSubmitMessages = true;
+    });
+    setInterval(() => { this.getCookies(); }, 1000); //used to refresh list and remove expired tests.
+    
   }
 
   setTitle(newTitle: string) {
@@ -74,6 +82,7 @@ export class ConfigFormComponent implements OnInit {
     }
   }
 
+
   onTlsChange() {
     if (this.configForm.get('enable_tls').value == true) {
       this.portDefault = '443';
@@ -84,7 +93,7 @@ export class ConfigFormComponent implements OnInit {
     }
   }
 
-  //getter methods used in html so we can refer cleanly and directly to these fields
+  //getter methods used in html so we can refer cleanly and directly to these fields 
   get total_users() {
     return this.configForm.get('total_users');
   }
@@ -121,7 +130,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   get animState() {
-    return this.hideStoppedAlert ? 'show' : 'hide';
+    return this.showStoppedAlert ? 'show' : 'hide';
   }
 
   onFileChange(files: FileList) {
@@ -131,6 +140,15 @@ export class ConfigFormComponent implements OnInit {
   processResponse(response: object) {
     this.responseUrl = response.toString();
     this.responseReceived = true;
+    this.storeTestAsCookie(this.responseUrl);
+    this.resetForm();
+  }
+
+  storeTestAsCookie(dashboardUrl) {
+    let currentTime = new Date();
+    let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000 + this.ramp_up_time.value * 1000);
+    let key = this.prefix.value === null ? "ICAP Live Performance Dashboard" : this.prefix.value + " ICAP Live Performance Dashboard";
+    this.cookieService.set(key, dashboardUrl, expireTime);
   }
 
   resetForm() {
@@ -141,7 +159,7 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.get('load_type').setValue(oldLoadType);
     this.configForm.get('enable_tls').setValue(oldTls);
     this.configForm.get('tls_ignore_error').setValue(oldTlsIgnoreError);
-
+    this.hideSubmitMessages = false;
   }
 
   postFormToServer(formData: FormData) {
@@ -153,6 +171,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.hideSubmitMessages = false;
     if (this.configForm.valid) {
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
@@ -163,7 +182,6 @@ export class ConfigFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
-      this.resetForm();
     }
   }
 
@@ -171,11 +189,22 @@ export class ConfigFormComponent implements OnInit {
     const formData = new FormData();
     formData.append("button", "stop_tests");
     this.postStopRequestToServer(formData);
+    this.cookieService.deleteAll();
     this.toggleTerminationAlert();
+    this.submitted = false;
+    this.responseReceived = false;
     setTimeout(() => this.toggleTerminationAlert(), 3000);
   }
 
   toggleTerminationAlert() {
-    this.hideStoppedAlert = !this.hideStoppedAlert;
+    this.showStoppedAlert = !this.showStoppedAlert;
+  }
+
+  cookiesExist(): boolean {
+    return !(Object.keys(this.cookieService.getAll()).length === 0 && this.cookieService.getAll().constructor === Object);
+  }
+
+  getCookies() {
+    return this.cookieService.getAll();
   }
 }
