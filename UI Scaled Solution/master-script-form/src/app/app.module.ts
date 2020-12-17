@@ -10,11 +10,13 @@ import { ConfigFormComponent } from './config-form/config-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { CookieService } from 'ngx-cookie-service';
+import { TestsTableComponent } from './tests-table/tests-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ConfigFormComponent
+    ConfigFormComponent,
+    TestsTableComponent
   ],
   imports: [
     BrowserModule,
