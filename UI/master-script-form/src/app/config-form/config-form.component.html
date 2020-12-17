@@ -1,5 +1,7 @@
 <h1><img src="assets/gwl.png"> ICAP Performance Testing </h1>
 
+<a href="https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Generate-Load-with-OVA.md" target="_blank" style="float: right;">Instructions on How to Generate Load</a>
+
 <form [formGroup]="configForm" (ngSubmit)="onSubmit()" name="configForm">
     <div class="form-group">
         <label>Total Users</label>
@@ -97,6 +99,10 @@
         [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
         type="button">
         Stop Load
+    </button>
+
+    <button id="reset-form" [disabled]="configForm.pristine" class="btn btn-warning" type="button" (click)="resetForm()">
+        Clear Form
     </button>
 
 
