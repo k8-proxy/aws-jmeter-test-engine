@@ -1,3 +1,4 @@
+import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
@@ -40,7 +41,7 @@ export class ConfigFormComponent implements OnInit {
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, public cookieService: CookieService) { }
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, public cookieService: CookieService, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -141,14 +142,17 @@ export class ConfigFormComponent implements OnInit {
     this.responseUrl = response.toString();
     this.responseReceived = true;
     this.storeTestAsCookie(this.responseUrl);
+    const dataPackage: FormDataPackage = { form: this.configForm, grafanaUrlResponse: this.responseUrl }
+    this.fireSubmitEvent(dataPackage);
   }
 
   
 
   storeTestAsCookie(dashboardUrl) {
     let currentTime = new Date();
-    let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000 + this.ramp_up_time.value * 1000);
-    let key = this.prefix.value === null ? "ICAP Live Performance Dashboard" : this.prefix.value + " ICAP Live Performance Dashboard";
+    let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000);
+    let testTitle = this.IcapOrProxy === this.urlChoices[0] ? "ICAP Live Performance Dashboard" : "Proxy Site Live Performance Dashboard";
+    let key = this.prefix.value === null ? testTitle : this.prefix.value + " " + testTitle;
     this.cookieService.set(key, dashboardUrl, expireTime);
   }
 
@@ -203,6 +207,10 @@ export class ConfigFormComponent implements OnInit {
     else if (this.duration.value < 60) {
       this.duration.setValue('60');
     }
+
+    if(this.prefix.value === '') {
+      this.prefix.setValue('demo');
+    }
   }
 
   onStopTests() {
@@ -226,5 +234,9 @@ export class ConfigFormComponent implements OnInit {
 
   getCookies() {
     return this.cookieService.getAll();
+  }
+
+  fireSubmitEvent(formDataPack: FormDataPackage) {
+    this.sharedService.sendSubmitEvent(formDataPack);
   }
 }
