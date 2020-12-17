@@ -204,6 +204,10 @@ export class ConfigFormComponent implements OnInit {
     else if (this.duration.value < 60) {
       this.duration.setValue('60');
     }
+
+    if(this.prefix.value === '') {
+      this.prefix.setValue('demo');
+    }
   }
 
   onStopTests() {
