@@ -1,1 +1,14 @@
-<p>tests-table works!</p>
+<div *ngIf="cookiesExist">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Currently Running Tests</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of getCookies() | keyvalue">
+                <td><a href="{{item.value}}" target="_blank">{{item.key}}</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

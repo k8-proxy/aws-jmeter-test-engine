@@ -1,3 +1,4 @@
+import { AppSettings } from './../common/app settings/AppSettings';
 import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
@@ -6,7 +7,6 @@ import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'config-form',
@@ -21,19 +21,16 @@ import { CookieService } from 'ngx-cookie-service';
     ])
   ]
 })
+
 export class ConfigFormComponent implements OnInit {
-  regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
-  loadTypes: string[] = ['Direct', 'Proxy'];
-  urlChoices: string[] = ["ICAP Server Endpoint URL*", "Proxy IP Address*"];
   configForm: FormGroup;
-  fileToUpload: File = null;
   submitted = false;
   responseUrl = '';
   responseReceived = false;
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
-  IcapOrProxy = this.urlChoices[0];
+  IcapOrProxy = AppSettings.urlChoices[0];
   showStoppedAlert = false;
   hideSubmitMessages = false;
   public popoverTitle: string = "Please Confirm";
@@ -41,16 +38,15 @@ export class ConfigFormComponent implements OnInit {
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, public cookieService: CookieService, private sharedService: SharedService) { }
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.initializeForm();
     this.setTitle("ICAP Performance Test");
-    console.log(this.cookieService.getAll());
     this.configForm.valueChanges.subscribe((data) => {
       this.hideSubmitMessages = true;
     });
-    setInterval(() => { this.getCookies(); }, 1000); //used to refresh list and remove expired tests.
+    
     
   }
 
@@ -63,7 +59,7 @@ export class ConfigFormComponent implements OnInit {
       total_users: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.hasNumberLimit]),
       duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
-      load_type: this.loadTypes[0],
+      load_type: AppSettings.loadTypes[0],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces]),
       enable_tls: true,
@@ -74,15 +70,14 @@ export class ConfigFormComponent implements OnInit {
 
   onLoadTypeChange() {
     //if direct, else proxy
-    if (this.configForm.get('load_type').value == this.loadTypes[0]) {
+    if (this.configForm.get('load_type').value == AppSettings.loadTypes[0]) {
       this.enableCheckboxes = true;
-      this.IcapOrProxy = this.urlChoices[0];
-    } else if (this.configForm.get('load_type').value == this.loadTypes[1]) {
+      this.IcapOrProxy = AppSettings.urlChoices[0];
+    } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[1]) {
       this.enableCheckboxes = false;
-      this.IcapOrProxy = this.urlChoices[1];
+      this.IcapOrProxy = AppSettings.urlChoices[1];
     }
   }
-
 
   onTlsChange() {
     if (this.configForm.get('enable_tls').value == true) {
@@ -113,47 +108,35 @@ export class ConfigFormComponent implements OnInit {
   get prefix() {
     return this.configForm.get('prefix');
   }
-
   get isValid() {
     return this.configForm.valid;
   }
-
   get formSubmitted() {
     return this.submitted;
   }
-
   get gotResponse() {
     return this.responseReceived;
   }
-
   get getUrl() {
     return this.responseUrl;
   }
-
   get animState() {
     return this.showStoppedAlert ? 'show' : 'hide';
   }
-
-  onFileChange(files: FileList) {
-    this.fileToUpload = files.item(0);
+  get cookiesExist(): boolean {
+    return AppSettings.cookiesExist;
+  }
+  get loadTypes() {
+    return AppSettings.loadTypes;
   }
 
   processResponse(response: object) {
     this.responseUrl = response.toString();
     this.responseReceived = true;
-    this.storeTestAsCookie(this.responseUrl);
+
+    //pack up form data and response URL, fire form submitted event and send to subscribers
     const dataPackage: FormDataPackage = { form: this.configForm, grafanaUrlResponse: this.responseUrl }
-    this.fireSubmitEvent(dataPackage);
-  }
-
-  
-
-  storeTestAsCookie(dashboardUrl) {
-    let currentTime = new Date();
-    let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000);
-    let testTitle = this.IcapOrProxy === this.urlChoices[0] ? "ICAP Live Performance Dashboard" : "Proxy Site Live Performance Dashboard";
-    let key = this.prefix.value === null ? testTitle : this.prefix.value + " " + testTitle;
-    this.cookieService.set(key, dashboardUrl, expireTime);
+    this.sharedService.sendSubmitEvent(dataPackage);
   }
 
   resetForm() {
@@ -178,9 +161,6 @@ export class ConfigFormComponent implements OnInit {
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
       formData.append("button", "generate_load");
-      if (this.fileToUpload) {
-        formData.append('file', this.fileToUpload, this.fileToUpload.name);
-      }
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
@@ -204,9 +184,6 @@ export class ConfigFormComponent implements OnInit {
     if(this.duration.value === '') {
       this.duration.setValue('900');
     }
-    else if (this.duration.value < 60) {
-      this.duration.setValue('60');
-    }
 
     if(this.prefix.value === '') {
       this.prefix.setValue('demo');
@@ -217,26 +194,14 @@ export class ConfigFormComponent implements OnInit {
     const formData = new FormData();
     formData.append("button", "stop_tests");
     this.postStopRequestToServer(formData);
-    this.cookieService.deleteAll();
     this.toggleTerminationAlert();
     this.submitted = false;
     this.responseReceived = false;
     setTimeout(() => this.toggleTerminationAlert(), 3000);
+    this.sharedService.sendStopTestsEvent();
   }
 
   toggleTerminationAlert() {
     this.showStoppedAlert = !this.showStoppedAlert;
-  }
-
-  cookiesExist(): boolean {
-    return !(Object.keys(this.cookieService.getAll()).length === 0 && this.cookieService.getAll().constructor === Object);
-  }
-
-  getCookies() {
-    return this.cookieService.getAll();
-  }
-
-  fireSubmitEvent(formDataPack: FormDataPackage) {
-    this.sharedService.sendSubmitEvent(formDataPack);
   }
 }

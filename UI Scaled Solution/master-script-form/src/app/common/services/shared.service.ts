@@ -7,19 +7,27 @@ import { Observable, Subject } from 'rxjs';
 })
 
 export class SharedService {
-    private subject = new Subject<any>();
+    private submitSubject = new Subject<any>();
+    private stopSubject = new Subject<any>();
 
     sendSubmitEvent(formDataPack: FormDataPackage) {
-        this.subject.next(formDataPack);
-        console.log("Hit0");
+        this.submitSubject.next(formDataPack);
     }
 
     getSubmitEvent(): Observable<any> {
-        console.log("Hit1");
-        return this.subject.asObservable();
+        return this.submitSubject.asObservable();
+    }
+
+    sendStopTestsEvent() {
+        this.stopSubject.next();
+    }
+
+    getStopTestsEvent() {
+        return this.stopSubject.asObservable();
     }
 }
 
+// this is the object that will carry data passed from form to other components
 export interface FormDataPackage {
     form: FormGroup,
     grafanaUrlResponse: string
