@@ -1,0 +1,47 @@
+{
+    "variables":
+        {
+            "accesskey": "env `AWS_ACCESS_KEY_ID`",
+            "secretkey": "env `AWS_SECRET_ACCESS_KEY`",
+            "shellpath": "packages.sh"
+        },
+    "builders":[
+        {
+            "type": "amazon-ebs",
+            "profile": "default",
+            "region": "eu-west-1",
+            "ssh_clear_authorized_keys": true,
+            "source_ami": "ami-0aef57767f5404a3c",
+            "instance_type": "m4.large",
+            "ssh_username": "ubuntu",
+            "ami_name": "packer-ova-demo {{timestamp}}",
+            "tags": {
+              "OS_Version": "Ubuntu",
+              "Release": "Latest"
+            }
+        }
+    ],
+   "provisioners":[
+       {
+       "type": "shell",
+       "script": "aws-ova.sh"
+       },
+       {
+       "type": "shell",
+       "script": "ui.sh"
+       },
+       {
+        "type": "shell-local",
+        "inline": "aws ec2 create-instance-export-task --region eu-west-1 --instance-id {{build `ID`}} --target-environment vmware --export-to-s3-task file://file.json > out.json"
+       },
+       {
+           "type": "shell-local",
+           "script": "ova-check.sh"
+       }
+    ],
+    "post-processors":[
+        {
+            "type": "manifest"
+        }]
+
+}
