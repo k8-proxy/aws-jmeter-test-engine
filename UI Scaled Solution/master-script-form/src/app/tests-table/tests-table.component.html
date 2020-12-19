@@ -1,14 +1,49 @@
-<div *ngIf="cookiesExist">
+<div [hidden]="!cookiesExist">
+    <table class="table" mat-table #testTable [dataSource]="dataSource">
+
+        <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="position">
+            <th *matHeaderCellDef> No. </th>
+            <td *matCellDef="let element"> {{element.position}} </td>
+        </ng-container>
+        <!-- Name Column -->
+        <ng-container matColumnDef="testName">
+            <th *matHeaderCellDef> Test Name </th>
+            <td *matCellDef="let element"> {{element.testName}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="totalUsers">
+            <th *matHeaderCellDef> Total Users </th>
+            <td *matCellDef="let element"> {{element.totalUsers}} </td>
+        </ng-container>
+
+        <!-- Duration Column -->
+        <ng-container matColumnDef="duration">
+            <th *matHeaderCellDef> Duration </th>
+            <td *matCellDef="let element"> {{element.duration}} Seconds </td>
+        </ng-container>
+
+        <!-- Expire Time Column -->
+        <ng-container matColumnDef="expireTime">
+            <th *matHeaderCellDef> Expiry Time </th>
+            <td *matCellDef="let element"> {{element.expireTime}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+<div [hidden]="cookiesExist">
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Currently Running Tests</th>
+                <th scope="col">No currently running tests.</th>
             </tr>
         </thead>
-        <tbody>
-            <tr *ngFor="let item of getCookies() | keyvalue">
-                <td><a href="{{item.value}}" target="_blank">{{item.key}}</a></td>
-            </tr>
-        </tbody>
     </table>
 </div>
