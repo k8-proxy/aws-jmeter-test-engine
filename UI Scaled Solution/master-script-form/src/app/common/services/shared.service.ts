@@ -8,7 +8,8 @@ import { Observable, Subject } from 'rxjs';
 
 export class SharedService {
     private submitSubject = new Subject<any>();
-    private stopSubject = new Subject<any>();
+    private stopAllSubject = new Subject<any>();
+    private stopSingleTestSubject = new Subject<any>();
 
     sendSubmitEvent(formDataPack: FormDataPackage) {
         this.submitSubject.next(formDataPack);
@@ -18,12 +19,20 @@ export class SharedService {
         return this.submitSubject.asObservable();
     }
 
-    sendStopTestsEvent() {
-        this.stopSubject.next();
+    sendStopAllTestsEvent() {
+        this.stopAllSubject.next();
     }
 
-    getStopTestsEvent() {
-        return this.stopSubject.asObservable();
+    getStopAllTestsEvent() {
+        return this.stopAllSubject.asObservable();
+    }
+
+    sendStopSingleEvent(prefix: string) {
+        this.stopSingleTestSubject.next(prefix);
+    }
+
+    getStopSingleEvent() {
+        return this.stopSingleTestSubject.asObservable();
     }
 }
 

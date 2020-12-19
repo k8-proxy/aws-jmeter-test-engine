@@ -46,8 +46,6 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.valueChanges.subscribe((data) => {
       this.hideSubmitMessages = true;
     });
-    
-    
   }
 
   setTitle(newTitle: string) {
@@ -201,7 +199,7 @@ export class ConfigFormComponent implements OnInit {
     this.submitted = false;
     this.responseReceived = false;
     setTimeout(() => this.toggleTerminationAlert(), 3000);
-    this.sharedService.sendStopTestsEvent();
+    this.sharedService.sendStopAllTestsEvent();
   }
 
   toggleTerminationAlert() {

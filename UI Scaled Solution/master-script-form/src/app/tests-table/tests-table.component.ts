@@ -5,10 +5,12 @@ import { FormDataPackage, SharedService } from './../common/services/shared.serv
 import { Subscription } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { MatTable } from '@angular/material/table';
+import { HttpClient } from '@angular/common/http';
 
 
 export interface TestRowElement {
   position: number;
+  prefix: string; //prefix stored to target tests when stopping them individually
   testName: string; //prefix plus name that depends on type of load
   totalUsers: number;
   duration: number;
@@ -30,15 +32,14 @@ export class TestsTableComponent implements OnInit {
   testsStoppedSubscription: Subscription;
 
   dataSource: TestRowElement[] = [];
-  displayedColumns: string[] = ['position', 'testName', 'totalUsers', 'duration', 'expireTime'];
+  displayedColumns: string[] = ['testName', 'totalUsers', 'duration', 'expireTime', 'stopTestButton']; //add and remove columns here before adding/remove in html
 
-  constructor(private sharedService: SharedService, private cookieService: CookieService) {
+  constructor(private readonly http: HttpClient, private sharedService: SharedService, private cookieService: CookieService) {
     this.formSubmittedSubscription = this.sharedService.getSubmitEvent().subscribe((formDataPack) => this.onFormSubmitted(formDataPack));
-    this.formSubmittedSubscription = this.sharedService.getStopTestsEvent().subscribe(() => this.onStopTests());
+    this.formSubmittedSubscription = this.sharedService.getStopAllTestsEvent().subscribe(() => this.onStopTests());
   }
 
   ngOnInit(): void {
-    console.log(this.table);
     this.updateCookiesExist();
     setInterval(() => { this.updateCookiesExist(); }, 1000); //used to refresh list and remove expired tests.
     this.generateDatasourceArray();
@@ -49,7 +50,6 @@ export class TestsTableComponent implements OnInit {
   }
 
   storeTestAsCookie(form: FormGroup, dashboardUrl: string) {
-
     let currentTime = new Date();
     let expireTime = new Date(currentTime.getTime() + form.get('duration').value * 1000);
     let prefix = form.get('prefix').value;
@@ -85,8 +85,10 @@ export class TestsTableComponent implements OnInit {
     let _duration = dataJson['duration'];
     let _expireTime = dataJson['expireTime'];
     let _dashboardUrl = dataJson['dashboardUrl'];
+    let _prefix = dataJson['prefix'];
     let row: TestRowElement = {
       position: pos,
+      prefix: _prefix,
       testName: _testName,
       totalUsers: _totalUsers,
       duration: _duration,
@@ -111,6 +113,20 @@ export class TestsTableComponent implements OnInit {
     this.cookieService.deleteAll();
     this.generateDatasourceArray();
     this.table.renderRows();
+  }
+
+  stopTestButton(prefix: string) {
+    this.cookieService.delete(prefix);
+    this.postStopSingleTestToServer(prefix);
+    this.generateDatasourceArray();
+    this.table.renderRows();
+  }
+
+  postStopSingleTestToServer(prefix: string) {
+    const formData = new FormData();
+    formData.append("button", "stop_individual_test");
+    formData.append("prefix", prefix);
+    this.http.post('http://127.0.0.1:5000/', formData).toPromise();
   }
 
   updateCookiesExist() {
