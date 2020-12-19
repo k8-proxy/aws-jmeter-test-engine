@@ -147,8 +147,9 @@ export class ConfigFormComponent implements OnInit {
 
   storeTestAsCookie(dashboardUrl) {
     let currentTime = new Date();
-    let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000 + this.ramp_up_time.value * 1000);
-    let key = this.prefix.value === null ? "ICAP Live Performance Dashboard" : this.prefix.value + " ICAP Live Performance Dashboard";
+    let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000);
+    let testTitle = this.IcapOrProxy === this.urlChoices[0] ? "ICAP Live Performance Dashboard" : "Proxy Site Live Performance Dashboard";
+    let key = this.prefix.value === null ? testTitle : this.prefix.value + " " + testTitle;
     this.cookieService.set(key, dashboardUrl, expireTime);
   }
 
@@ -202,6 +203,10 @@ export class ConfigFormComponent implements OnInit {
     }
     else if (this.duration.value < 60) {
       this.duration.setValue('60');
+    }
+
+    if(this.prefix.value === '') {
+      this.prefix.setValue('demo');
     }
   }
 
