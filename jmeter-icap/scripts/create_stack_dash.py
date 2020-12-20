@@ -161,13 +161,13 @@ def __get_stack_name(config):
 def create_stack_from_ui(json_params):
     set_config_from_ui(json_params)
     __calculate_instances_required(Config.total_users, Config.users_per_instance)
-    Config.stack_name = __get_stack_name(Config)
+    Config.stack_name = json_params['prefix'] + '-aws-jmeter-test-engine'
     set_grafana_key_and_url(Config)
     return main(Config)
 
 
-def delete_stack_from_ui(prefix):
-    Config.prefix = prefix
+def delete_stack_from_ui(stack_name):
+    Config.stack_name = stack_name
     Config.min_age = 0
     delete_stack.main(Config)
 
@@ -175,7 +175,7 @@ def delete_stack_from_ui(prefix):
 def main(config):
     dashboard_url = ''
     print("Creating Load Generators...")
-    create_stack.main(config)
+    stack_name = create_stack.main(config)
 
     if config.exclude_dashboard:
         print("Dashboard will not be created")
@@ -189,7 +189,7 @@ def main(config):
         delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config))
         delete_stack_thread.start()
 
-    return dashboard_url
+    return dashboard_url, stack_name
 
 
 def set_grafana_key_and_url(config):

@@ -172,6 +172,7 @@ sudo chmod +x StartExecution.sh
     )
     print("Stack created with the following properties:\nTotal Users: %d\nDuration: %s\nEndpoint URL: %s" % (
         config.total_users, config.duration, config.icap_endpoint_url))
+    return stack_name
 
 
 if __name__ == "__main__":

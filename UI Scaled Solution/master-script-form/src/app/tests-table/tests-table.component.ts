@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export interface TestRowElement {
   position: number;
   prefix: string; //prefix stored to target tests when stopping them individually
+  stackName: string; //gotten from back end, used to target stacks for deletion
   testName: string; //prefix plus name that depends on type of load
   totalUsers: number;
   duration: number;
@@ -46,10 +47,10 @@ export class TestsTableComponent implements OnInit {
   }
 
   onFormSubmitted(formDataPack: FormDataPackage) {
-    this.storeTestAsCookie(formDataPack.form, formDataPack.grafanaUrlResponse);
+    this.storeTestAsCookie(formDataPack.form, formDataPack.grafanaUrlResponse, formDataPack.stackName);
   }
 
-  storeTestAsCookie(form: FormGroup, dashboardUrl: string) {
+  storeTestAsCookie(form: FormGroup, dashboardUrl: string, stackName: string) {
     let currentTime = new Date();
     let expireTime = new Date(currentTime.getTime() + form.get('duration').value * 1000);
     let prefix = form.get('prefix').value;
@@ -58,6 +59,7 @@ export class TestsTableComponent implements OnInit {
     let formAsJson = JSON.parse(JSON.stringify(form.getRawValue()));
     formAsJson['dashboardUrl'] = dashboardUrl;
     formAsJson['expireTime'] = expireTime;
+    formAsJson['stackName'] = stackName;
 
     this.cookieService.set(prefix, JSON.stringify(formAsJson), expireTime);
     this.generateDatasourceArray();
@@ -86,9 +88,11 @@ export class TestsTableComponent implements OnInit {
     let _expireTime = dataJson['expireTime'];
     let _dashboardUrl = dataJson['dashboardUrl'];
     let _prefix = dataJson['prefix'];
+    let _stackName = dataJson['prefix'];
     let row: TestRowElement = {
       position: pos,
       prefix: _prefix,
+      stackName: _stackName,
       testName: _testName,
       totalUsers: _totalUsers,
       duration: _duration,
@@ -116,16 +120,18 @@ export class TestsTableComponent implements OnInit {
   }
 
   stopTestButton(prefix: string) {
+    let cookieJson = JSON.parse(this.cookieService.get(prefix));
+    let stackToDelete = cookieJson.stackName;
+    console.log("got stack name from cookie as " + stackToDelete);
     this.cookieService.delete(prefix);
-    this.postStopSingleTestToServer(prefix);
-    this.generateDatasourceArray();
-    this.table.renderRows();
+    this.postStopSingleTestToServer(stackToDelete);
   }
 
-  postStopSingleTestToServer(prefix: string) {
+  postStopSingleTestToServer(stackName: string) {
     const formData = new FormData();
     formData.append("button", "stop_individual_test");
-    formData.append("prefix", prefix);
+    formData.append("stack", stackName);
+    console.log(formData.get('stack'));
     this.http.post('http://127.0.0.1:5000/', formData).toPromise();
   }
 

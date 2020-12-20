@@ -129,11 +129,12 @@ export class ConfigFormComponent implements OnInit {
   }
 
   processResponse(response: object) {
-    this.responseUrl = response.toString();
+    this.responseUrl = response['url'];
+    console.log("I got stack name " + response['stack_name']);
     this.responseReceived = true;
 
     //pack up form data and response URL, fire form submitted event and send to subscribers
-    const dataPackage: FormDataPackage = { form: this.configForm, grafanaUrlResponse: this.responseUrl }
+    const dataPackage: FormDataPackage = { form: this.configForm, grafanaUrlResponse: this.responseUrl, stackName: response['stack_name'] }
     this.sharedService.sendSubmitEvent(dataPackage);
   }
 
