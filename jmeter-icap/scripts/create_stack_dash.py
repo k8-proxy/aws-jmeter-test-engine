@@ -8,6 +8,8 @@ import create_dashboard
 from create_stack import Config
 from ec2_instance_manager import start_instance
 from aws_secrets import get_secret_value
+from ui_tasks import set_config_from_ui
+from threading import Thread
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
 DELETE_TIME_OFFSET = 900
@@ -156,8 +158,18 @@ def __get_stack_name(config):
     return created_stack_name
 
 
-def run_from_ui():
-    pass
+def create_stack_from_ui(json_params):
+    set_config_from_ui(json_params)
+    __calculate_instances_required(Config.total_users, Config.users_per_instance)
+    Config.stack_name = __get_stack_name(Config)
+    set_grafana_key_and_url(Config)
+    return main(Config)
+
+
+def delete_stack_from_ui(prefix):
+    Config.prefix = prefix
+    Config.min_age = 0
+    delete_stack.main(Config)
 
 
 def main(config):
@@ -174,9 +186,32 @@ def main(config):
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")
     else:
-        __start_delete_stack(DELETE_TIME_OFFSET, config)
+        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config))
+        delete_stack_thread.start()
 
     return dashboard_url
+
+
+def set_grafana_key_and_url(config):
+    # if Grafana custom IP was inserted via config, use it. Otherwise, start up the instance and use that IP instead.
+    if not config.grafana_url and not config.grafana_server_tag:
+        print("Must input either grafana_url or grafana_server_tags in config.env or using args")
+        exit(0)
+    elif not config.grafana_url:
+        ip = start_instance(config)
+        config.grafana_url = 'http://{0}:3000'.format(ip)
+        print(config.grafana_url)
+
+    # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
+    if not config.grafana_key and not config.grafana_secret:
+        print("Must input either grafana_key or grafana_secret_id in config.env or using args")
+        exit(0)
+    elif not config.grafana_key and not config.exclude_dashboard:
+        secret_response = get_secret_value(config=config, secret_id=config.grafana_secret)
+        secret_val = next(iter(secret_response.values()))
+        config.grafana_key = secret_val
+        if secret_val:
+            print("Grafana secret key retrieved.")
 
 
 if __name__ == "__main__":
@@ -218,24 +253,6 @@ if __name__ == "__main__":
 
     Config.stack_name = __get_stack_name(Config)
 
-    # if Grafana custom IP was inserted via config, use it. Otherwise, start up the instance and use that IP instead.
-    if not Config.grafana_url and not Config.grafana_server_tag:
-        print("Must input either grafana_url or grafana_server_tags in config.env or using args")
-        exit(0)
-    elif not Config.grafana_url:
-        ip = start_instance(Config)
-        Config.grafana_url = 'http://{0}:3000'.format(ip)
-        print(Config.grafana_url)
-
-    # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
-    if not Config.grafana_key and not Config.grafana_secret:
-        print("Must input either grafana_key or grafana_secret_id in config.env or using args")
-        exit(0)
-    elif not Config.grafana_key and not Config.exclude_dashboard:
-        secret_response = get_secret_value(config=Config, secret_id=Config.grafana_secret)
-        secret_val = next(iter(secret_response.values()))
-        Config.grafana_key = secret_val
-        if secret_val:
-            print("Grafana secret key retrieved.")
+    set_grafana_key_and_url(Config)
 
     main(Config)
