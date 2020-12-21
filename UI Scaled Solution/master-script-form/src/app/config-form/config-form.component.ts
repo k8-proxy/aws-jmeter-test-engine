@@ -25,7 +25,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class ConfigFormComponent implements OnInit {
   configForm: FormGroup;
   submitted = false;
-  responseUrl = '';
+  generatingLoad = false;
   responseReceived = false;
   portDefault = '443';
   enableCheckboxes = true;
@@ -33,6 +33,7 @@ export class ConfigFormComponent implements OnInit {
   IcapOrProxy = AppSettings.urlChoices[0];
   showStoppedAlert = false;
   hideSubmitMessages = false;
+  GenerateLoadButtonText = "Generate Load";
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "Are you sure you wish to stop all load?";
   public confirmClicked: boolean = false;
@@ -115,9 +116,6 @@ export class ConfigFormComponent implements OnInit {
   get gotResponse() {
     return this.responseReceived;
   }
-  get getUrl() {
-    return this.responseUrl;
-  }
   get animState() {
     return this.showStoppedAlert ? 'show' : 'hide';
   }
@@ -129,13 +127,13 @@ export class ConfigFormComponent implements OnInit {
   }
 
   processResponse(response: object) {
-    this.responseUrl = response['url'];
     console.log("I got stack name " + response['stack_name']);
     this.responseReceived = true;
 
     //pack up form data and response URL, fire form submitted event and send to subscribers
-    const dataPackage: FormDataPackage = { form: this.configForm, grafanaUrlResponse: this.responseUrl, stackName: response['stack_name'] }
+    const dataPackage: FormDataPackage = { form: this.configForm, grafanaUrlResponse: response['url'], stackName: response['stack_name'] }
     this.sharedService.sendSubmitEvent(dataPackage);
+    this.generatingLoad = false;
   }
 
   resetForm() {
@@ -163,6 +161,7 @@ export class ConfigFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
+      this.generatingLoad = true;
     }
   }
 

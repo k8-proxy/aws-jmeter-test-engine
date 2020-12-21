@@ -93,7 +93,7 @@
         <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
     </div>
 -->
-    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">Generate Load</button>
+    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid || generatingLoad">{{GenerateLoadButtonText}}</button>
 
     <button id="stop-tests" [disabled]="!cookiesExist" class="btn btn-danger" mwlConfirmationPopover
         [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
