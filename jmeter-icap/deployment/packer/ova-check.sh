@@ -22,4 +22,4 @@ echo "Downloading OVA..."
 aws s3 cp s3://$BUCKET/vms/$OBJECT $OBJECT --profile $PROFILE
 echo "Download Complete !!!"
 echo "Uploading OVA to ESXI..."
-ovftool --name=Packer-$OBJECT --disableVerification  --noSSLVerify --datastore=datastore1 --network="VMs" $OBJECT  vi://root:s9q_5d.%AVQg@46.165.225.145
+ovftool --name=Packer-$OBJECT --disableVerification  --noSSLVerify --datastore=datastore1 --network="VMs" $OBJECT  vi://root:<password>@46.165.225.145
