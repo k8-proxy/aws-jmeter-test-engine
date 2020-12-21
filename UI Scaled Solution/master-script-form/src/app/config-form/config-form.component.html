@@ -40,7 +40,7 @@
     </div>
 
     <div class="form-group">
-        <label>Load Type:</label>
+        <label>Load Type</label>
         <select class="form-control" formControlName="load_type" (change)="onLoadTypeChange()">
             <option *ngFor="let load of loadTypes" [ngValue]="load">{{load}}</option>
         </select>
@@ -80,11 +80,13 @@
     </div>
 
     <div class="form-group">
-        <label>Prefix:</label>
+        <label>Prefix*</label>
         <input type="text" class="form-control" formControlName="prefix" placeholder="default: demo">
-        <small class="form-text text-muted">Prefix must not contain spaces</small>
+        <small class="form-text text-muted">Prefix must not contain spaces *this field is required</small>
         <div *ngIf="prefix.touched && prefix.invalid">
             <div class="alert alert-danger" *ngIf="prefix.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+            <div class="alert alert-danger" *ngIf="prefix.errors.required">This field is required.</div>
+            <div class="alert alert-danger" *ngIf="prefix.errors.cannotContainDuplicatePrefix">A test with that prefix already exists.</div>
         </div>
     </div>
     <!--
@@ -93,22 +95,22 @@
         <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
     </div>
 -->
-    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid || generatingLoad">{{GenerateLoadButtonText}}</button>
+    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">{{GenerateLoadButtonText}}</button>
 
-    <button id="stop-tests" [disabled]="!cookiesExist" class="btn btn-danger" mwlConfirmationPopover
+    <!-- <button id="stop-tests" [disabled]="!cookiesExist" class="btn btn-danger" mwlConfirmationPopover
         [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
         type="button">
         Stop Load
-    </button>
+    </button> -->
 
     <button id="reset-form" [disabled]="configForm.pristine" class="btn btn-warning" type="button" (click)="resetForm()">
         Clear Form
     </button>
 
 
-    <div [@animationState]="animState" class="alert alert-info" role="alert" style="opacity: 0; display:inline-block;"
+    <div [@animationState]="animState" class="alert alert-danger" role="alert" style="opacity: 0; display:inline-block;"
         type="text">
-        Load generation stopped.
+        Error generating load
     </div>
     <br />
     <br />

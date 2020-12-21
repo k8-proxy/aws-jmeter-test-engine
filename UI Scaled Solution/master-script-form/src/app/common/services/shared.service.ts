@@ -38,7 +38,7 @@ export class SharedService {
 
 // this is the object that will carry data passed from form to other components
 export interface FormDataPackage {
-    form: FormGroup,
+    formAsJsonString: string,
     grafanaUrlResponse: string,
     stackName: string
  }

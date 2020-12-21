@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { AppSettings } from './../common/app settings/AppSettings';
 import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
@@ -25,19 +26,14 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 export class ConfigFormComponent implements OnInit {
   configForm: FormGroup;
   submitted = false;
-  generatingLoad = false;
   responseReceived = false;
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
   IcapOrProxy = AppSettings.urlChoices[0];
-  showStoppedAlert = false;
+  showErrorAlert = false;
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
-  public popoverTitle: string = "Please Confirm";
-  public popoverMessage: string = "Are you sure you wish to stop all load?";
-  public confirmClicked: boolean = false;
-  public cancelClicked: boolean = false;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) { }
 
@@ -60,7 +56,7 @@ export class ConfigFormComponent implements OnInit {
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: AppSettings.loadTypes[0],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
-      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces]),
+      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required]),
       enable_tls: true,
       tls_ignore_error: true,
       port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
@@ -117,7 +113,7 @@ export class ConfigFormComponent implements OnInit {
     return this.responseReceived;
   }
   get animState() {
-    return this.showStoppedAlert ? 'show' : 'hide';
+    return this.showErrorAlert ? 'show' : 'hide';
   }
   get cookiesExist(): boolean {
     return AppSettings.cookiesExist;
@@ -126,14 +122,15 @@ export class ConfigFormComponent implements OnInit {
     return AppSettings.loadTypes;
   }
 
-  processResponse(response: object) {
-    console.log("I got stack name " + response['stack_name']);
+  processResponse(response: object, formData: FormData) {
+    let formAsString = formData.get('form');
     this.responseReceived = true;
 
     //pack up form data and response URL, fire form submitted event and send to subscribers
-    const dataPackage: FormDataPackage = { form: this.configForm, grafanaUrlResponse: response['url'], stackName: response['stack_name'] }
+    const dataPackage: FormDataPackage = { formAsJsonString: formAsString.toString(), grafanaUrlResponse: response['url'], stackName: response['stack_name'] }
     this.sharedService.sendSubmitEvent(dataPackage);
-    this.generatingLoad = false;
+    this.unlockGenerateLoadButton();
+    this.submitted = false;
   }
 
   resetForm() {
@@ -144,7 +141,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   postFormToServer(formData: FormData) {
-    this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response));
+    this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response, formData), (err) => {this.onError(err)});
   }
 
   postStopRequestToServer(formData: FormData) {
@@ -155,14 +152,28 @@ export class ConfigFormComponent implements OnInit {
     this.setFormDefaults();
     this.hideSubmitMessages = false;
     if (this.configForm.valid) {
+      AppSettings.addingPrefix = true;
+      AppSettings.testPrefixSet.add(this.prefix.value);
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
       formData.append("button", "generate_load");
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
-      this.generatingLoad = true;
+      this.lockGenerateLoadButton();
+      console.log(AppSettings.testPrefixSet.values());
     }
+  }
+
+  lockGenerateLoadButton() {
+    this.GenerateLoadButtonText = "Generating Load..."
+    this.configForm.disable();
+  }
+
+  unlockGenerateLoadButton() {
+    this.GenerateLoadButtonText = "Generate Load"
+    this.configForm.enable();
+    this.prefix.reset();
   }
 
   setFormDefaults() {
@@ -185,24 +196,19 @@ export class ConfigFormComponent implements OnInit {
     else if (this.duration.value < 60) {
       this.duration.setValue('60');
     }
-
-    if(this.prefix.value === '') {
-      this.prefix.setValue('demo');
-    }
   }
 
-  onStopTests() {
-    const formData = new FormData();
-    formData.append("button", "stop_tests");
-    this.postStopRequestToServer(formData);
-    this.toggleTerminationAlert();
+  onError(error) {
+    console.log(error);
+    this.toggleErrorMessage();
     this.submitted = false;
     this.responseReceived = false;
-    setTimeout(() => this.toggleTerminationAlert(), 3000);
-    this.sharedService.sendStopAllTestsEvent();
+    setTimeout(() => this.toggleErrorMessage(), 3000);
+    this.unlockGenerateLoadButton();
+    AppSettings.addingPrefix = false;
   }
 
-  toggleTerminationAlert() {
-    this.showStoppedAlert = !this.showStoppedAlert;
+  toggleErrorMessage() {
+    this.showErrorAlert = !this.showErrorAlert;
   }
 }

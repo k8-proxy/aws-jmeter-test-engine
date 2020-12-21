@@ -35,28 +35,35 @@ export class TestsTableComponent implements OnInit {
   dataSource: TestRowElement[] = [];
   displayedColumns: string[] = ['testName', 'totalUsers', 'duration', 'expireTime', 'stopTestButton']; //add and remove columns here before adding/remove in html
 
+  public popoverTitle: string = "Please Confirm";
+  public popoverMessage: string = "Are you sure you wish to stop this test?";
+
   constructor(private readonly http: HttpClient, private sharedService: SharedService, private cookieService: CookieService) {
     this.formSubmittedSubscription = this.sharedService.getSubmitEvent().subscribe((formDataPack) => this.onFormSubmitted(formDataPack));
     this.formSubmittedSubscription = this.sharedService.getStopAllTestsEvent().subscribe(() => this.onStopTests());
   }
 
   ngOnInit(): void {
-    this.updateCookiesExist();
-    setInterval(() => { this.updateCookiesExist(); }, 1000); //used to refresh list and remove expired tests.
+    this.getTestPrefixList();
+    this.updateCookiesExistAndPrefixSet();
+    setInterval(() => { this.updateCookiesExistAndPrefixSet(); }, 1000); //used to refresh list and remove expired tests.
     this.generateDatasourceArray();
   }
 
   onFormSubmitted(formDataPack: FormDataPackage) {
-    this.storeTestAsCookie(formDataPack.form, formDataPack.grafanaUrlResponse, formDataPack.stackName);
+    this.storeTestAsCookie(formDataPack.formAsJsonString, formDataPack.grafanaUrlResponse, formDataPack.stackName);
   }
 
-  storeTestAsCookie(form: FormGroup, dashboardUrl: string, stackName: string) {
+  storeTestAsCookie(formJsonString: string, dashboardUrl: string, stackName: string) {
+    console.log("Got " + formJsonString);
+    AppSettings.addingPrefix = true;
+    let formAsJson = JSON.parse(formJsonString);
+
     let currentTime = new Date();
-    let expireTime = new Date(currentTime.getTime() + form.get('duration').value * 1000);
-    let prefix = form.get('prefix').value;
+    let expireTime = new Date(currentTime.getTime() + formAsJson['duration'] * 1000);
+    let prefix = formAsJson['prefix'];
 
     //convert the form to JSON to store as cookie. Add desired data to JSON (dashboard URL, expire time)
-    let formAsJson = JSON.parse(JSON.stringify(form.getRawValue()));
     formAsJson['dashboardUrl'] = dashboardUrl;
     formAsJson['expireTime'] = expireTime;
     formAsJson['stackName'] = stackName;
@@ -64,6 +71,7 @@ export class TestsTableComponent implements OnInit {
     this.cookieService.set(prefix, JSON.stringify(formAsJson), expireTime);
     this.generateDatasourceArray();
     this.table.renderRows();
+    AppSettings.addingPrefix = false;
   }
 
   generateDatasourceArray() {
@@ -135,8 +143,32 @@ export class TestsTableComponent implements OnInit {
     this.http.post('http://127.0.0.1:5000/', formData).toPromise();
   }
 
-  updateCookiesExist() {
+  updateCookiesExistAndPrefixSet() {
     AppSettings.cookiesExist = !(Object.keys(this.cookieService.getAll()).length === 0 && this.cookieService.getAll().constructor === Object);
+    this.checkForObsoletePrefixes();
+  }
+
+  getTestPrefixList() {
+    //Insert any prefixes that are not already in our test prefix list.
+    let cookieArray = this.getCookies();
+    for(let key in cookieArray) {
+      if(!AppSettings.testPrefixSet.has(key)) {
+        AppSettings.testPrefixSet.add(key);
+        console.log("added key " + key);
+      } 
+    }
+  }
+
+  checkForObsoletePrefixes() {
+    //remove any obsolete prefixes.
+    let cookieArray = this.getCookies();
+    AppSettings.testPrefixSet.forEach((item) => {
+      if (!(item in cookieArray) && !AppSettings.addingPrefix) 
+      {
+        AppSettings.testPrefixSet.delete(item);
+        console.log("deleted key " + item);
+      }
+    });
   }
 
   get cookiesExist() {

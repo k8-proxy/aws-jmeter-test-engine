@@ -32,7 +32,9 @@
         <ng-container matColumnDef="stopTestButton">
             <th *matHeaderCellDef></th>
             <td *matCellDef="let element">
-                <button id="stop-tests" class="btn btn-danger" type="button" (click)=stopTestButton(element.prefix)>
+                <button id="stop-test" [disabled]="!cookiesExist" class="btn btn-danger" mwlConfirmationPopover
+                    [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="left"
+                    (confirm)="stopTestButton(element.prefix)" type="button">
                     Stop Load
                 </button>
             </td>
