@@ -126,8 +126,8 @@ def __calculate_instances_required(total_users, users_per_instance):
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
 def __start_delete_stack(additional_delay, config, stack_name):
     duration = config.duration
-    message_interval = int(duration) / 4
     total_wait_time = additional_delay + int(duration)
+    message_interval = total_wait_time / 4
     minutes = total_wait_time / 60
     finish_time = datetime.now(timezone.utc) + timedelta(seconds=total_wait_time)
     start_time = datetime.now(timezone.utc)

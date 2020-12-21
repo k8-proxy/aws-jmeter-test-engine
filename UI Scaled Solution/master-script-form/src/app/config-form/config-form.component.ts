@@ -129,7 +129,7 @@ export class ConfigFormComponent implements OnInit {
     //pack up form data and response URL, fire form submitted event and send to subscribers
     const dataPackage: FormDataPackage = { formAsJsonString: formAsString.toString(), grafanaUrlResponse: response['url'], stackName: response['stack_name'] }
     this.sharedService.sendSubmitEvent(dataPackage);
-    this.unlockGenerateLoadButton();
+    this.unlockForm();
     this.submitted = false;
   }
 
@@ -160,17 +160,17 @@ export class ConfigFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.configForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
-      this.lockGenerateLoadButton();
+      this.lockForm();
       console.log(AppSettings.testPrefixSet.values());
     }
   }
 
-  lockGenerateLoadButton() {
+  lockForm() {
     this.GenerateLoadButtonText = "Generating Load..."
     this.configForm.disable();
   }
 
-  unlockGenerateLoadButton() {
+  unlockForm() {
     this.GenerateLoadButtonText = "Generate Load"
     this.configForm.enable();
     this.prefix.reset();
@@ -204,7 +204,7 @@ export class ConfigFormComponent implements OnInit {
     this.submitted = false;
     this.responseReceived = false;
     setTimeout(() => this.toggleErrorMessage(), 3000);
-    this.unlockGenerateLoadButton();
+    this.unlockForm();
     AppSettings.addingPrefix = false;
   }
 

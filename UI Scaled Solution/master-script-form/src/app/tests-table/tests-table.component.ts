@@ -15,7 +15,8 @@ export interface TestRowElement {
   testName: string; //prefix plus name that depends on type of load
   totalUsers: number;
   duration: number;
-  expireTime: string;
+  startTime: Date;
+  endTime: Date;
   dashboardUrl: string;
 }
 
@@ -33,7 +34,7 @@ export class TestsTableComponent implements OnInit {
   testsStoppedSubscription: Subscription;
 
   dataSource: TestRowElement[] = [];
-  displayedColumns: string[] = ['testName', 'totalUsers', 'duration', 'expireTime', 'stopTestButton']; //add and remove columns here before adding/remove in html
+  displayedColumns: string[] = ['testName', 'totalUsers', 'duration', 'startTime', 'endTime', 'stopTestButton']; //add and remove columns here before adding/remove in html
 
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "Are you sure you wish to stop this test?";
@@ -54,7 +55,6 @@ export class TestsTableComponent implements OnInit {
   }
 
   storeTestAsCookie(formJsonString: string, dashboardUrl: string, stackName: string) {
-    console.log("Got " + formJsonString);
     AppSettings.addingPrefix = true;
     let formAsJson = JSON.parse(formJsonString);
 
@@ -64,7 +64,8 @@ export class TestsTableComponent implements OnInit {
 
     //convert the form to JSON to store as cookie. Add desired data to JSON (dashboard URL, expire time)
     formAsJson['dashboardUrl'] = dashboardUrl;
-    formAsJson['expireTime'] = expireTime;
+    formAsJson['startTime'] = currentTime;
+    formAsJson['endTime'] = expireTime;
     formAsJson['stackName'] = stackName;
 
     this.cookieService.set(prefix, JSON.stringify(formAsJson), expireTime);
@@ -92,10 +93,11 @@ export class TestsTableComponent implements OnInit {
     let pos = counter;
     let _totalUsers = dataJson['total_users'];
     let _duration = dataJson['duration'];
-    let _expireTime = dataJson['expireTime'];
+    let _startTime = dataJson['startTime'];
+    let _endTime = dataJson['endTime'];
     let _dashboardUrl = dataJson['dashboardUrl'];
     let _prefix = dataJson['prefix'];
-    let _stackName = dataJson['prefix'];
+    let _stackName = dataJson['stackName'];
     let row: TestRowElement = {
       position: pos,
       prefix: _prefix,
@@ -103,7 +105,8 @@ export class TestsTableComponent implements OnInit {
       testName: _testName,
       totalUsers: _totalUsers,
       duration: _duration,
-      expireTime: _expireTime,
+      startTime: new Date(_startTime),
+      endTime:  new Date(_endTime),
       dashboardUrl: _dashboardUrl
     };
 
@@ -123,7 +126,6 @@ export class TestsTableComponent implements OnInit {
   stopTestButton(prefix: string) {
     let cookieJson = JSON.parse(this.cookieService.get(prefix));
     let stackToDelete = cookieJson.stackName;
-    console.log("got stack name from cookie as " + stackToDelete);
     this.cookieService.delete(prefix);
     this.postStopSingleTestToServer(stackToDelete);
     this.generateDatasourceArray();
