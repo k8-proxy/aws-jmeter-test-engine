@@ -81,8 +81,8 @@
 
     <div class="form-group">
         <label>Prefix*</label>
-        <input type="text" class="form-control" formControlName="prefix" placeholder="default: demo">
-        <small class="form-text text-muted">Prefix must not contain spaces *this field is required</small>
+        <input type="text" class="form-control" formControlName="prefix" placeholder="Required">
+        <small class="form-text text-muted">Prefix must be unique and cannot contain spaces *this field is required</small>
         <div *ngIf="prefix.touched && prefix.invalid">
             <div class="alert alert-danger" *ngIf="prefix.errors.cannotContainSpaces">Field cannot contain spaces.</div>
             <div class="alert alert-danger" *ngIf="prefix.errors.required">This field is required.</div>

@@ -13,9 +13,6 @@ from threading import Thread
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
 DELETE_TIME_OFFSET = 900
-# Interval between "time elapsed" messages sent to user; should be set to 600.
-MESSAGE_INTERVAL = 600
-
 
 # set all possible arguments/options that can be input into the script
 def __get_commandline_args():
@@ -127,8 +124,9 @@ def __calculate_instances_required(total_users, users_per_instance):
 
 
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
-def __start_delete_stack(additional_delay, config):
-    duration = Config.duration
+def __start_delete_stack(additional_delay, config, stack_name):
+    duration = config.duration
+    message_interval = int(duration) / 4
     total_wait_time = additional_delay + int(duration)
     minutes = total_wait_time / 60
     finish_time = datetime.now(timezone.utc) + timedelta(seconds=total_wait_time)
@@ -137,13 +135,13 @@ def __start_delete_stack(additional_delay, config):
     print("Stack will be deleted after {0:.1f} minutes".format(minutes))
 
     while datetime.now(timezone.utc) < finish_time:
-        if datetime.now(timezone.utc) != start_time:
+        if datetime.now(timezone.utc) != start_time and message_interval > 0:
             diff = datetime.now(timezone.utc) - start_time
             print("{0:.1f} minutes have elapsed, stack will be deleted in {1:.1f} minutes".format(diff.seconds / 60, (
                     total_wait_time - diff.seconds) / 60))
-        time.sleep(MESSAGE_INTERVAL)
+        time.sleep(message_interval)
 
-    delete_stack.main(config)
+    delete_stack.main(config, stack_name_override=stack_name)
 
 
 def __get_stack_name(config):
@@ -158,18 +156,29 @@ def __get_stack_name(config):
     return created_stack_name
 
 
-def create_stack_from_ui(json_params):
+def create_stack_from_ui(json_params, stack_name):
     set_config_from_ui(json_params)
     __calculate_instances_required(Config.total_users, Config.users_per_instance)
-    Config.stack_name = json_params['prefix'] + '-aws-jmeter-test-engine'
     set_grafana_key_and_url(Config)
-    return main(Config)
+    Config.min_age = 0
+
+    print("Creating Load Generators...")
+    stack_name = create_stack.main(Config)
+    Config.stack_name = stack_name
+
+    print("Creating dashboard...")
+    dashboard_url = create_dashboard.main(Config)
+
+    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, Config, stack_name))
+    delete_stack_thread.start()
+
+    return dashboard_url, stack_name
 
 
 def delete_stack_from_ui(stack_name):
     Config.stack_name = stack_name
     Config.min_age = 0
-    delete_stack.main(Config)
+    delete_stack.main(Config, stack_name_override=stack_name)
 
 
 def main(config):
@@ -186,7 +195,7 @@ def main(config):
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")
     else:
-        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config))
+        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config, config.stack_name))
         delete_stack_thread.start()
 
     return dashboard_url, stack_name

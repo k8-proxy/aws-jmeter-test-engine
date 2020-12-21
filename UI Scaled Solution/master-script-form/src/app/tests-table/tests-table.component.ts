@@ -40,7 +40,6 @@ export class TestsTableComponent implements OnInit {
 
   constructor(private readonly http: HttpClient, private sharedService: SharedService, private cookieService: CookieService) {
     this.formSubmittedSubscription = this.sharedService.getSubmitEvent().subscribe((formDataPack) => this.onFormSubmitted(formDataPack));
-    this.formSubmittedSubscription = this.sharedService.getStopAllTestsEvent().subscribe(() => this.onStopTests());
   }
 
   ngOnInit(): void {
@@ -121,18 +120,14 @@ export class TestsTableComponent implements OnInit {
     return name;
   }
 
-  onStopTests() {
-    this.cookieService.deleteAll();
-    this.generateDatasourceArray();
-    this.table.renderRows();
-  }
-
   stopTestButton(prefix: string) {
     let cookieJson = JSON.parse(this.cookieService.get(prefix));
     let stackToDelete = cookieJson.stackName;
     console.log("got stack name from cookie as " + stackToDelete);
     this.cookieService.delete(prefix);
     this.postStopSingleTestToServer(stackToDelete);
+    this.generateDatasourceArray();
+    this.table.renderRows();
   }
 
   postStopSingleTestToServer(stackName: string) {
