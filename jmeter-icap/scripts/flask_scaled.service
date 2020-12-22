@@ -6,8 +6,8 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/home/glasswall/p-k8-jmeter-test-engine/jmeter-icap/scripts
-ExecStart=/home/glasswall/p-k8-jmeter-test-engine/jmeter-icap/scripts/exec_scaled.sh
+WorkingDirectory=/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+ExecStart=/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/exec_scaled.sh
 Restart=always
 
 [Install]
