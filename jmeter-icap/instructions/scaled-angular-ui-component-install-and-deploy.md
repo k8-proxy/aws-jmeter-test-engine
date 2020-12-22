@@ -1,4 +1,4 @@
-# Angular UI Component Installation and Deployment
+# Angular UI Component Installation and Deployment for Scaled Solution
 
 ## Prerequisites
 
