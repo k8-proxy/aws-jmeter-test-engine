@@ -1,0 +1,6 @@
+{
+    "ContainerFormat": "ova",
+    "DiskImageFormat": "VMDK",
+    "S3Bucket": "ova-creation",
+    "S3Prefix": "vms/"
+}

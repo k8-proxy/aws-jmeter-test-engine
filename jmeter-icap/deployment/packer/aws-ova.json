@@ -1,0 +1,50 @@
+{
+    "variables":
+        {
+            "accesskey": "env `AWS_ACCESS_KEY_ID`",
+            "secretkey": "env `AWS_SECRET_ACCESS_KEY`"
+        },
+    "builders":[
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "{{user `region`}}",
+            "vpc_id": "vpc-0cd8eebd552595e6e",
+            "subnet_id": "subnet-00ff06c9fe4500b37",
+            "ami_regions": ["eu-west-1"],
+            "ssh_clear_authorized_keys": true,
+            "source_ami": "ami-0aef57767f5404a3c",
+            "instance_type": "m4.large",
+            "ssh_username": "ubuntu",
+            "ami_name": "packer-ova-demo-{{timestamp}}",
+            "tags": {
+              "Stack": "JMeterTestEngine",
+              "Release": "Latest"
+            }
+        }
+    ],
+   "provisioners":[
+       {
+       "type": "shell",
+       "script": "jmeter-icap/deployment/packer/aws-ova.sh"
+       },
+       {
+       "type": "shell",
+       "script": "jmeter-icap/deployment/packer/ui.sh"
+       },
+       {
+        "type": "shell-local",
+        "inline": "aws ec2 create-instance-export-task --region eu-west-1 --instance-id {{build `ID`}} --target-environment vmware --export-to-s3-task file://jmeter-icap/deployment/packer/file.json > out.json"
+       },
+       {
+           "type": "shell-local",
+           "script": "jmeter-icap/deployment/packer/ova-check.sh"
+       }
+    ],
+    "post-processors":[
+        {
+            "type": "manifest"
+        }]
+
+}
