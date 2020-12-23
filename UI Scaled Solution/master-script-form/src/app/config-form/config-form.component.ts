@@ -70,7 +70,7 @@ export class ConfigFormComponent implements OnInit {
       duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: AppSettings.loadTypes[0],
-      icap_endpoint_url: new FormControl(''),
+      icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required]),
       enable_tls: true,
       tls_ignore_error: true,
