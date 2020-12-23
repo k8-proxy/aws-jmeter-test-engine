@@ -7,7 +7,7 @@
         <!-- Name Column -->
         <ng-container matColumnDef="testName">
             <th *matHeaderCellDef> Test Name </th>
-            <td *matCellDef="let element"> <a href={{element.dashboardUrl}}>{{element.testName}}</a></td>
+            <td *matCellDef="let element"> <a target="_blank" href={{element.dashboardUrl}}>{{element.testName}}</a></td>
         </ng-container>
 
         <!-- Users Column -->
