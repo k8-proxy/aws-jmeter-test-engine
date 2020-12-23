@@ -66,6 +66,7 @@
         <div *ngIf="icap_endpoint_url.invalid">
             <div class="alert alert-danger" *ngIf="icap_endpoint_url.touched && icap_endpoint_url.errors.required">This field is required.</div>
             <div class="alert alert-danger" *ngIf="icap_endpoint_url.dirty && icap_endpoint_url.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+            <div class="alert alert-danger" *ngIf="icap_endpoint_url.touched && icap_endpoint_url.errors.pattern">Please provide a valid IP address.</div>
         </div>
     </div>
 

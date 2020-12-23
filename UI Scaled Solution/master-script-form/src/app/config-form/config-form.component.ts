@@ -36,7 +36,7 @@ export class ConfigFormComponent implements OnInit {
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) { 
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) {
     this.testsStoppedSubscription = this.sharedService.getStopSingleEvent().subscribe((prefix) => this.onTestStopped(prefix));
   }
 
@@ -46,6 +46,18 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.valueChanges.subscribe((data) => {
       this.hideSubmitMessages = true;
     });
+    this.setIcapOrProxyValidation();
+  }
+
+  setIcapOrProxyValidation() {
+    this.configForm.get('load_type').valueChanges.subscribe(loadType => {
+      if (loadType == "Proxy") {
+        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
+      } else {
+        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
+      }
+      this.configForm.get('icap_endpoint_url').updateValueAndValidity();
+    })
   }
 
   setTitle(newTitle: string) {
@@ -58,7 +70,7 @@ export class ConfigFormComponent implements OnInit {
       duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: AppSettings.loadTypes[0],
-      icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
+      icap_endpoint_url: new FormControl(''),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required]),
       enable_tls: true,
       tls_ignore_error: true,
@@ -144,7 +156,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   postFormToServer(formData: FormData) {
-    this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response, formData), (err) => {this.onError(err)});
+    this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response, formData), (err) => { this.onError(err) });
   }
 
   postStopRequestToServer(formData: FormData) {
@@ -176,25 +188,23 @@ export class ConfigFormComponent implements OnInit {
     this.GenerateLoadButtonText = "Generate Load"
     this.configForm.enable();
     this.prefix.reset();
-    // this.prefix.updateValueAndValidity();
-    // this.configForm.updateValueAndValidity();
   }
 
   setFormDefaults() {
     //if user enters less that 1 total_users, default to 1. Otherwise if no input, default to 25.
-    if(this.total_users.value === '') {
+    if (this.total_users.value === '') {
       this.total_users.setValue('25');
     } else if (this.total_users.value < 1) {
       this.total_users.setValue('1');
-    } 
+    }
 
     //if user enters no ramp up time, default is 300.
-    if(this.ramp_up_time.value === '') {
+    if (this.ramp_up_time.value === '') {
       this.ramp_up_time.setValue('300');
     }
 
     //if user enters no duration, default is 900. If they enter a less than 60 second duration, default to 60.
-    if(this.duration.value === '') {
+    if (this.duration.value === '') {
       this.duration.setValue('900');
     }
     else if (this.duration.value < 60) {
@@ -218,7 +228,7 @@ export class ConfigFormComponent implements OnInit {
 
   //used to revalidate prefix if a test is stopped. So in instances where a prefix is invalid due to an existing test, it being deleted will make that prefix valid again.
   onTestStopped(prefix: string) {
-    if(this.prefix.value === prefix) {
+    if (this.prefix.value === prefix) {
       this.prefix.markAsPristine();
       this.prefix.markAsUntouched();
       this.prefix.updateValueAndValidity();

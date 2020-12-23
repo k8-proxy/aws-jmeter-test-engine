@@ -25,5 +25,4 @@ export class ConfigFormValidators {
         }
         return null;
     }
-    
 }
