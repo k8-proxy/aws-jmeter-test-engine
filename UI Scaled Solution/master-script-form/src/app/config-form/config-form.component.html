@@ -7,7 +7,7 @@
         <label>Total Users</label>
         <input type="text" class="form-control" formControlName="total_users" placeholder="Default: 25">
         <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test (minimum 1 user, maximum 4000 users)</small>
-        <div *ngIf="ramp_up_time.dirty && total_users.invalid">
+        <div *ngIf="total_users.dirty && total_users.invalid">
             <div class="alert alert-danger" *ngIf="total_users.errors.pattern">Please provide only number values.</div>
             <div class="alert alert-danger" *ngIf="total_users.errors.cannotContainSpaces">Field cannot contain spaces.
             </div>
