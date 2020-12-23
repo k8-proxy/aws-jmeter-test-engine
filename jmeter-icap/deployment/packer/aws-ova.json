@@ -36,7 +36,7 @@
        },
        {
         "type": "shell-local",
-        "inline": "aws ec2 create-instance-export-task --region eu-west-1 --instance-id {{build `ID`}} --target-environment vmware --export-to-s3-task file://file.json > out.json"
+        "inline": "aws ec2 create-instance-export-task --region eu-west-1 --instance-id {{build `ID`}} --target-environment vmware --export-to-s3-task file://jmeter-icap/deployment/packer/file.json > out.json"
        },
        {
            "type": "shell-local",
