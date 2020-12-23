@@ -2,8 +2,7 @@
     "variables":
         {
             "accesskey": "env `AWS_ACCESS_KEY_ID`",
-            "secretkey": "env `AWS_SECRET_ACCESS_KEY`",
-            "shellpath": "packages.sh"
+            "secretkey": "env `AWS_SECRET_ACCESS_KEY`"
         },
     "builders":[
         {
@@ -18,9 +17,9 @@
             "source_ami": "ami-0aef57767f5404a3c",
             "instance_type": "m4.large",
             "ssh_username": "ubuntu",
-            "ami_name": "packer-ova-demo {{timestamp}}",
+            "ami_name": "packer-ova-demo-{{timestamp}}",
             "tags": {
-              "OS_Version": "Ubuntu",
+              "Stack": "JMeterTestEngine",
               "Release": "Latest"
             }
         }
