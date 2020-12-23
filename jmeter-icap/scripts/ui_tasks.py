@@ -17,10 +17,11 @@ def modify_hosts_file(ip_addr: str):
         f.close()
 
 
-def determine_load_type(load: str):
+def determine_load_type(load: str, ova=False):
+    print("IS this ova? {}".format(ova))
     if load == "Direct":
         Config.test_directory = 'ICAP-Direct-File-Processing'
-        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
+        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx' if ova else 'ICAP_Direct_FileProcessing_v3.jmx'
         Config.grafana_file = 'aws-test-engine-dashboard.json'
         Config.test_data_file = 'gov_uk_files.csv'
 
@@ -31,7 +32,7 @@ def determine_load_type(load: str):
         Config.test_data_file = 'proxysitefiles.csv'
 
 
-def set_config_from_ui(json_params):
+def set_config_from_ui(json_params, ova=False):
     # Set Config values gotten from front end
     if json_params['total_users']:
         Config.total_users = int(json_params['total_users'])
@@ -51,7 +52,7 @@ def set_config_from_ui(json_params):
     if json_params['prefix']:
         Config.prefix = json_params['prefix']
     if json_params['load_type']:
-        determine_load_type(json_params['load_type'])
+        determine_load_type(json_params['load_type'], ova=ova)
 
         if json_params['load_type'] == 'Proxy':
             modify_hosts_file(json_params['icap_endpoint_url'])

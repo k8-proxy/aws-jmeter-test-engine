@@ -22,7 +22,7 @@ def parse_request():
     if button_pressed == 'generate_load':
         data = json.loads(request.form.get('form'))
         print('Data sent from UI: {0}'.format(data))
-        (returned_url, stack_name) = create_stack_from_ui(data, stack_name)
+        (returned_url, stack_name) = create_stack_from_ui(data, ova=False)
         if returned_url:
             return make_response(jsonify(url=returned_url, stack_name=stack_name), 201)
         else:

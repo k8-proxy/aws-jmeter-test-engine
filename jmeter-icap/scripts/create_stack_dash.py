@@ -156,9 +156,11 @@ def __get_stack_name(config):
     return created_stack_name
 
 
-def create_stack_from_ui(json_params, stack_name):
-    set_config_from_ui(json_params)
-    __calculate_instances_required(Config.total_users, Config.users_per_instance)
+def create_stack_from_ui(json_params, ova=False):
+    set_config_from_ui(json_params, ova=ova)
+    (instances_required, users_per_instance) = __calculate_instances_required(Config.total_users, Config.users_per_instance)
+    Config.users_per_instance = users_per_instance
+    Config.instances_required = instances_required
     set_grafana_key_and_url(Config)
     Config.min_age = 0
 

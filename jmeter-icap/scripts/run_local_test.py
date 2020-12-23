@@ -30,7 +30,7 @@ def get_jvm_memory(users_per_instance):
 
 def main(json_params):
 
-    set_config_from_ui(json_params)
+    set_config_from_ui(json_params, ova=True)
     Config.users_per_instance = Config.total_users
     jvm_memory = get_jvm_memory(Config.users_per_instance)
 
