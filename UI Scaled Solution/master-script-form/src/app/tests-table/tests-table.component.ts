@@ -31,7 +31,7 @@ export class TestsTableComponent implements OnInit {
   @ViewChild('testTable') table: MatTable<Element>;
   
   formSubmittedSubscription: Subscription;
-  testsStoppedSubscription: Subscription;
+  
 
   dataSource: TestRowElement[] = [];
   displayedColumns: string[] = ['testName', 'totalUsers', 'duration', 'startTime', 'endTime', 'stopTestButton']; //add and remove columns here before adding/remove in html
@@ -130,13 +130,14 @@ export class TestsTableComponent implements OnInit {
     this.postStopSingleTestToServer(stackToDelete);
     this.generateDatasourceArray();
     this.table.renderRows();
+    this.updateCookiesExistAndPrefixSet();
+    this.sharedService.sendStopSingleEvent(prefix);
   }
 
   postStopSingleTestToServer(stackName: string) {
     const formData = new FormData();
     formData.append("button", "stop_individual_test");
     formData.append("stack", stackName);
-    console.log(formData.get('stack'));
     this.http.post('http://127.0.0.1:5000/', formData).toPromise();
   }
 
@@ -163,7 +164,6 @@ export class TestsTableComponent implements OnInit {
       if (!(item in cookieArray) && !AppSettings.addingPrefix) 
       {
         AppSettings.testPrefixSet.delete(item);
-        console.log("deleted key " + item);
       }
     });
   }

@@ -1,4 +1,4 @@
-import { CookieService } from 'ngx-cookie-service';
+import { Subscription } from 'rxjs';
 import { AppSettings } from './../common/app settings/AppSettings';
 import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
@@ -24,6 +24,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 })
 
 export class ConfigFormComponent implements OnInit {
+  testsStoppedSubscription: Subscription;
   configForm: FormGroup;
   submitted = false;
   responseReceived = false;
@@ -35,7 +36,9 @@ export class ConfigFormComponent implements OnInit {
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) { }
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) { 
+    this.testsStoppedSubscription = this.sharedService.getStopSingleEvent().subscribe((prefix) => this.onTestStopped(prefix));
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -161,7 +164,6 @@ export class ConfigFormComponent implements OnInit {
       this.postFormToServer(formData);
       this.submitted = true;
       this.lockForm();
-      console.log(AppSettings.testPrefixSet.values());
     }
   }
 
@@ -174,6 +176,8 @@ export class ConfigFormComponent implements OnInit {
     this.GenerateLoadButtonText = "Generate Load"
     this.configForm.enable();
     this.prefix.reset();
+    // this.prefix.updateValueAndValidity();
+    // this.configForm.updateValueAndValidity();
   }
 
   setFormDefaults() {
@@ -210,5 +214,15 @@ export class ConfigFormComponent implements OnInit {
 
   toggleErrorMessage() {
     this.showErrorAlert = !this.showErrorAlert;
+  }
+
+  //used to revalidate prefix if a test is stopped. So in instances where a prefix is invalid due to an existing test, it being deleted will make that prefix valid again.
+  onTestStopped(prefix: string) {
+    if(this.prefix.value === prefix) {
+      this.prefix.markAsPristine();
+      this.prefix.markAsUntouched();
+      this.prefix.updateValueAndValidity();
+      this.configForm.updateValueAndValidity();
+    }
   }
 }
