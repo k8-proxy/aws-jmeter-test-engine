@@ -35,9 +35,13 @@ jobs:
         aws-region: eu-west-1
 
     # build artifact
-    - name: Build AMI
-      uses: operatehappy/packer-github-actions@master
-      with:
-        command: build
-        arguments: "-color=false -on-error=cleanup -var github_sha=${{ github.sha }} -var vm_name=packer-build -var region=${{ env.AWS_DEFAULT_REGION }} -var aws_access_key=${{ secrets.AWS_ACCESS_KEY }} -var aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-        target: jmeter-icap/deployment/packer/aws-ova.json
+    - name: Setup Packer
+      run: |
+        curl -o packer.zip https://releases.hashicorp.com/packer/1.6.6/packer_1.6.6_linux_amd64.zip
+        unzip packer.zip
+        sudo mv packer /usr/local/bin
+        
+    - name: Build AMI/OVA
+      run: |
+        packer build jmeter-icap/deployment/packer/aws-ova.json
+      
