@@ -12,6 +12,7 @@
             "secret_key": "{{user `aws_secret_key`}}",
             "region": "{{user `region`}}",
             "vpc_id": "vpc-02db6ac5915e8de9b",
+            "subnet_id": "subnet-02e0fb935c900d08e",
             "ami_regions": ["eu-west-1"],
             "ssh_clear_authorized_keys": true,
             "source_ami": "ami-0aef57767f5404a3c",
