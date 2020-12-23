@@ -24,11 +24,11 @@
    "provisioners":[
        {
        "type": "shell",
-       "script": "aws-ova.sh"
+       "script": "jmeter-icap/deployment/packer/aws-ova.sh"
        },
        {
        "type": "shell",
-       "script": "ui.sh"
+       "script": "jmeter-icap/deployment/packer/ui.sh"
        },
        {
         "type": "shell-local",
@@ -36,7 +36,7 @@
        },
        {
            "type": "shell-local",
-           "script": "ova-check.sh"
+           "script": "jmeter-icap/deployment/packer/ova-check.sh"
        }
     ],
     "post-processors":[
