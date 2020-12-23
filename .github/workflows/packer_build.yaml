@@ -1,7 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
 name: packer_build
-
+env:
+  AWS_DEFAULT_REGION: eu-west-1
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
