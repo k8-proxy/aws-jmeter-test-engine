@@ -14,6 +14,9 @@ from threading import Thread
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
 DELETE_TIME_OFFSET = 900
 
+# Interval for how often "time elapsed" messages are displayed for delete stack process
+MESSAGE_INTERVAL = 30
+
 # set all possible arguments/options that can be input into the script
 def __get_commandline_args():
     parser = ArgumentParser(fromfile_prefix_chars='@', description='Create cloudformation stack to deploy ASG. '
@@ -124,10 +127,8 @@ def __calculate_instances_required(total_users, users_per_instance):
 
 
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
-def __start_delete_stack(additional_delay, config, stack_name):
-    duration = config.duration
+def __start_delete_stack(additional_delay, config, duration, stack_name):
     total_wait_time = additional_delay + int(duration)
-    message_interval = total_wait_time / 4
     minutes = total_wait_time / 60
     finish_time = datetime.now(timezone.utc) + timedelta(seconds=total_wait_time)
     start_time = datetime.now(timezone.utc)
@@ -135,11 +136,11 @@ def __start_delete_stack(additional_delay, config, stack_name):
     print("Stack will be deleted after {0:.1f} minutes".format(minutes))
 
     while datetime.now(timezone.utc) < finish_time:
-        if datetime.now(timezone.utc) != start_time and message_interval > 0:
+        if datetime.now(timezone.utc) != start_time and datetime.now(timezone.utc) + timedelta(seconds=MESSAGE_INTERVAL) < finish_time:
             diff = datetime.now(timezone.utc) - start_time
             print("{0:.1f} minutes have elapsed, stack will be deleted in {1:.1f} minutes".format(diff.seconds / 60, (
                     total_wait_time - diff.seconds) / 60))
-        time.sleep(message_interval)
+            time.sleep(MESSAGE_INTERVAL)
 
     delete_stack.main(config, stack_name_override=stack_name)
 
@@ -163,7 +164,7 @@ def create_stack_from_ui(json_params, ova=False):
     Config.instances_required = instances_required
     set_grafana_key_and_url(Config)
     Config.min_age = 0
-
+    duration = json_params['duration']
     print("Creating Load Generators...")
     stack_name = create_stack.main(Config)
     Config.stack_name = stack_name
@@ -171,7 +172,7 @@ def create_stack_from_ui(json_params, ova=False):
     print("Creating dashboard...")
     dashboard_url = create_dashboard.main(Config)
 
-    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, Config, stack_name))
+    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, Config, duration, stack_name))
     delete_stack_thread.start()
 
     return dashboard_url, stack_name
@@ -197,7 +198,7 @@ def main(config):
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")
     else:
-        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config, config.stack_name))
+        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config, config.duration, config.stack_name))
         delete_stack_thread.start()
 
     return dashboard_url, stack_name
