@@ -21,8 +21,7 @@ sudo useradd --system loki
 Create loki.service file with following content:
 
 ```bash
-sudo nano /etc/systemd/system/loki.service
-
+sudo bash -c ' cat << EOF >> /etc/systemd/system/loki.service
 [Unit]
 Description=Loki service
 After=network.target
@@ -34,6 +33,7 @@ ExecStart=/usr/local/bin/loki -config.file /usr/local/bin/loki-local-config.yaml
 
 [Install]
 WantedBy=multi-user.target
+EOF'
 
 ```
 
@@ -172,11 +172,7 @@ sudo chmod a+x promtail
 Now we will create promtail config file:
 
 ```bash
-sudo nano config-promtail.yml
-```
-And add this script,
-
-```bash
+sudo bash -c  'cat << EOF >> config-promtail.yml
 server:
   http_listen_port: 9080
   grpc_listen_port: 0
@@ -192,20 +188,16 @@ scrape_configs:
     labels:
       job: glasswall_jmeter
       __path__: "/opt/jmeter/apache-jmeter-5.3/bin/jmeter.log"
+EOF'
 ```
 Create user specifically for the Promtail service
 ```bash
 sudo useradd --system promtail
 ```
-Create a file called promtail.service
-
-and add this script
-```bash
-sudo nano /etc/systemd/system/promtail.service
-```
-Add this to the file:
+Create a file called promtail.service :
 
 ```bash
+sudo bash -c  'cat  << EOF >> /etc/systemd/system/promtail.service
 [Unit]
 Description=Promtail service
 After=network.target
@@ -217,6 +209,7 @@ ExecStart=/usr/local/bin/promtail -config.file /usr/local/bin/config-promtail.ym
 
 [Install]
 WantedBy=multi-user.target
+EOF'
 ```
 Run the service:
 ```bash
@@ -244,23 +237,14 @@ In order to be able to generate high traffic, there is a need to tune Linux ulim
 sudo nano /etc/security/limits.conf
  Edit the following file
  ```bash
- sudo nano /etc/sysctl.conf
-```
-Add & save:
-```bash
-net.ipv4.ip_local_port_range = 12000 65535
-fs.file-max = 1048576
-```
-Edit the following file:
- ```bash
-sudo nano /etc/security/limits.conf
-```
-Add & Save:
-```bash
-*           soft      nofile     1048576
-*           hard      nofile     1048576
-root        soft      nofile     1048576
-root        hard      nofile     1048576
+sudo bash -c "echo 'net.ipv4.ip_local_port_range = 12000 65535' >> /etc/sysctl.conf"
+sudo bash -c "echo 'fs.file-max = 1048576' >> /etc/sysctl.conf"
+#
+sudo bash -c "echo '*           soft      nofile     1048576' >> /etc/security/limits.conf"
+sudo bash -c "echo '*           hard      nofile     1048576' >> /etc/security/limits.conf"
+sudo bash -c "echo 'root        soft      nofile     1048576' >> /etc/security/limits.conf"
+sudo bash -c "echo 'root        hard      nofile     1048576' >> /etc/security/limits.conf"
+
 ```
 
 Reboot & Confirm that changes are in effect:
@@ -278,14 +262,8 @@ usermod -aG sudo glasswall
 ```
 Modify sshd config to allow 
 ```bash
-sudo nano /etc/ssh/sshd_config
-```
-Ensure that 
-```bash
-PasswordAuthentication yes
-```
-```bash
-service ssh restart
+sudo sed -i "s/.*PasswordAuthentication.*/PasswordAuthentication yes/g" /etc/ssh/sshd_config
+sudo service ssh restart
 ```
 try new user
 
