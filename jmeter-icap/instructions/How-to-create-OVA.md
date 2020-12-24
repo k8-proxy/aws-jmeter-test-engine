@@ -114,6 +114,8 @@ Run the following script in order to create necessary data sources:
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/
 python3 create_datasource.py
 ```
+In grafana UI the following 3 datasource will be visible once above script is run successfully:
+
 ![vm_load_vision](img/Grafana-Datasource.png)
 
  ## Install Java
