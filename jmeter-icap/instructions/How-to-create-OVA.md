@@ -80,13 +80,9 @@ systemctl enable --now influxdb
 Create needed Influxdb databases ready.
 
 ```bash
-influx
-Connected to http://localhost:8086 version 1.8.3
-InfluxDB shell version: 1.8.3
-> create database jmeter
-> create database icapserver
-> exit
-
+influx -execute 'create database jmeter'
+influx -execute 'create database icapserver'
+influx -execute 'SHOW DATABASES'
 ```
 ## Install grafana and setup datasources
 
