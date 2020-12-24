@@ -181,13 +181,13 @@ export class ConfigFormComponent implements OnInit {
 
   lockForm() {
     this.GenerateLoadButtonText = "Generating Load..."
+    this.prefix.reset();
     this.configForm.disable();
   }
 
   unlockForm() {
     this.GenerateLoadButtonText = "Generate Load"
     this.configForm.enable();
-    this.prefix.reset();
   }
 
   setFormDefaults() {
