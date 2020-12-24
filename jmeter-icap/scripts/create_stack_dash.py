@@ -8,12 +8,14 @@ import create_dashboard
 from create_stack import Config
 from ec2_instance_manager import start_instance
 from aws_secrets import get_secret_value
+from ui_tasks import set_config_from_ui
+from threading import Thread
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
 DELETE_TIME_OFFSET = 900
-# Interval between "time elapsed" messages sent to user; should be set to 600.
-MESSAGE_INTERVAL = 600
 
+# Interval for how often "time elapsed" messages are displayed for delete stack process
+MESSAGE_INTERVAL = 30
 
 # set all possible arguments/options that can be input into the script
 def __get_commandline_args():
@@ -94,7 +96,6 @@ def __get_commandline_args():
     parser.add_argument('--enable_tls', '-et', default=Config.enable_tls,
                         help='Whether or not to enable TLS')
 
-
     return parser.parse_args()
 
 
@@ -126,8 +127,7 @@ def __calculate_instances_required(total_users, users_per_instance):
 
 
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
-def __start_delete_stack(additional_delay, config):
-    duration = Config.duration
+def __start_delete_stack(additional_delay, config, duration, stack_name):
     total_wait_time = additional_delay + int(duration)
     minutes = total_wait_time / 60
     finish_time = datetime.now(timezone.utc) + timedelta(seconds=total_wait_time)
@@ -136,13 +136,13 @@ def __start_delete_stack(additional_delay, config):
     print("Stack will be deleted after {0:.1f} minutes".format(minutes))
 
     while datetime.now(timezone.utc) < finish_time:
-        if datetime.now(timezone.utc) != start_time:
+        if datetime.now(timezone.utc) != start_time and datetime.now(timezone.utc) + timedelta(seconds=MESSAGE_INTERVAL) < finish_time:
             diff = datetime.now(timezone.utc) - start_time
             print("{0:.1f} minutes have elapsed, stack will be deleted in {1:.1f} minutes".format(diff.seconds / 60, (
                     total_wait_time - diff.seconds) / 60))
-        time.sleep(MESSAGE_INTERVAL)
+            time.sleep(MESSAGE_INTERVAL)
 
-    delete_stack.main(config)
+    delete_stack.main(config, stack_name_override=stack_name)
 
 
 def __get_stack_name(config):
@@ -156,23 +156,38 @@ def __get_stack_name(config):
 
     return created_stack_name
 
-def __determineLoadType(load: str):
-    if load == "Direct":
-        Config.test_directory = 'ICAP-Direct-File-Processing'
-        Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx'
-        Config.grafana_file = 'aws-test-engine-dashboard.json'
-        Config.test_data_file = 'gov_uk_files.csv'
 
-    elif load == "Proxy":
-        Config.test_directory = 'ICAP-Proxy-Site'
-        Config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
-        Config.grafana_file = 'ProxySite_Dashboard_Template.json'
-        Config.test_data_file = 'proxysitefiles.csv'
+def create_stack_from_ui(json_params, ova=False):
+    set_config_from_ui(json_params, ova=ova)
+    (instances_required, users_per_instance) = __calculate_instances_required(Config.total_users, Config.users_per_instance)
+    Config.users_per_instance = users_per_instance
+    Config.instances_required = instances_required
+    set_grafana_key_and_url(Config)
+    Config.min_age = 0
+    duration = json_params['duration']
+    print("Creating Load Generators...")
+    stack_name = create_stack.main(Config)
+    Config.stack_name = stack_name
+
+    print("Creating dashboard...")
+    dashboard_url = create_dashboard.main(Config)
+
+    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, Config, duration, stack_name))
+    delete_stack_thread.start()
+
+    return dashboard_url, stack_name
+
+
+def delete_stack_from_ui(stack_name):
+    Config.stack_name = stack_name
+    Config.min_age = 0
+    delete_stack.main(Config, stack_name_override=stack_name)
+
 
 def main(config):
     dashboard_url = ''
     print("Creating Load Generators...")
-    create_stack.main(config)
+    stack_name = create_stack.main(config)
 
     if config.exclude_dashboard:
         print("Dashboard will not be created")
@@ -183,9 +198,33 @@ def main(config):
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")
     else:
-        __start_delete_stack(DELETE_TIME_OFFSET, config)
+        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config, config.duration, config.stack_name))
+        delete_stack_thread.start()
 
-    return dashboard_url
+    return dashboard_url, stack_name
+
+
+def set_grafana_key_and_url(config):
+    # if Grafana custom IP was inserted via config, use it. Otherwise, start up the instance and use that IP instead.
+    if not config.grafana_url and not config.grafana_server_tag:
+        print("Must input either grafana_url or grafana_server_tags in config.env or using args")
+        exit(0)
+    elif not config.grafana_url:
+        ip = start_instance(config)
+        config.grafana_url = 'http://{0}:3000'.format(ip)
+        print(config.grafana_url)
+
+    # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
+    if not config.grafana_key and not config.grafana_secret:
+        print("Must input either grafana_key or grafana_secret_id in config.env or using args")
+        exit(0)
+    elif not config.grafana_key and not config.exclude_dashboard:
+        secret_response = get_secret_value(config=config, secret_id=config.grafana_secret)
+        secret_val = next(iter(secret_response.values()))
+        config.grafana_key = secret_val
+        if secret_val:
+            print("Grafana secret key retrieved.")
+
 
 if __name__ == "__main__":
     args = __get_commandline_args()
@@ -226,24 +265,6 @@ if __name__ == "__main__":
 
     Config.stack_name = __get_stack_name(Config)
 
-    # if Grafana custom IP was inserted via config, use it. Otherwise, start up the instance and use that IP instead.
-    if not Config.grafana_url and not Config.grafana_server_tag:
-        print("Must input either grafana_url or grafana_server_tags in config.env or using args")
-        exit(0)
-    elif not Config.grafana_url:
-        ip = start_instance(Config)
-        Config.grafana_url = 'http://{0}:3000'.format(ip)
-        print(Config.grafana_url)
-
-    # if Grafana secret key is inserted via config, use it. Otherwise, get grafana key from AWS secrets using grafana_secret_id
-    if not Config.grafana_key and not Config.grafana_secret:
-        print("Must input either grafana_key or grafana_secret_id in config.env or using args")
-        exit(0)
-    elif not Config.grafana_key and not Config.exclude_dashboard:
-        secret_response = get_secret_value(config=Config, secret_id=Config.grafana_secret)
-        secret_val = next(iter(secret_response.values()))
-        Config.grafana_key = secret_val
-        if secret_val:
-            print("Grafana secret key retrieved.")
+    set_grafana_key_and_url(Config)
 
     main(Config)

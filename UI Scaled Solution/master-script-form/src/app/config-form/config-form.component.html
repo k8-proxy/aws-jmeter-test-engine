@@ -1,0 +1,125 @@
+<h1><img src="assets/gwl.png"> ICAP Performance Testing </h1>
+
+<a href="https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Generate-Load-with-OVA.md" target="_blank" style="float: right;">Instructions on How to Generate Load</a>
+
+<form [formGroup]="configForm" (ngSubmit)="onSubmit()" name="configForm">
+    <div class="form-group">
+        <label>Total Users</label>
+        <input type="text" class="form-control" formControlName="total_users" placeholder="Default: 25">
+        <small id="totalUsersHelp" class="form-text text-muted">Total number of users in the test (minimum 1 user, maximum 4000 users)</small>
+        <div *ngIf="total_users.dirty && total_users.invalid">
+            <div class="alert alert-danger" *ngIf="total_users.errors.pattern">Please provide only number values.</div>
+            <div class="alert alert-danger" *ngIf="total_users.errors.cannotContainSpaces">Field cannot contain spaces.
+            </div>
+            <div class="alert alert-danger" *ngIf="total_users.errors.exceedsNumberLimit">Value cannot exceed 4000.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Ramp Up Time</label>
+        <input type="text" class="form-control" formControlName="ramp_up_time" placeholder="Default: 300">
+        <small class="form-text text-muted">Ramp up time in seconds</small>
+        <div *ngIf="ramp_up_time.dirty && ramp_up_time.invalid">
+            <div class="alert alert-danger" *ngIf="ramp_up_time.errors.pattern">Please provide only number values.</div>
+            <div class="alert alert-danger" *ngIf="ramp_up_time.errors.cannotContainSpaces">Field cannot contain spaces.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label>Duration</label>
+        <input type="text" class="form-control" formControlName="duration" placeholder="Default: 900">
+        <small class="form-text text-muted">Duration of test in seconds (minimum 60 seconds)</small>
+        <div *ngIf="duration.dirty && duration.invalid">
+            <div class="alert alert-danger" *ngIf="duration.errors.pattern">Please provide only number values.</div>
+            <div class="alert alert-danger" *ngIf="duration.errors.cannotContainSpaces">Field cannot contain spaces.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Load Type</label>
+        <select class="form-control" formControlName="load_type" (change)="onLoadTypeChange()">
+            <option *ngFor="let load of loadTypes" [ngValue]="load">{{load}}</option>
+        </select>
+    </div>
+
+    <div *ngIf="enableCheckboxes">
+        <div class="form-group">
+            <label>
+                <input type="checkbox" formControlName="enable_tls" type="checkbox" (change)="onTlsChange()"> TLS
+            </label>
+
+        </div>
+        <div class="form-group" *ngIf="enableIgnoreErrorCheckbox"><label>
+                <input type="checkbox" formControlName="tls_ignore_error" type="checkbox"> TLS Ignore Cert Errors
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>{{ IcapOrProxy }}</label>
+        <input type="text" class="form-control" formControlName="icap_endpoint_url" placeholder="Required">
+        <small class="form-text text-muted">*this field is required</small>
+        <div *ngIf="icap_endpoint_url.invalid">
+            <div class="alert alert-danger" *ngIf="icap_endpoint_url.touched && icap_endpoint_url.errors.required">This field is required.</div>
+            <div class="alert alert-danger" *ngIf="icap_endpoint_url.dirty && icap_endpoint_url.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+            <div class="alert alert-danger" *ngIf="icap_endpoint_url.touched && icap_endpoint_url.errors.pattern">Please provide a valid IP address.</div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Port</label>
+        <input type="text" class="form-control" formControlName="port" placeholder="default: {{portDefault}}">
+        <small class="form-text text-muted">Port used to connect ICAP endpoint</small>
+        <div *ngIf="port.dirty && port.invalid">
+            <div class="alert alert-danger" *ngIf="port.errors.pattern">Please provide a number value.</div>
+            <div class="alert alert-danger" *ngIf="port.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Prefix*</label>
+        <input type="text" class="form-control" formControlName="prefix" placeholder="Required">
+        <small class="form-text text-muted">Prefix must be unique and cannot contain spaces *this field is required</small>
+        <div *ngIf="prefix.invalid">
+            <div class="alert alert-danger" *ngIf="prefix.dirty && prefix.errors.cannotContainSpaces">Field cannot contain spaces.</div>
+            <div class="alert alert-danger" *ngIf="prefix.touched && prefix.errors.required">This field is required.</div>
+            <div class="alert alert-danger" *ngIf="prefix.dirty && prefix.errors.cannotContainDuplicatePrefix">A test with that prefix is already running.</div>
+        </div>
+    </div>
+    <!--
+    <div class="form-group">
+        <label for="test_data_file">Choose Test Data File:</label>
+        <input type="file" class="form-control-file" formControlName="test_data_file" (change)="onFileChange($event.target.files)">
+    </div>
+-->
+    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid">{{GenerateLoadButtonText}}</button>
+
+    <!-- <button id="stop-tests" [disabled]="!cookiesExist" class="btn btn-danger" mwlConfirmationPopover
+        [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
+        type="button">
+        Stop Load
+    </button> -->
+
+    <button id="reset-form" [disabled]="configForm.pristine" class="btn btn-warning" type="button" (click)="resetForm()">
+        Clear Form
+    </button>
+
+
+    <div [@animationState]="animState" class="alert alert-danger" role="alert" style="opacity: 0; display:inline-block;"
+        type="text">
+        Error generating load
+    </div>
+    <br />
+    <br />
+
+    <div *ngIf="formSubmitted && !hideSubmitMessages" class="alert alert-primary" role="alert">
+        Test submitted. Generating Load...
+    </div>
+    <div *ngIf="gotResponse && !hideSubmitMessages" class="alert alert-success" role="alert">
+        Success! View test dashboard below.
+    </div>
+</form>

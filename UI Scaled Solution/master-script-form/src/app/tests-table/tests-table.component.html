@@ -1,0 +1,61 @@
+<div [hidden]="!cookiesExist">
+    <table class="table table-hover" mat-table #testTable [dataSource]="dataSource">
+
+        <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="testName">
+            <th *matHeaderCellDef> Test Name </th>
+            <td *matCellDef="let element"> <a target="_blank" href={{element.dashboardUrl}}>{{element.testName}}</a></td>
+        </ng-container>
+
+        <!-- Users Column -->
+        <ng-container matColumnDef="totalUsers" class="align-middle">
+            <th *matHeaderCellDef> Total Users </th>
+            <td *matCellDef="let element"> {{element.totalUsers}} </td>
+        </ng-container>
+
+        <!-- Duration Column -->
+        <ng-container matColumnDef="duration">
+            <th *matHeaderCellDef> Duration </th>
+            <td *matCellDef="let element"> {{element.duration}} Seconds </td>
+        </ng-container>
+
+        <!-- Start Time Column -->
+        <ng-container matColumnDef="startTime">
+            <th *matHeaderCellDef> Start Time </th>
+            <td *matCellDef="let element"> {{element.startTime | date:'medium'}} </td>
+        </ng-container>
+
+        <!-- End Time Column -->
+        <ng-container matColumnDef="endTime">
+            <th *matHeaderCellDef> End Time </th>
+            <td *matCellDef="let element"> {{element.endTime | date:'medium'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="stopTestButton">
+            <th *matHeaderCellDef></th>
+            <td *matCellDef="let element">
+                <button id="stop-test" [disabled]="!cookiesExist" class="btn btn-danger" mwlConfirmationPopover
+                    [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="left"
+                    (confirm)="stopTestButton(element.prefix)" type="button">
+                    Stop Load
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+<div [hidden]="cookiesExist">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">No currently running tests.</th>
+            </tr>
+        </thead>
+    </table>
+</div>

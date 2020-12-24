@@ -1,0 +1,1 @@
+For instructions on how to install and deploy Angular UI, [refer to this file](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/scaled-angular-ui-component-install-and-deploy.md).
