@@ -43,7 +43,22 @@ Start loki service and make it run on boot.
 sudo service loki start
 sudo service loki status
 sudo systemctl enable loki.service
+
 ```
+
+## Install & Setup git
+```bash
+cd /opt
+sudo mkdir git
+sudo apt install git -y
+```
+Clone repo
+
+```bash
+cd git
+sudo git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
+```
+
 # Install ICAP client
 ```bash
 sudo apt-get update
@@ -93,17 +108,12 @@ InfluxDB shell version: 1.8.3
 ```
 **Setup datasource**
 
-Open grafana UI in your browser: http://ip:3000/datasources. 
-Default credentials is admin/admin. Change it to admin/glasswall, for example.
+Run the following script in order to create necessary data sources:
 
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Integrate-Jmeter-With-Influxdb-and-Grafana.md these instructions show how a datasource can be added to Grafana.
-
-There are 3 datasources to be created in Grafana. Click Add Datasource and add the following:
-
-- Source name: InfluxDB, database: jmeter, url: http://localhost:8086
-- Source name: icapserver, database: jmeter, url: http://localhost:8086
-- Source name: Loki, url: http://localhost:3100
-
+```bash
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/
+python3 create_datasource.py
+```
 ![vm_load_vision](img/Grafana-Datasource.png)
 
  ## Install Java
@@ -144,18 +154,6 @@ cd gov_uk_files
 sudo cp -R * /opt/jmeter/apache-jmeter-5.3/bin/in/
 ```
 
-## Install & Setup git
-```bash
-cd /opt
-sudo mkdir git
-sudo apt install git -y
-```
-Clone repo
-
-```bash
-cd git
-sudo git clone https://github.com/k8-proxy/aws-jmeter-test-engine.git
-```
 ## Setting UP Generate Load ui
 
 Follow Instructions from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/angular-ui-component-install-and-deploy.md link to setup UI.
