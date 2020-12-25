@@ -270,6 +270,15 @@ try new user
 ```bash
 su - glasswall
 ```
+## Install certificates
+
+To be able to generate load against proxied gov.uk website, ssl certificates needs to be in place in OVA:
+```bash
+ cd /opt/git/aws-jmeter-test-engine
+ sudo unzip certs.zip
+ sudo cp govuk.pem assets.pem /etc/ssl/certs/
+ ```
+ 
 ## Export EC2 as OVA.
 
 -Ensure that aws cli v2 is setup with access to AWS. 
