@@ -1,0 +1,16 @@
+[
+	{"TestRun": [
+		{
+			"StartTime": "04/01/2021T15:31:00Z",
+			"RunID": "",
+			"RunTime": "720",
+			"RampUp": "120"
+			"Threads": "3000",
+			"TotalRequests": "18980",
+			"SuccessfulRequests": "17192",
+			"FailedRequests": "1788",
+			"AverageResponseTime": "42.3",
+			"MaxConcurrentPods": "128"
+		}
+	]}
+]
