@@ -26,12 +26,12 @@
     ],
    "provisioners":[
        {
-       "type": "shell",
-       "script": "jmeter-icap/deployment/packer/aws-ova.sh"
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/aws-ova.sh"
        },
        {
-       "type": "shell",
-       "script": "jmeter-icap/deployment/packer/ui.sh"
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/ui.sh"
        },
        {
 	"type": "file",
