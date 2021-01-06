@@ -26,12 +26,21 @@
     ],
    "provisioners":[
        {
-       "type": "shell",
-       "script": "jmeter-icap/deployment/packer/aws-ova.sh"
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/aws-ova.sh"
        },
        {
-       "type": "shell",
-       "script": "jmeter-icap/deployment/packer/ui.sh"
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/ui.sh"
+       },
+       {
+	"type": "file",
+	"source": "healthcheck.sh",
+	"destination": "/tmp/healthcheck.sh"
+       },
+       {
+	"type": "shell",
+	"inline": "/tmp/healthcheck.sh"
        },
        {
         "type": "shell-local",
