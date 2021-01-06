@@ -63,7 +63,7 @@ if __name__ == "__main__":
     # client.drop_database("tests")
     # insert_dummy_data(Config)
     # results = client.query('SELECT * from "tests"."autogen"."TestRun"')
-    # results1 = client.query('SELECT * from "tests"."autogen"."TestRun" ORDER BY time DESC') <-- good for when you want latest data   
+    # results1 = client.query('SELECT * from "tests"."autogen"."TestRun" ORDER BY time DESC') <-- good for when you want latest data
     # results2 = client.query('SELECT * from "tests"."autogen"."TestRun"')
     # print(results1.raw)
     # print(results2.raw)
