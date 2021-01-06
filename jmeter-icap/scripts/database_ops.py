@@ -36,7 +36,7 @@ def insert_dummy_data(config):
             {"measurement": "TestRun",
              "fields": {"StartTime": str(start_time), "RunID": i, "RunTime": 10 * i, "RampUp": 10 * i + 1, "Threads": 10 * i + 2,
                         "TotalRequests": 10 * i + 3, "SuccessfulRequests": 10 * i + 4, "FailedRequests": 10 * i + 5, "AverageResponseTime": 10 * i + 6,
-                        "MaxConcurrentPods": 10 * i + 7}}])
+                        "MaxConcurrentPods": 10 * i + 7, "Status": "OK"}}])
 
 
 # used to insert additional information about a test run to be used in conjunction with other table containing test run results.
@@ -62,8 +62,11 @@ if __name__ == "__main__":
     # print(client.get_list_database())
     # client.drop_database("tests")
     # insert_dummy_data(Config)
-    results = client.query('SELECT * from "tests"."autogen"."TestRun"')
-    print(results.raw)
-    points = results.get_points()
-    for p in points:
-        print(p)
+    # results = client.query('SELECT * from "tests"."autogen"."TestRun"')
+    # results1 = client.query('SELECT * from "tests"."autogen"."TestRun" ORDER BY time DESC') <-- good for when you want latest data   
+    # results2 = client.query('SELECT * from "tests"."autogen"."TestRun"')
+    # print(results1.raw)
+    # print(results2.raw)
+    # points = results.get_points()
+    # for p in points:
+    #     print(p)

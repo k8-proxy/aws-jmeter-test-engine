@@ -12,12 +12,14 @@ import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { CookieService } from 'ngx-cookie-service';
 import { TestsTableComponent } from './tests-table/tests-table.component';
 import {MatTableModule} from '@angular/material/table';
+import { ResultsTableComponent } from './results-table/results-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConfigFormComponent,
     TestsTableComponent,
+    ResultsTableComponent,
   ],
   imports: [
     BrowserModule,

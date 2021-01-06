@@ -1,0 +1,81 @@
+<div [hidden]="!testsExist ">
+    <table class="table table-hover" mat-table #testTable [dataSource]="dataSource">
+
+        <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+          <ng-container matColumnDef="startTime">
+            <th *matHeaderCellDef> Start Time </th>
+            <td *matCellDef="let element"> {{element.startTime | date:'medium'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="runID" class="align-middle">
+            <th *matHeaderCellDef> Run ID </th>
+            <td *matCellDef="let element"> {{element.runID}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="runTime">
+            <th *matHeaderCellDef> Run Time </th>
+            <td *matCellDef="let element"> {{element.runTime}} Seconds </td>
+        </ng-container>
+
+        <ng-container matColumnDef="threads">
+            <th *matHeaderCellDef> Threads </th>
+            <td *matCellDef="let element"> {{element.threads}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalRequests">
+            <th *matHeaderCellDef> Total Requests </th>
+            <td *matCellDef="let element"> {{element.totalRequests}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="successfulRequests">
+            <th *matHeaderCellDef> Successful Requests </th>
+            <td *matCellDef="let element"> {{element.successfulRequests}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="failedRequests">
+            <th *matHeaderCellDef> Failed Requests </th>
+            <td *matCellDef="let element"> {{element.failedRequests}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="averageResponseTime">
+            <th *matHeaderCellDef> Average Response Time </th>
+            <td *matCellDef="let element"> {{element.averageResponseTime}} Seconds </td>
+        </ng-container>
+
+        <ng-container matColumnDef="maxConcurrentPods">
+            <th *matHeaderCellDef> Max Concurrent Pods </th>
+            <td *matCellDef="let element"> {{element.maxConcurrentPods}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <th *matHeaderCellDef> Status </th>
+            <td *matCellDef="let element"> {{element.status}} </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="stopTestButton">
+            <th *matHeaderCellDef></th>
+            <td *matCellDef="let element">
+                <button id="stop-test" [disabled]="!testsExist" class="btn btn-danger" mwlConfirmationPopover
+                    [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="left"
+                    (confirm)="stopTestButton(element.prefix)" type="button">
+                    Stop Load
+                </button>
+            </td>
+        </ng-container> -->
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+<div [hidden]="testsExist">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">No currently running tests.</th>
+            </tr>
+        </thead>
+    </table>
+</div>
