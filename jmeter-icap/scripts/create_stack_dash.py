@@ -181,8 +181,25 @@ def create_stack_from_ui(json_params, ova=False):
         run_id = uuid.uuid4()
         database_insert_test(run_id, grafana_uid, duration)
 
+        start_results_analyzer_process(Config, duration, run_id)
 
     return dashboard_url, stack_name
+
+def start_results_analyzer_process(config, duration, run_id):
+    minutes = duration / 60
+    start_time = datetime.now(timezone.utc)
+    finish_time = start_time + timedelta(seconds=duration)
+
+    print("Stack will be deleted after {0:.1f} minutes".format(minutes))
+
+    while datetime.now(timezone.utc) < finish_time:
+        if datetime.now(timezone.utc) != start_time and datetime.now(timezone.utc) + timedelta(seconds=MESSAGE_INTERVAL) < finish_time:
+            diff = datetime.now(timezone.utc) - start_time
+            print("{0:.1f} minutes have elapsed, results analyzer will be called in {1:.1f} minutes".format(diff.seconds / 60, (
+                    duration - diff.seconds) / 60))
+            time.sleep(MESSAGE_INTERVAL)
+
+    # here we will need to call the results analyzer
 
 
 def delete_stack_from_ui(stack_name):
