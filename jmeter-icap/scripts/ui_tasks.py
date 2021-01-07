@@ -2,6 +2,7 @@ import os
 import subprocess
 from create_stack import Config
 
+
 # runs a shell script containing command "killall -9 java"
 def terminate_java_processes():
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -18,7 +19,6 @@ def modify_hosts_file(ip_addr: str):
 
 
 def determine_load_type(load: str, ova=False):
-    print("IS this ova? {}".format(ova))
     if load == "Direct":
         Config.test_directory = 'ICAP-Direct-File-Processing'
         Config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx' if ova else 'ICAP_Direct_FileProcessing_v3.jmx'
@@ -85,3 +85,4 @@ def determine_tls_and_port_params(input_load_type, input_enable_tls, input_tls_i
         # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
         if input_enable_tls:
             Config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
+

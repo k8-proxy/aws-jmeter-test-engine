@@ -1,9 +1,8 @@
 import { AppSettings } from './../common/app settings/AppSettings';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormDataPackage, SharedService, resultsRowElement } from './../common/services/shared.service';
+import { FormDataPackage, SharedService, ResultsRowElement } from './../common/services/shared.service';
 import { Subscription } from 'rxjs';
 import { MatTable } from '@angular/material/table';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'results-table',
@@ -19,8 +18,8 @@ export class ResultsTableComponent implements OnInit {
   resultsDatasourceReadySubscription: Subscription;
 
 
-  dataSource: resultsRowElement[] = [];
-  displayedColumns: string[] = ['startTime', 'runID', 'runTime', 'threads', 'totalRequests', 'successfulRequests', 'failedRequests', 'averageResponseTime', 'maxConcurrentPods', 'status']; //add and remove columns here before adding/remove in html
+  dataSource: ResultsRowElement[] = [];
+  displayedColumns: string[] = ['testName', 'startTime', 'runID', 'runTime', 'threads', 'totalRequests', 'successfulRequests', 'failedRequests', 'averageResponseTime', 'maxConcurrentPods', 'status']; //add and remove columns here before adding/remove in html
   testsExist: boolean;
 
   constructor(private sharedService: SharedService) {
@@ -66,15 +65,5 @@ export class ResultsTableComponent implements OnInit {
         counter++;
       }
     }
-  }
-
-  buildTestName(prefix: string, loadType: string): string {
-    let name = prefix;
-    if (loadType === "Direct") {
-      name += " ICAP Live Performance Dashboard"
-    } else if (loadType === "Proxy") {
-      name += " Proxy Site Live Performance Dashboard"
-    }
-    return name;
   }
 }

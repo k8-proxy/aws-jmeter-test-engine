@@ -10,6 +10,8 @@ from ec2_instance_manager import start_instance
 from aws_secrets import get_secret_value
 from ui_tasks import set_config_from_ui
 from threading import Thread
+from database_ops import database_insert_test
+import uuid
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
 DELETE_TIME_OFFSET = 900
@@ -170,10 +172,15 @@ def create_stack_from_ui(json_params, ova=False):
     Config.stack_name = stack_name
 
     print("Creating dashboard...")
-    dashboard_url = create_dashboard.main(Config)
+    dashboard_url, grafana_uid = create_dashboard.main(Config)
 
     delete_stack_thread = Thread(target=__start_delete_stack, args=(0, Config, duration, stack_name))
     delete_stack_thread.start()
+
+    if not ova:
+        run_id = uuid.uuid4()
+        database_insert_test(run_id, grafana_uid, duration)
+
 
     return dashboard_url, stack_name
 
@@ -193,7 +200,7 @@ def main(config):
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        dashboard_url = create_dashboard.main(config)
+        dashboard_url, grafana_uid = create_dashboard.main(config)
 
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")

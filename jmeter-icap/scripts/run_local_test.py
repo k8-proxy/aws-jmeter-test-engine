@@ -75,7 +75,7 @@ def main(json_params):
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        dashboard_url = create_dashboard.main(Config)
+        dashboard_url, grafana_uid = create_dashboard.main(Config)
 
     return dashboard_url
 

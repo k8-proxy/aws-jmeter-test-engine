@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import json
 from waitress import serve
-from create_stack_dash import create_stack_from_ui, delete_stack_from_ui
-from database_ops import retrieve_tests
+from create_stack_dash import create_stack_from_ui, delete_stack_from_ui, Config
+from database_ops import retrieve_test_results, retrieve_test_info
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -35,8 +35,10 @@ def parse_request():
 
     if request.method == 'GET':
         print("method is get")
-        raw_results = retrieve_tests()
-        return make_response(jsonify(raw_results), 201)
+        test_results = retrieve_test_results()
+        test_info = retrieve_test_info()
+        grafana_url = Config.grafana_url
+        return make_response(jsonify(test_results, test_info, grafana_url), 201)
 
 
 CORS(app)

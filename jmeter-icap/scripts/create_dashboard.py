@@ -95,18 +95,18 @@ def __post_grafana_dash(config):
     if "url" in d:
         if grafana_url[len(grafana_url) - 1] == '/':
             grafana_url = grafana_url[:-1]
-        return grafana_url + d.get('url')
+        return grafana_url + d.get('url'), d.get('uid')
     else:
         print("Dashboard creation failed: {0}".format(resp.text))
 
 
 def main(config):
-    created_dashboard_url = __post_grafana_dash(config)
+    created_dashboard_url, grafana_uid = __post_grafana_dash(config)
 
     if created_dashboard_url:
         print("Dashboard created at: ")
         print(created_dashboard_url)
-        return created_dashboard_url
+        return created_dashboard_url, grafana_uid
 
 
 # main: Gets command line arguments, creates dashboard in grafana, outputs URL in response (if any)

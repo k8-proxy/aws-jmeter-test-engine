@@ -1,4 +1,4 @@
-<div [hidden]="!testsExist">
+<div [hidden]="!cookiesExist">
     <table class="table table-hover" mat-table #testTable [dataSource]="dataSource">
 
         <!--- Note that these columns can be defined in any order.
@@ -50,7 +50,7 @@
     </table>
 </div>
 
-<div [hidden]="testsExist">
+<div [hidden]="cookiesExist">
     <table class="table">
         <thead>
             <tr>
