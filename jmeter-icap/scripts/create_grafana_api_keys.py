@@ -8,7 +8,7 @@ password="admin"
 
 
 key_data = {
-  "name":"api-key-test-1911",
+  "name":"api-key-test",
   "role":"Admin",
   "secondsToLive": 86400
 }
