@@ -153,6 +153,8 @@ export class SharedService {
             this.testInfoArray.push(this.buildTestInfoRow(arr, testInfoFields));
         }
 
+        // console.log(this.testInfoArray)
+
         this.resultsDataSource.length = 0;
         for (const arr of resultsValues) {
             this.resultsDataSource.push(this.buildResultsDataRow(arr, resultsFields));

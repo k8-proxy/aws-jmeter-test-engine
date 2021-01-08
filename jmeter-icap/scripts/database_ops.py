@@ -15,18 +15,6 @@ def connect_to_influxdb(config):
     client.switch_database("tests")
     return client
 
-    # resp = client.write_points(
-    #     [{"measurement": "runningTests", "fields": {"duration": 101, "startTime": 102, "endTime": 103}}])
-    #
-    # results = client.query('SELECT * from "tests"."autogen"."runningTests"')
-    # print(results.raw)
-    #
-    # # here you can get the data in rows and print them one by one, or print specific fields from within.
-    # points = results.get_points()
-    # for p in points:
-    #     print(p)
-
-
 def insert_dummy_data(config):
     client = connect_to_influxdb(Config)
 
@@ -61,13 +49,18 @@ def insert_dummy_data(config):
                     "MaxConcurrentPods": 37, "Status": 1, "LoadType": "Direct"}}])
 
 
-
 # inserts additional info for use in conjunction with other table containing test run results
-def database_insert_test(run_id, grafana_uid, duration):
+def database_insert_test(run_id, grafana_uid, form_json):
+
+    duration = form_json['duration']
+    prefix = form_json['prefix']
+    total_users = form_json['total_users']
+    load_type = form_json['load_type']
+    end_pt_url = form_json['icap_endpoint_url']
+
     run_id = str(run_id)
-    print("Values to insert into DB: {0} {1} {2}".format(run_id, grafana_uid, duration))
     client = connect_to_influxdb(Config)
-    client.write_points([{"measurement": "TestsInfo", "fields": {"RunId": run_id, "Duration": duration, "GrafanaUid": grafana_uid}}])
+    client.write_points([{"measurement": "TestsInfo", "fields": {"RunId": run_id, "Duration": duration, "GrafanaUid": grafana_uid, "Prefix" : prefix, "TotalUsers": total_users, "LoadType": load_type, "EndPtUrl": end_pt_url}}])
 
     print("DB contains: ")
     results = client.query('SELECT * from "tests"."autogen"."TestsInfo"')
@@ -92,13 +85,7 @@ if __name__ == "__main__":
     pass
     client = connect_to_influxdb(Config)
     print(client.get_list_database())
-    # client.drop_database("tests")
-    insert_dummy_data(Config)
     results = client.query('SELECT * from "tests"."autogen"."TestRun"')
-    # results1 = client.query('SELECT * from "tests"."autogen"."TestRun" ORDER BY time DESC') <-- good for when you want latest data
-    # results2 = client.query('SELECT * from "tests"."autogen"."TestRun"')
-    # print(results1.raw)
-    # print(results2.raw)
     points = results.get_points()
     for p in points:
         print(p)

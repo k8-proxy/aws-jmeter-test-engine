@@ -5,3 +5,7 @@
 .negative {
     color: red;
 }
+
+table.table.table-hover {
+    border: 1px solid black;
+}

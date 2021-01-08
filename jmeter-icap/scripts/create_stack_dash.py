@@ -179,9 +179,9 @@ def create_stack_from_ui(json_params, ova=False):
 
     if not ova:
         run_id = uuid.uuid4()
-        database_insert_test(run_id, grafana_uid, duration)
+        # database_insert_test(run_id, grafana_uid, json_params)
 
-        start_results_analyzer_process(Config, duration, run_id)
+        # start_results_analyzer_process(Config, duration, run_id)
 
     return dashboard_url, stack_name
 
