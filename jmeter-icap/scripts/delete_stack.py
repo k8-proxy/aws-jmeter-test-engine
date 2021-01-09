@@ -9,8 +9,10 @@ def main(config, stack_name_override=''):
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     min_age = int(config.min_age)
     stack_name = config.stack_name if stack_name_override == '' else stack_name_override
-
-    session = boto3.session.Session(profile_name=profile_name)
+    if config.use_iam_role == "yes":
+        session = boto3.session.Session()
+    else:
+        session = boto3.session.Session(profile_name=profile_name)
     client = session.client("cloudformation")
 
     now = datetime.now(timezone.utc)
