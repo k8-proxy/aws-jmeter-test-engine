@@ -44,7 +44,7 @@ class Config(object):
         icap_server_port = os.getenv("ICAP_SERVER_PORT")
         enable_tls = os.getenv("ENABLE_TLS")
         tls_verification_method = os.getenv("TLS_VERIFICATION_METHOD")
-        use_iam_role = os.getenv("useIAMrole")
+        use_iam_role = os.getenv("USE_IAM_ROLE")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -73,9 +73,9 @@ def main(config):
     # Authenticate to aws
     profile = config.aws_profile_name
     if config.use_iam_role == "yes":
-        session = boto3.Session.Session()
+        session = boto3.session.Session(region_name=config.region)
     else:
-        session = boto3.session.Session(profile_name=profile)
+        session = boto3.session.Session(profile_name=profile, region_name=config.region)
     client = session.client('cloudformation')
 
     file_name = config.prefix + "_" + config.script_name
