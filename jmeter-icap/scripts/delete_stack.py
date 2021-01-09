@@ -10,9 +10,9 @@ def main(config, stack_name_override=''):
     min_age = int(config.min_age)
     stack_name = config.stack_name if stack_name_override == '' else stack_name_override
     if config.use_iam_role == "yes":
-        session = boto3.session.Session()
+        session = boto3.session.Session(region_name=config.region)
     else:
-        session = boto3.session.Session(profile_name=profile_name)
+        session = boto3.session.Session(profile_name=profile_name, region_name=config.region)
     client = session.client("cloudformation")
 
     now = datetime.now(timezone.utc)
