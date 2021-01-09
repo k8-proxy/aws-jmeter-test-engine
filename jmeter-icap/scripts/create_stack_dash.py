@@ -96,6 +96,9 @@ def __get_commandline_args():
     parser.add_argument('--enable_tls', '-et', default=Config.enable_tls,
                         help='Whether or not to enable TLS')
 
+    parser.add_argument('--use_iam_role', '-ir', default=Config.use_iam_role,
+                        help='Whether or not to use IAM role for authentication')
+
     return parser.parse_args()
 
 
@@ -251,6 +254,7 @@ if __name__ == "__main__":
     Config.icap_server_port = args.icap_server_port
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
+    Config.use_iam_role = args.use_iam_role
 
     # these are flag/boolean arguments
     if args.exclude_dashboard:
