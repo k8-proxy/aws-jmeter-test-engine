@@ -7,26 +7,13 @@ from create_stack import Config
 # Connect to influx database, check if tests database exists. If it does not, create it.
 
 
-def connect_to_influxdb(config):
+def connect_to_influxdb():
     client = InfluxDBClient(host=Config.influx_host, port=8086)
-
-    # This will create a database called "tests" if it does not exist. If it already exists, this does nothing.
-    client.create_database('tests')
     client.switch_database("tests")
     return client
 
 def insert_dummy_data(config):
-    client = connect_to_influxdb(Config)
-
-    # for i in range(0, 10):
-    #     start_time = datetime.now() + timedelta(seconds=int(10 + i))
-    #     load_type = "Proxy" if i % 2 == 0 else "Direct"
-    #     prefix = "test{0}".format(i)
-    #     client.write_points([
-    #         {"measurement": "TestRun",
-    #          "fields": {"StartTime": str(start_time), "Prefix": prefix, "RunId": i, "RunTime": 100 * i, "RampUp": 10 * i + 1, "Threads": 10 * i + 2,
-    #                     "TotalRequests": 10 * i + 3, "SuccessfulRequests": 10 * i + 4, "FailedRequests": 10 * i + 5, "AverageResponseTime": 10 * i + 6,
-    #                     "MaxConcurrentPods": 10 * i + 7, "Status": i % 2, "LoadType": load_type}}])
+    client = connect_to_influxdb()
 
     client.write_points([
         {"measurement": "TestRun",
@@ -59,33 +46,19 @@ def database_insert_test(run_id, grafana_uid, form_json):
     end_pt_url = form_json['icap_endpoint_url']
 
     run_id = str(run_id)
-    client = connect_to_influxdb(Config)
+    client = connect_to_influxdb()
     client.write_points([{"measurement": "TestsInfo", "fields": {"RunId": run_id, "Duration": duration, "GrafanaUid": grafana_uid, "Prefix" : prefix, "TotalUsers": total_users, "LoadType": load_type, "EndPtUrl": end_pt_url}}])
 
-    print("DB contains: ")
-    results = client.query('SELECT * from "tests"."autogen"."TestsInfo"')
-    points = results.get_points()
-    for p in points:
-        print(p)
 
-
-def retrieve_test_results():
-    client = connect_to_influxdb(Config)
-    results = client.query('SELECT * from "tests"."autogen"."TestRun"')
+# gets the latest # of rows specified
+def retrieve_test_results(no_of_rows=0):
+    client = connect_to_influxdb()
+    query = 'SELECT * from "tests"."autogen"."TestRun" ORDER BY time DESC LIMIT {0}'.format(no_of_rows)
+    results = client.query(query)
     return results.raw
 
 
 def retrieve_test_info():
-    client = connect_to_influxdb(Config)
+    client = connect_to_influxdb()
     results = client.query('SELECT * from "tests"."autogen"."TestsInfo"')
     return results.raw
-
-
-if __name__ == "__main__":
-    pass
-    client = connect_to_influxdb(Config)
-    print(client.get_list_database())
-    results = client.query('SELECT * from "tests"."autogen"."TestRun"')
-    points = results.get_points()
-    for p in points:
-        print(p)

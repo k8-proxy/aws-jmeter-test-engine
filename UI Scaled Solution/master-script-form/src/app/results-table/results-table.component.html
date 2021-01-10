@@ -12,12 +12,7 @@
             <th *matHeaderCellDef> Start Time </th>
             <td *matCellDef="let element"> {{element.startTime | date:'medium'}} </td>
         </ng-container>
-
-        <!-- <ng-container matColumnDef="runID" class="align-middle">
-            <th *matHeaderCellDef> Run ID </th>
-            <td *matCellDef="let element"> {{element.runID}} </td>
-        </ng-container> -->
-
+        
         <ng-container matColumnDef="runTime">
             <th *matHeaderCellDef> Run Time </th>
             <td *matCellDef="let element"> {{element.runTime}} Seconds </td>

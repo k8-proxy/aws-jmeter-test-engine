@@ -7,6 +7,7 @@ from database_ops import retrieve_test_results, retrieve_test_info
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
+NUMBER_OF_ROWS_TO_GET = 10
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -35,7 +36,7 @@ def parse_request():
 
     if request.method == 'GET':
         print("method is get")
-        test_results = retrieve_test_results()
+        test_results = retrieve_test_results(NUMBER_OF_ROWS_TO_GET)
         test_info = retrieve_test_info()
         grafana_url = Config.grafana_url
         return make_response(jsonify(test_results, test_info, grafana_url), 201)
