@@ -27,27 +27,27 @@
    "provisioners":[
     {
         "type": "shell",
-        "script": "provisioning_scripts/jmeter.sh"
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/jmeter.sh"
     },
     {
         "type": "shell",
-        "script": "provisioning_scripts/loki.sh"
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/loki.sh"
     },
     {
         "type": "shell",
-        "script": "provisioning_scripts/grafana.sh"
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/grafana.sh"
     },
     {
         "type": "shell",
-        "script": "provisioning_scripts/influx.sh"
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/influx.sh"
     },
     {
         "type": "shell",
-        "script": "provisioning_scripts/ui.sh"
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/ui.sh"
     },
     {
         "type": "file",
-        "source": "provisioning_scripts/healthcheck.sh",
+        "source": "jmeter-icap/deployment/packer/provisioning_scripts/healthcheck.sh",
         "destination": "/tmp/healthcheck.sh"
     },
     {
@@ -60,7 +60,7 @@
     },
     {
        "type": "shell-local",
-       "script": "provisioning_scripts/ova-check.sh"
+       "script": "jmeter-icap/deployment/packer/provisioning_scripts/ova-check.sh"
     }
     ],
     "post-processors":[
