@@ -25,31 +25,43 @@
         }
     ],
    "provisioners":[
-       {
+    {
         "type": "shell",
-        "script": "jmeter-icap/deployment/packer/aws-ova.sh"
-       },
-       {
+        "script": "provisioning_scripts/jmeter.sh"
+    },
+    {
         "type": "shell",
-        "script": "jmeter-icap/deployment/packer/ui.sh"
-       },
-       {
-	"type": "file",
-	"source": "healthcheck.sh",
-	"destination": "/tmp/healthcheck.sh"
-       },
-       {
-	"type": "shell",
-	"inline": "/tmp/healthcheck.sh"
-       },
-       {
+        "script": "provisioning_scripts/loki.sh"
+    },
+    {
+        "type": "shell",
+        "script": "provisioning_scripts/grafana.sh"
+    },
+    {
+        "type": "shell",
+        "script": "provisioning_scripts/influx.sh"
+    },
+    {
+        "type": "shell",
+        "script": "provisioning_scripts/ui.sh"
+    },
+    {
+        "type": "file",
+        "source": "provisioning_scripts/healthcheck.sh",
+        "destination": "/tmp/healthcheck.sh"
+    },
+    {
+        "type": "shell",
+        "inline": "/tmp/healthcheck.sh"
+    },
+    {
         "type": "shell-local",
         "inline": "aws ec2 create-instance-export-task --region eu-west-1 --instance-id {{build `ID`}} --target-environment vmware --export-to-s3-task file://jmeter-icap/deployment/packer/file.json > out.json"
-       },
-       {
-           "type": "shell-local",
-           "script": "jmeter-icap/deployment/packer/ova-check.sh"
-       }
+    },
+    {
+       "type": "shell-local",
+       "script": "provisioning_scripts/ova-check.sh"
+    }
     ],
     "post-processors":[
         {
