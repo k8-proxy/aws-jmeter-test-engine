@@ -165,7 +165,6 @@ def __get_stack_name(config):
 def create_stack_from_ui(json_params, ova=False):
     ui_config = Config()
     set_config_from_ui(ui_config, json_params, ova=ova)
-    print("original config prefix is: {0}, this config is: {1}".format(ui_config.prefix, Config.prefix))
     (instances_required, users_per_instance) = __calculate_instances_required(ui_config.total_users, ui_config.users_per_instance)
     ui_config.users_per_instance = users_per_instance
     ui_config.instances_required = instances_required

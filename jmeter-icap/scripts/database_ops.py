@@ -40,7 +40,7 @@ def database_insert_test(config, run_id, grafana_uid, load_type):
     run_id = str(run_id)
     client = connect_to_influxdb()
     client.write_points([{"measurement": "TestsInfo", "fields": {"RunId": run_id, "Duration": config.duration, "GrafanaUid": grafana_uid, "Prefix" : config.prefix, "TotalUsers": config.total_users, "LoadType": load_type, "EndPtUrl": config.icap_endpoint_url}}])
-    print_test_info()
+    # print_test_info()
 
 # gets the latest # of rows specified
 def retrieve_test_results(no_of_rows=0):
@@ -62,9 +62,3 @@ def print_test_info():
     points = results.get_points()
     for p in points:
         print(p)
-
-
-if __name__ == "__main__":
-    client = connect_to_influxdb()
-    client.create_database("tests")
-    print(client.get_list_database())
