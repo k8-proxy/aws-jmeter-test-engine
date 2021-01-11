@@ -1,7 +1,6 @@
 from influxdb import InfluxDBClient
 from create_stack import Config
 from datetime import datetime, timedelta
-from create_stack import Config
 
 
 # Connect to influx database, check if tests database exists. If it does not, create it.
@@ -12,7 +11,7 @@ def connect_to_influxdb():
     client.switch_database("tests")
     return client
 
-def insert_dummy_data(config):
+def insert_dummy_data():
     client = connect_to_influxdb()
 
     client.write_points([
@@ -37,18 +36,11 @@ def insert_dummy_data(config):
 
 
 # inserts additional info for use in conjunction with other table containing test run results
-def database_insert_test(run_id, grafana_uid, form_json):
-
-    duration = form_json['duration']
-    prefix = form_json['prefix']
-    total_users = form_json['total_users']
-    load_type = form_json['load_type']
-    end_pt_url = form_json['icap_endpoint_url']
-
+def database_insert_test(config, run_id, grafana_uid, load_type):
     run_id = str(run_id)
     client = connect_to_influxdb()
-    client.write_points([{"measurement": "TestsInfo", "fields": {"RunId": run_id, "Duration": duration, "GrafanaUid": grafana_uid, "Prefix" : prefix, "TotalUsers": total_users, "LoadType": load_type, "EndPtUrl": end_pt_url}}])
-
+    client.write_points([{"measurement": "TestsInfo", "fields": {"RunId": run_id, "Duration": config.duration, "GrafanaUid": grafana_uid, "Prefix" : config.prefix, "TotalUsers": config.total_users, "LoadType": load_type, "EndPtUrl": config.icap_endpoint_url}}])
+    print_test_info()
 
 # gets the latest # of rows specified
 def retrieve_test_results(no_of_rows=0):
@@ -62,3 +54,17 @@ def retrieve_test_info():
     client = connect_to_influxdb()
     results = client.query('SELECT * from "tests"."autogen"."TestsInfo"')
     return results.raw
+
+
+def print_test_info():
+    client = connect_to_influxdb()
+    results = client.query('SELECT * from "tests"."autogen"."TestsInfo"')
+    points = results.get_points()
+    for p in points:
+        print(p)
+
+
+if __name__ == "__main__":
+    client = connect_to_influxdb()
+    client.create_database("tests")
+    print(client.get_list_database())

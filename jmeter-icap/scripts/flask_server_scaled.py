@@ -35,7 +35,6 @@ def parse_request():
             return make_response(jsonify("Test {0} terminated".format(stack_name)), 201)
 
     if request.method == 'GET':
-        print("method is get")
         test_results = retrieve_test_results(NUMBER_OF_ROWS_TO_GET)
         test_info = retrieve_test_info()
         grafana_url = Config.grafana_url

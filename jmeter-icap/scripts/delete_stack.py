@@ -3,12 +3,12 @@ from datetime import timedelta, datetime, timezone
 from create_stack import Config
 
 
-def main(config, stack_name_override=''):
+def main(config):
     profile_name = config.aws_profile_name
 
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     min_age = int(config.min_age)
-    stack_name = config.stack_name if stack_name_override == '' else stack_name_override
+    stack_name = config.stack_name
 
     session = boto3.session.Session(profile_name=profile_name)
     client = session.client("cloudformation")

@@ -98,6 +98,9 @@ def __get_commandline_args():
     parser.add_argument('--enable_tls', '-et', default=Config.enable_tls,
                         help='Whether or not to enable TLS')
 
+    parser.add_argument('--store_results', '-sr', action='store_true',
+                        help='Setting this option will cause all test runs to be recorded into influxdb')
+
     return parser.parse_args()
 
 
@@ -129,8 +132,8 @@ def __calculate_instances_required(total_users, users_per_instance):
 
 
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
-def __start_delete_stack(additional_delay, config, duration, stack_name):
-    total_wait_time = additional_delay + int(duration)
+def __start_delete_stack(additional_delay, config):
+    total_wait_time = additional_delay + int(config.duration)
     minutes = total_wait_time / 60
     finish_time = datetime.now(timezone.utc) + timedelta(seconds=total_wait_time)
     start_time = datetime.now(timezone.utc)
@@ -144,7 +147,7 @@ def __start_delete_stack(additional_delay, config, duration, stack_name):
                     total_wait_time - diff.seconds) / 60))
             time.sleep(MESSAGE_INTERVAL)
 
-    delete_stack.main(config, stack_name_override=stack_name)
+    delete_stack.main(config)
 
 
 def __get_stack_name(config):
@@ -160,57 +163,48 @@ def __get_stack_name(config):
 
 
 def create_stack_from_ui(json_params, ova=False):
-    set_config_from_ui(json_params, ova=ova)
-    (instances_required, users_per_instance) = __calculate_instances_required(Config.total_users, Config.users_per_instance)
-    Config.users_per_instance = users_per_instance
-    Config.instances_required = instances_required
-    set_grafana_key_and_url(Config)
-    Config.min_age = 0
-    duration = json_params['duration']
+    ui_config = Config()
+    set_config_from_ui(ui_config, json_params, ova=ova)
+    print("original config prefix is: {0}, this config is: {1}".format(ui_config.prefix, Config.prefix))
+    (instances_required, users_per_instance) = __calculate_instances_required(ui_config.total_users, ui_config.users_per_instance)
+    ui_config.users_per_instance = users_per_instance
+    ui_config.instances_required = instances_required
+    set_grafana_key_and_url(ui_config)
+    ui_config.min_age = 0
     print("Creating Load Generators...")
-    stack_name = create_stack.main(Config)
-    Config.stack_name = stack_name
+    stack_name = create_stack.main(ui_config)
+    ui_config.stack_name = stack_name
 
     print("Creating dashboard...")
-    dashboard_url, grafana_uid = create_dashboard.main(Config)
+    dashboard_url, grafana_uid = create_dashboard.main(ui_config)
 
-    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, Config, duration, stack_name))
+    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()
-
-    if not ova:
+    if not ova and bool(int(ui_config.store_results)):
         run_id = uuid.uuid4()
-        # database_insert_test(run_id, grafana_uid, json_params)
-
-        # start_results_analyzer_process(Config, duration, run_id)
+        database_insert_test(ui_config, run_id, grafana_uid, json_params['load_type'])
+        results_analysis_thread = Thread(target=start_results_analyzer_process, args=(int(ui_config.duration), run_id))
+        results_analysis_thread.start()
 
     return dashboard_url, stack_name
 
 
-def start_results_analyzer_process(config, duration, run_id):
-    minutes = duration / 60
-    start_time = datetime.now(timezone.utc)
-    finish_time = start_time + timedelta(seconds=duration)
-
-    print("Stack will be deleted after {0:.1f} minutes".format(minutes))
-
-    while datetime.now(timezone.utc) < finish_time:
-        if datetime.now(timezone.utc) != start_time and datetime.now(timezone.utc) + timedelta(seconds=MESSAGE_INTERVAL) < finish_time:
-            diff = datetime.now(timezone.utc) - start_time
-            print("{0:.1f} minutes have elapsed, results analyzer will be called in {1:.1f} minutes".format(diff.seconds / 60, (
-                    duration - diff.seconds) / 60))
-            time.sleep(MESSAGE_INTERVAL)
-
-    # here we will need to call the results analyzer
+def start_results_analyzer_process(duration, run_id):
+    time.sleep(duration)
+    # here we will call the results analyzer passing run_id and other parameters
 
 
 def delete_stack_from_ui(stack_name):
-    Config.stack_name = stack_name
-    Config.min_age = 0
-    delete_stack.main(Config, stack_name_override=stack_name)
+    ui_config = Config()
+    ui_config.stack_name = stack_name
+    ui_config.min_age = 0
+    delete_stack.main(ui_config)
 
 
 def main(config):
     dashboard_url = ''
+    grafana_uid = ''
+    load_type = "Direct"
     print("Creating Load Generators...")
     stack_name = create_stack.main(config)
 
@@ -223,8 +217,14 @@ def main(config):
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")
     else:
-        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config, config.duration, config.stack_name))
+        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config))
         delete_stack_thread.start()
+
+    if config.store_results:
+        run_id = uuid.uuid4()
+        database_insert_test(config, run_id, grafana_uid, load_type)
+        results_analysis_thread = Thread(target=start_results_analyzer_process, args=(config.duration, run_id))
+        results_analysis_thread.start()
 
     return dashboard_url, stack_name
 
@@ -276,6 +276,7 @@ if __name__ == "__main__":
     Config.icap_server_port = args.icap_server_port
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
+    Config.store_results = args.store_results
 
     # these are flag/boolean arguments
     if args.exclude_dashboard:
@@ -288,8 +289,15 @@ if __name__ == "__main__":
     elif Config.preserve_stack:
         Config.preserve_stack = int(Config.preserve_stack) == 1
 
+    if args.store_results:
+        Config.store_results = True
+    elif Config.store_results:
+        Config.store_results = int(Config.store_results) == 1
+
     Config.stack_name = __get_stack_name(Config)
 
     set_grafana_key_and_url(Config)
 
     main(Config)
+
+
