@@ -185,6 +185,7 @@ def create_stack_from_ui(json_params, ova=False):
 
     return dashboard_url, stack_name
 
+
 def start_results_analyzer_process(config, duration, run_id):
     minutes = duration / 60
     start_time = datetime.now(timezone.utc)
