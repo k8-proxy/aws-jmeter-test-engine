@@ -101,6 +101,9 @@ def __get_commandline_args():
     parser.add_argument('--store_results', '-sr', action='store_true',
                         help='Setting this option will cause all test runs to be recorded into influxdb')
 
+    parser.add_argument('--load_type', '-lt', default=Config.load_type,
+                        help='Type of load to be generated (direct or proxy)')
+
     return parser.parse_args()
 
 
@@ -203,7 +206,6 @@ def delete_stack_from_ui(stack_name):
 def main(config):
     dashboard_url = ''
     grafana_uid = ''
-    load_type = "Direct"
     print("Creating Load Generators...")
     stack_name = create_stack.main(config)
 
@@ -276,6 +278,7 @@ if __name__ == "__main__":
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
     Config.store_results = args.store_results
+    Config.load_type = args.load_type
 
     # these are flag/boolean arguments
     if args.exclude_dashboard:

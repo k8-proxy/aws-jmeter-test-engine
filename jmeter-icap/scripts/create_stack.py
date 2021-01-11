@@ -45,6 +45,7 @@ class Config(object):
         enable_tls = os.getenv("ENABLE_TLS")
         tls_verification_method = os.getenv("TLS_VERIFICATION_METHOD")
         store_results = os.getenv("STORE_RESULTS")
+        load_type = os.getenv("LOAD_TYPE")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")

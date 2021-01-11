@@ -52,6 +52,7 @@ def set_config_from_ui(config, json_params, ova=False):
         config.prefix = json_params['prefix']
     if json_params['load_type']:
         determine_load_type(config, json_params['load_type'], ova=ova)
+        config.load_type = json_params['load_type']
 
         if json_params['load_type'] == 'Proxy':
             modify_hosts_file(json_params['icap_endpoint_url'])
