@@ -84,7 +84,7 @@ influx -execute 'create database jmeter'
 influx -execute 'create database icapserver'
 influx -execute 'SHOW DATABASES'
 ```
-## Install grafana and setup datasources
+## Install grafana, create api key and setup datasources
 
 ```bash
 
@@ -101,6 +101,13 @@ influx -execute 'SHOW DATABASES'
  sudo systemctl enable --now grafana-server
 
  systemctl status grafana-server.service 
+```
+**Create API key and update config file**
+```bash
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/
+cp config.env.sample config.env
+python3 create_grafana_api_keys.py
+grep "GRAFANA_KEY" config.env
 ```
 **Setup datasource**
 
