@@ -103,7 +103,8 @@ def __get_commandline_args():
 
     parser.add_argument('--load_type', '-lt', default=Config.load_type,
                         help='Type of load to be generated (direct or proxy)')
-
+    parser.add_argument('--use_iam_role', '-ir', default=Config.use_iam_role,
+                        help='Whether or not to use IAM role for authentication')
     return parser.parse_args()
 
 
@@ -279,7 +280,7 @@ if __name__ == "__main__":
     Config.enable_tls = args.enable_tls
     Config.store_results = args.store_results
     Config.load_type = args.load_type
-
+    Config.use_iam_role = args.use_iam_role
     # these are flag/boolean arguments
     if args.exclude_dashboard:
         Config.exclude_dashboard = True

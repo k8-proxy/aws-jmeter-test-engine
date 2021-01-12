@@ -46,6 +46,7 @@ class Config(object):
         tls_verification_method = os.getenv("TLS_VERIFICATION_METHOD")
         store_results = os.getenv("STORE_RESULTS")
         load_type = os.getenv("LOAD_TYPE")
+        use_iam_role = os.getenv("USE_IAM_ROLE")
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -73,7 +74,10 @@ def get_size(users_per_instance):
 def main(config):
     # Authenticate to aws
     profile = config.aws_profile_name
-    session = boto3.session.Session(profile_name=profile)
+    if config.use_iam_role == "yes":
+        session = boto3.session.Session(region_name=config.region)
+    else:
+        session = boto3.session.Session(profile_name=profile, region_name=config.region)
     client = session.client('cloudformation')
 
     file_name = config.prefix + "_" + config.script_name
@@ -225,6 +229,9 @@ if __name__ == "__main__":
     parser.add_argument('--enable_tls', '-et', default=Config.enable_tls,
                         help='Whether or not to enable TLS')
 
+    parser.add_argument('--use_iam_role', '-ir', default=Config.use_iam_role,
+                        help='Whether or not to use IAM role for authentication')
+
     args = parser.parse_args()
 
     Config.total_users = int(args.total_users)
@@ -242,5 +249,6 @@ if __name__ == "__main__":
     Config.icap_server_port = args.icap_server_port
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
+    Config.use_iam_role = args.use_iam_role
 
     main(Config)
