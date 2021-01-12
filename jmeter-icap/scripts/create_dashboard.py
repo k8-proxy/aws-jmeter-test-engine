@@ -2,6 +2,7 @@ import requests
 import json
 from create_stack import Config
 
+
 # If the grafana file passed does not contain the appropriate elements with appropriate values, modify it
 def __convert_grafana_json_to_template(grafana_json):
 
