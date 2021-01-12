@@ -8,7 +8,7 @@ def main(config):
 
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     min_age = int(config.min_age)
-    stack_name = config.stack_name if stack_name_override == '' else stack_name_override
+    stack_name = config.stack_name
     if config.use_iam_role == "yes":
         session = boto3.session.Session(region_name=config.region)
     else:
