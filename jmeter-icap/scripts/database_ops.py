@@ -1,6 +1,6 @@
 from influxdb import InfluxDBClient
 from create_stack import Config
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 # Connect to influx database, check if tests database exists. If it does not, create it.
