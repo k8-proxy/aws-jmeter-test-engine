@@ -17,7 +17,7 @@ import uuid
 DELETE_TIME_OFFSET = 900
 
 # Interval for how often "time elapsed" messages are displayed for delete stack process
-MESSAGE_INTERVAL = 30
+MESSAGE_INTERVAL = 600
 
 # set all possible arguments/options that can be input into the script
 def __get_commandline_args():
@@ -182,18 +182,20 @@ def create_stack_from_ui(json_params, ova=False):
 
     delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()
+
     if not ova and bool(int(ui_config.store_results)):
-        run_id = uuid.uuid4()
-        database_insert_test(ui_config, run_id, grafana_uid, json_params['load_type'])
-        results_analysis_thread = Thread(target=start_results_analyzer_process, args=(int(ui_config.duration), run_id))
+        results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(ui_config, grafana_uid))
         results_analysis_thread.start()
 
     return dashboard_url, stack_name
 
 
-def start_results_analyzer_process(duration, run_id):
-    time.sleep(duration)
-    # here we will call the results analyzer passing run_id and other parameters
+def store_and_analyze_after_duration(config, grafana_uid):
+    time.sleep(int(config.duration))
+    run_id = uuid.uuid4()
+    database_insert_test(config, run_id, grafana_uid)
+    print("test complete, storing in database")
+    # Here the results analyzer will be called
 
 
 def delete_stack_from_ui(stack_name):
@@ -222,10 +224,8 @@ def main(config):
         delete_stack_thread.start()
 
     if config.store_results:
-        run_id = uuid.uuid4()
-        database_insert_test(config, run_id, grafana_uid, load_type)
-        results_analysis_thread = Thread(target=start_results_analyzer_process, args=(config.duration, run_id))
-        results_analysis_thread.start()
+        analyzer_thread = Thread(target=store_and_analyze_after_duration, args=(config, grafana_uid))
+        analyzer_thread.start()
 
     return dashboard_url, stack_name
 
@@ -301,5 +301,3 @@ if __name__ == "__main__":
     set_grafana_key_and_url(Config)
 
     main(Config)
-
-

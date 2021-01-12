@@ -3,11 +3,11 @@ from flask_cors import CORS
 import json
 from waitress import serve
 from create_stack_dash import create_stack_from_ui, delete_stack_from_ui, Config
-from database_ops import retrieve_test_results, retrieve_test_info
+from database_ops import retrieve_test_results
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
-NUMBER_OF_ROWS_TO_GET = 10
+NUMBER_OF_ROWS_TO_RETRIEVE = 10
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -35,10 +35,9 @@ def parse_request():
             return make_response(jsonify("Test {0} terminated".format(stack_name)), 201)
 
     if request.method == 'GET':
-        test_results = retrieve_test_results(NUMBER_OF_ROWS_TO_GET)
-        test_info = retrieve_test_info()
+        test_results = retrieve_test_results(NUMBER_OF_ROWS_TO_RETRIEVE)
         grafana_url = Config.grafana_url
-        return make_response(jsonify(test_results, test_info, grafana_url), 201)
+        return make_response(jsonify(test_results, grafana_url), 201)
 
 
 CORS(app)

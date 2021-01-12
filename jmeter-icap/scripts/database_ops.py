@@ -8,57 +8,35 @@ from datetime import datetime, timedelta
 
 def connect_to_influxdb():
     client = InfluxDBClient(host=Config.influx_host, port=8086)
-    client.switch_database("tests")
+    client.create_database("ResultsDB")
+    client.switch_database("ResultsDB")
     return client
-
-def insert_dummy_data():
-    client = connect_to_influxdb()
-
-    client.write_points([
-        {"measurement": "TestRun",
-         "fields": {"StartTime": str(datetime.now()), "Prefix": "aj", "RunId": "9bc04c12-911f-46be-b36e-5ac9a202272a", "RunTime": 100 , "RampUp": 10, "Threads": 11,
-                    "TotalRequests": 13, "SuccessfulRequests": 14, "FailedRequests": 15, "AverageResponseTime": 16,
-                    "MaxConcurrentPods": 17, "Status": 0, "LoadType": "Direct"}}])
-
-    client.write_points([
-        {"measurement": "TestRun",
-         "fields": {"StartTime": str(datetime.now() + timedelta(seconds=int(10))), "Prefix": "aj2", "RunId": "e88f826b-c9ed-4e66-a793-bb156c2997d2",
-                    "RunTime": 200, "RampUp": 20, "Threads": 21,
-                    "TotalRequests": 23, "SuccessfulRequests": 24, "FailedRequests": 25, "AverageResponseTime": 26,
-                    "MaxConcurrentPods": 27, "Status": 1, "LoadType": "Proxy"}}])
-
-    client.write_points([
-        {"measurement": "TestRun",
-         "fields": {"StartTime": str(datetime.now() + timedelta(seconds=int(20))), "Prefix": "aj3", "RunId": "5860e3dc-4490-4f49-870b-b070b555bfa8",
-                    "RunTime": 300, "RampUp": 30, "Threads": 31,
-                    "TotalRequests": 33, "SuccessfulRequests": 34, "FailedRequests": 35, "AverageResponseTime": 36,
-                    "MaxConcurrentPods": 37, "Status": 1, "LoadType": "Direct"}}])
 
 
 # inserts additional info for use in conjunction with other table containing test run results
-def database_insert_test(config, run_id, grafana_uid, load_type):
+def database_insert_test(config, run_id, grafana_uid):
     run_id = str(run_id)
     client = connect_to_influxdb()
-    client.write_points([{"measurement": "TestsInfo", "fields": {"RunId": run_id, "Duration": config.duration, "GrafanaUid": grafana_uid, "Prefix" : config.prefix, "TotalUsers": config.total_users, "LoadType": load_type, "EndPtUrl": config.icap_endpoint_url}}])
-    # print_test_info()
+    client.write_points([{"measurement": "TestResults", "fields": {
+        "RunId": run_id,
+        "StartTime": str(datetime.now()),
+        "Duration": config.duration,
+        "GrafanaUid": grafana_uid,
+        "Prefix": config.prefix,
+        "TotalUsers": config.total_users,
+        "LoadType": config.load_type,
+        "EndPointUrl": config.icap_endpoint_url,
+        "TotalRequests": 0,
+        "SuccessfulRequests": 0,
+        "FailedRequests": 0,
+        "AverageResponseTime": 0,
+        "Status": 0
+    }}])
+
 
 # gets the latest # of rows specified
-def retrieve_test_results(no_of_rows=0):
+def retrieve_test_results(number_of_rows=0):
     client = connect_to_influxdb()
-    query = 'SELECT * from "tests"."autogen"."TestRun" ORDER BY time DESC LIMIT {0}'.format(no_of_rows)
+    query = 'SELECT * from "ResultsDB"."autogen"."TestResults" ORDER BY time DESC LIMIT {0}'.format(number_of_rows)
     results = client.query(query)
     return results.raw
-
-
-def retrieve_test_info():
-    client = connect_to_influxdb()
-    results = client.query('SELECT * from "tests"."autogen"."TestsInfo"')
-    return results.raw
-
-
-def print_test_info():
-    client = connect_to_influxdb()
-    results = client.query('SELECT * from "tests"."autogen"."TestsInfo"')
-    points = results.get_points()
-    for p in points:
-        print(p)

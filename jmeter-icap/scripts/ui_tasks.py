@@ -17,14 +17,14 @@ def modify_hosts_file(ip_addr: str):
         f.close()
 
 
-def determine_load_type(config, load: str, ova=False):
-    if load == "Direct":
+def determine_load_type(config, ova=False):
+    if config.load_type == "Direct":
         config.test_directory = 'ICAP-Direct-File-Processing'
         config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx' if ova else 'ICAP_Direct_FileProcessing_v3.jmx'
         config.grafana_file = 'aws-test-engine-dashboard.json'
         config.test_data_file = 'gov_uk_files.csv'
 
-    elif load == "Proxy":
+    elif config.load_type == "Proxy":
         config.test_directory = 'ICAP-Proxy-Site'
         config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
         config.grafana_file = 'ProxySite_Dashboard_Template.json'
@@ -51,8 +51,8 @@ def set_config_from_ui(config, json_params, ova=False):
     if json_params['prefix']:
         config.prefix = json_params['prefix']
     if json_params['load_type']:
-        determine_load_type(config, json_params['load_type'], ova=ova)
         config.load_type = json_params['load_type']
+        determine_load_type(config, ova=ova)
 
         if json_params['load_type'] == 'Proxy':
             modify_hosts_file(json_params['icap_endpoint_url'])
@@ -60,12 +60,12 @@ def set_config_from_ui(config, json_params, ova=False):
     # ensure that preserve stack and create_dashboard are at default values
     config.preserve_stack = False
     config.exclude_dashboard = False
-    determine_tls_and_port_params(config, json_params['load_type'], json_params['enable_tls'], json_params['tls_ignore_error'],
+    determine_tls_and_port_params(config, json_params['enable_tls'], json_params['tls_ignore_error'],
                                   json_params['port'])
 
 
-def determine_tls_and_port_params(config, input_load_type, input_enable_tls, input_tls_ignore_verification, input_port):
-    if input_load_type == "Direct":
+def determine_tls_and_port_params(config, input_enable_tls, input_tls_ignore_verification, input_port):
+    if config.load_type == "Direct":
 
         # enable/disable tls based on user input
         config.enable_tls = str(input_enable_tls).lower()

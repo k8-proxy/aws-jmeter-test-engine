@@ -22,7 +22,7 @@ export interface ResultsRowElement {
     testName: string;
     startTime: Date;
     runId: string;
-    runTime: string;
+    duration: string;
     rampUp: string;
     threads: number;
     totalRequests: number;
@@ -50,7 +50,6 @@ export class SharedService {
     private stopSingleTestSubject = new Subject<any>();
     private resultsDataSourceReadySubject = new Subject<any>();
     public resultsDataSource: ResultsRowElement[] = [];
-    public testInfoArray: TestInfo[] = [];
     public grafanaUrl: string = "";
 
     constructor(private readonly http: HttpClient) {
@@ -59,7 +58,7 @@ export class SharedService {
 
     init(): void {
         this.getTestsFromDatabase();
-        // setInterval(() => { console.log("service running") }, 30000); //used to refresh list and remove expired tests.
+        setInterval(() => { this.getTestsFromDatabase(); }, 60000); //used to refresh list and remove expired tests.
     }
 
     getTestsFromDatabase() {
@@ -67,7 +66,7 @@ export class SharedService {
     }
 
     processRetrievedTestData(response) {
-        this.grafanaUrl = response[2];
+        this.grafanaUrl = response[1];
         this.generateDatabaseArrays(response);
     }
 
@@ -79,22 +78,22 @@ export class SharedService {
         let _testName = this.buildTestName(dataRow[this.getDataItemIndex('Prefix', columnArray)], dataRow[this.getDataItemIndex('LoadType', columnArray)]);
         let _startTime = new Date(dataRow[this.getDataItemIndex('StartTime', columnArray)]);
         let _runId = dataRow[this.getDataItemIndex('RunId', columnArray)];
-        let _runTime = dataRow[this.getDataItemIndex('RunTime', columnArray)];
+        let _duration = dataRow[this.getDataItemIndex('Duration', columnArray)];
         let _rampUp = dataRow[this.getDataItemIndex('RampUp', columnArray)];
         let _threads = dataRow[this.getDataItemIndex('Threads', columnArray)];
         let _totalRequests = dataRow[this.getDataItemIndex('TotalRequests', columnArray)];
         let _successfulRequests = dataRow[this.getDataItemIndex('SuccessfulRequests', columnArray)];
         let _failedRequests = dataRow[this.getDataItemIndex('FailedRequests', columnArray)];
         let _averageResponseTime = dataRow[this.getDataItemIndex('AverageResponseTime', columnArray)];
-        let _maxConcurrentPods = dataRow[this.getDataItemIndex('MaxConcurrentPods', columnArray)];
-        let grafanaUid = this.lookUpGrafanaUid(_runId);
-        let _dashboardUrl = this.buildGrafanaLink(dataRow[this.getDataItemIndex('Prefix', columnArray)], dataRow[this.getDataItemIndex('LoadType', columnArray)], _startTime, _runTime, grafanaUid);
+        let _maxConcurrentPods = dataRow[this.getDataItemIndex('TotalUsers', columnArray)];
+        let grafanaUid = dataRow[this.getDataItemIndex('GrafanaUid', columnArray)];
+        let _dashboardUrl = this.buildGrafanaLink(dataRow[this.getDataItemIndex('Prefix', columnArray)], dataRow[this.getDataItemIndex('LoadType', columnArray)], _startTime, _duration, grafanaUid);
         let _status = dataRow[this.getDataItemIndex('Status', columnArray)]
         let row: ResultsRowElement = {
             testName: _testName,
             startTime: _startTime,
             runId: _runId,
-            runTime: _runTime,
+            duration: _duration,
             rampUp: _rampUp,
             threads: _threads,
             totalRequests: _totalRequests,
@@ -107,18 +106,6 @@ export class SharedService {
         };
         return row;
     }
-
-    lookUpGrafanaUid(runId: string): string {
-        let result = "";
-        for (const item of this.testInfoArray) {
-            if (item.runId === runId) {
-                result = item.grafanaUid;
-                break;
-            }
-        }
-        return result;
-    }
-
     //used because a row's data fields obtained from database is not in the order used when inserting the row
     getDataItemIndex(field: string, columnRow: string[]) {
         let counter = 0;
@@ -131,29 +118,13 @@ export class SharedService {
         }
     }
 
-    generateDatabaseArrays(databseResponse) {
+    generateDatabaseArrays(databaseResponse) {
         let resultsFields = [];
         let resultsValues = [];
-        if (databseResponse[0].series[0]) {
-            resultsFields = databseResponse[0].series[0]['columns'];
-            resultsValues = databseResponse[0].series[0]['values'];
+        if (databaseResponse[0].series[0]) {
+            resultsFields = databaseResponse[0].series[0]['columns'];
+            resultsValues = databaseResponse[0].series[0]['values'];
         }
-
-        let testInfoFields = [];
-        let testInfoValues = [];
-
-        if (databseResponse[1].series[0]) {
-            testInfoFields = databseResponse[1].series[0]['columns'];
-            testInfoValues = databseResponse[1].series[0]['values'];
-
-        }
-
-        this.testInfoArray.length = 0;
-        for (const arr of testInfoValues) {
-            this.testInfoArray.push(this.buildTestInfoRow(arr, testInfoFields));
-        }
-
-        // console.log(this.testInfoArray)
 
         this.resultsDataSource.length = 0;
         for (const arr of resultsValues) {
@@ -161,19 +132,6 @@ export class SharedService {
         }
 
         this.sendResultsDatasourceReadyEvent();
-    }
-
-    buildTestInfoRow(dataRow, columnArray): TestInfo {
-        let _runId = dataRow[this.getDataItemIndex('RunId', columnArray)];
-        let _grafanaUid = dataRow[this.getDataItemIndex('GrafanaUid', columnArray)];
-        let _duration = dataRow[this.getDataItemIndex('Duration', columnArray)];
-
-        let item: TestInfo = {
-            runId: _runId,
-            duration: _duration,
-            grafanaUid: _grafanaUid
-        };
-        return item;
     }
 
     sendSubmitEvent(formDataPack: FormDataPackage) {

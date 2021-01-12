@@ -13,14 +13,9 @@
             <td *matCellDef="let element"> {{element.startTime | date:'medium'}} </td>
         </ng-container>
         
-        <ng-container matColumnDef="runTime">
-            <th *matHeaderCellDef> Run Time </th>
-            <td *matCellDef="let element"> {{element.runTime}} Seconds </td>
-        </ng-container>
-
-        <ng-container matColumnDef="threads">
-            <th *matHeaderCellDef> Threads </th>
-            <td *matCellDef="let element"> {{element.threads}} </td>
+        <ng-container matColumnDef="duration">
+            <th *matHeaderCellDef> Duration </th>
+            <td *matCellDef="let element"> {{element.duration}} Seconds </td>
         </ng-container>
 
         <ng-container matColumnDef="totalRequests">
