@@ -184,7 +184,7 @@ def create_stack_from_ui(json_params, ova=False):
     delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()
 
-    if not ova and bool(int(ui_config.store_results)):
+    if not ova and ui_config.store_results not in ["", None] and bool(int(ui_config.store_results)):
         results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(ui_config, grafana_uid))
         results_analysis_thread.start()
 
