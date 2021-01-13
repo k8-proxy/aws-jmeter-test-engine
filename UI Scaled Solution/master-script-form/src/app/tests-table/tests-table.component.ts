@@ -1,24 +1,10 @@
-import { FormGroup } from '@angular/forms';
 import { AppSettings } from './../common/app settings/AppSettings';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormDataPackage, SharedService } from './../common/services/shared.service';
+import { FormDataPackage, SharedService, TestRowElement } from './../common/services/shared.service';
 import { Subscription } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { MatTable } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
-
-
-export interface TestRowElement {
-  position: number;
-  prefix: string; //prefix stored to target tests when stopping them individually
-  stackName: string; //gotten from back end, used to target stacks for deletion
-  testName: string; //prefix plus name that depends on type of load
-  totalUsers: number;
-  duration: number;
-  startTime: Date;
-  endTime: Date;
-  dashboardUrl: string;
-}
 
 @Component({
   selector: 'tests-table',
@@ -89,7 +75,7 @@ export class TestsTableComponent implements OnInit {
   }
 
   buildDataRow(dataJson, counter): TestRowElement {
-    let _testName = this.buildTestName(dataJson['prefix'], dataJson['load_type']);
+    let _testName = this.sharedService.buildTestName(dataJson['prefix'], dataJson['load_type']);
     let pos = counter;
     let _totalUsers = dataJson['total_users'];
     let _duration = dataJson['duration'];
@@ -111,16 +97,6 @@ export class TestsTableComponent implements OnInit {
     };
 
     return row;
-  }
-
-  buildTestName(prefix: string, loadType: string): string {
-    let name = prefix;
-    if (loadType === "Direct") {
-      name += " ICAP Live Performance Dashboard"
-    } else if (loadType === "Proxy") {
-      name += " Proxy Site Live Performance Dashboard"
-    }
-    return name;
   }
 
   stopTestButton(prefix: string) {

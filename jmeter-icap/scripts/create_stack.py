@@ -44,6 +44,8 @@ class Config(object):
         icap_server_port = os.getenv("ICAP_SERVER_PORT")
         enable_tls = os.getenv("ENABLE_TLS")
         tls_verification_method = os.getenv("TLS_VERIFICATION_METHOD")
+        store_results = os.getenv("STORE_RESULTS")
+        load_type = os.getenv("LOAD_TYPE")
         use_iam_role = os.getenv("USE_IAM_ROLE")
     except Exception as e:
         print(

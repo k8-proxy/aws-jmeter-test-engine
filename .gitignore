@@ -6,3 +6,4 @@ config.env
 .env
 /.idea
 RunStartExecution.sh
+/venv
