@@ -29,6 +29,7 @@ class Config(object):
         duration = os.getenv("DURATION")
         icap_endpoint_url = os.getenv("ICAP_ENDPOINT_URL")
         influx_host = os.getenv("INFLUX_HOST")
+        influx_port = os.getenv("INFLUX_PORT", 8086)
         prefix = os.getenv("PREFIX")
         grafana_url = os.getenv("GRAFANA_URL")
         grafana_key = os.getenv("GRAFANA_KEY")

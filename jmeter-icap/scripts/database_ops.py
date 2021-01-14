@@ -1,35 +1,35 @@
 from influxdb import InfluxDBClient
 from create_stack import Config
-from datetime import datetime
+from metrics import InfluxDBMetrics
 
 
 # Connect to influx database, check if tests database exists. If it does not, create it.
-
-
 def connect_to_influxdb():
-    client = InfluxDBClient(host=Config.influx_host, port=8086)
+    client = InfluxDBClient(host=Config.influx_host, port=Config.influx_port)
     client.create_database("ResultsDB")
     client.switch_database("ResultsDB")
     return client
 
 
-# inserts additional info for use in conjunction with other table containing test run results
-def database_insert_test(config, run_id, grafana_uid):
+def database_insert_test(config, run_id, grafana_uid, start_time, final_time):
     run_id = str(run_id)
     client = connect_to_influxdb()
+    InfluxDBMetrics.hostname = Config.influx_host
+    InfluxDBMetrics.hostport = Config.influx_port
+    InfluxDBMetrics.init()
     client.write_points([{"measurement": "TestResults", "fields": {
         "RunId": run_id,
-        "StartTime": str(datetime.now()),
+        "StartTime": start_time,
         "Duration": config.duration,
         "GrafanaUid": grafana_uid,
         "Prefix": config.prefix,
         "TotalUsers": config.total_users,
         "LoadType": config.load_type,
         "EndPointUrl": config.icap_endpoint_url,
-        "TotalRequests": 0,
-        "SuccessfulRequests": 0,
-        "FailedRequests": 0,
-        "AverageResponseTime": 0,
+        "TotalRequests": InfluxDBMetrics.total_reguests(config.prefix, start_time, final_time),
+        "SuccessfulRequests": InfluxDBMetrics.successful_reguests(config.prefix, start_time, final_time),
+        "FailedRequests": InfluxDBMetrics.failed_reguests(config.prefix, start_time, final_time),
+        "AverageResponseTime": InfluxDBMetrics.average_resp_time(config.prefix, start_time, final_time),
         "Status": 0
     }}])
 
