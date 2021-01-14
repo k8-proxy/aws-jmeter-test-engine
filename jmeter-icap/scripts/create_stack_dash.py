@@ -280,7 +280,6 @@ if __name__ == "__main__":
     Config.icap_server_port = args.icap_server_port
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
-    Config.store_results = args.store_results
     Config.load_type = args.load_type
     Config.use_iam_role = args.use_iam_role
     # these are flag/boolean arguments
