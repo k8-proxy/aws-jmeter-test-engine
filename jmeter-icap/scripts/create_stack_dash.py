@@ -192,12 +192,13 @@ def create_stack_from_ui(json_params, ova=False):
     return dashboard_url, stack_name
 
 
-def store_and_analyze_after_duration(config, grafana_uid):
-    time.sleep(int(config.duration))
+def store_and_analyze_after_duration(config, grafana_uid, additional_delay = 0):
+    start_time = str(datetime.now())
+    time.sleep(additional_delay + int(config.duration))
     run_id = uuid.uuid4()
-    database_insert_test(config, run_id, grafana_uid)
-    print("test complete, storing in database")
-    # Here the results analyzer will be called
+    print("test completed, storing results to the database")
+    final_time = str(datetime.now())
+    database_insert_test(config, run_id, grafana_uid, start_time, final_time)
 
 
 def delete_stack_from_ui(stack_name):
