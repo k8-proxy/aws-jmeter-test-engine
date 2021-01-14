@@ -103,6 +103,7 @@ def __get_commandline_args():
 
     parser.add_argument('--load_type', '-lt', default=Config.load_type,
                         help='Type of load to be generated (direct or proxy)')
+
     parser.add_argument('--use_iam_role', '-ir', default=Config.use_iam_role,
                         help='Whether or not to use IAM role for authentication')
     return parser.parse_args()
