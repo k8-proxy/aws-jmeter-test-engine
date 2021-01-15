@@ -24,7 +24,7 @@ class Config(object):
         test_data_access_secret = os.getenv("TEST_DATA_ACCESS_SECRET")
         total_users = int(os.getenv("TOTAL_USERS"))
         users_per_instance = int(os.getenv("USERS_PER_INSTANCE"))
-        instances_required = int(os.getenv("INSTANCES_REQUIRED"))
+        instances_required = int(os.getenv("INSTANCES_REQUIRED", 0))
         ramp_up_time = os.getenv("RAMP_UP_TIME")
         duration = os.getenv("DURATION")
         icap_endpoint_url = os.getenv("ICAP_ENDPOINT_URL")
