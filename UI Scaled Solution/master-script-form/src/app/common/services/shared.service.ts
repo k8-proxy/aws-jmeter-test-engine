@@ -1,7 +1,7 @@
 /*
     This service is responsible for querying the database and storing retrieved data for use in other componenets
 */
-
+import { AppSettings } from './../app settings/AppSettings';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
@@ -62,7 +62,7 @@ export class SharedService {
     }
 
     getTestsFromDatabase() {
-        this.http.get('http://127.0.0.1:5000/').subscribe(response => this.processRetrievedTestData(response), (err) => { this.onError(err) });
+        this.http.get(AppSettings.serverIp).subscribe(response => this.processRetrievedTestData(response), (err) => { this.onError(err) });
     }
 
     processRetrievedTestData(response) {

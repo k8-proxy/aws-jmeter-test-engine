@@ -131,7 +131,7 @@ class InfluxDBMetrics():
                 mean = item['mean']
                 if mean:
                     return float(mean)
-            return 0
+            return float(0)
         except Exception as e:
             print("ERROR: metrics.mean_query: {}".format(e))
             exit(1)

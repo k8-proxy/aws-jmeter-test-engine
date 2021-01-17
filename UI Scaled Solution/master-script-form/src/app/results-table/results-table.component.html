@@ -35,13 +35,13 @@
 
         <ng-container matColumnDef="averageResponseTime">
             <th *matHeaderCellDef> Average Response Time </th>
-            <td *matCellDef="let element"> {{element.averageResponseTime}} Seconds </td>
+            <td *matCellDef="let element"> {{element.averageResponseTime | number : '1.2-2'}} ms </td>
         </ng-container>
 
-        <ng-container matColumnDef="maxConcurrentPods">
+        <!-- <ng-container matColumnDef="maxConcurrentPods">
             <th *matHeaderCellDef> Max Concurrent Pods </th>
             <td *matCellDef="let element"> {{element.maxConcurrentPods}} </td>
-        </ng-container>
+        </ng-container> -->
 
         <ng-container matColumnDef="status">
             <th *matHeaderCellDef> Status </th>
