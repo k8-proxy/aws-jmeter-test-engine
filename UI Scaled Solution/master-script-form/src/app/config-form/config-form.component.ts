@@ -31,7 +31,8 @@ export class ConfigFormComponent implements OnInit {
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
-  IcapOrProxy = AppSettings.urlChoices[0];
+  LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[0];
+  LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[0];
   showErrorAlert = false;
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
@@ -50,11 +51,14 @@ export class ConfigFormComponent implements OnInit {
   }
 
   setIcapOrProxyValidation() {
+    //in order: direct, proxy, proxy sharepoint
     this.configForm.get('load_type').valueChanges.subscribe(loadType => {
-      if (loadType == "Proxy") {
-        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
-      } else {
+      if (loadType == AppSettings.loadTypes[0]) {
         this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
+      } else if (loadType == AppSettings.loadTypes[1]) {
+        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
+      } else if (loadType == AppSettings.loadTypes[2]) {
+        this.icap_endpoint_url.setValidators([Validators.required]);
       }
       this.configForm.get('icap_endpoint_url').updateValueAndValidity();
     })
@@ -79,13 +83,19 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onLoadTypeChange() {
-    //if direct, else proxy
+    //in order: direct, proxy, proxy sharepoint
     if (this.configForm.get('load_type').value == AppSettings.loadTypes[0]) {
       this.enableCheckboxes = true;
-      this.IcapOrProxy = AppSettings.urlChoices[0];
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[0];
+      this.LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[0];
     } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[1]) {
       this.enableCheckboxes = false;
-      this.IcapOrProxy = AppSettings.urlChoices[1];
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[1];
+      this.LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[0];
+    } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[2]) {
+      this.enableCheckboxes = false;
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[2];
+      this.LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[1];
     }
   }
 
@@ -169,6 +179,7 @@ export class ConfigFormComponent implements OnInit {
     if (this.configForm.valid) {
       AppSettings.addingPrefix = true;
       AppSettings.testPrefixSet.add(this.prefix.value);
+      this.trimEndPointField()
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
       formData.append("button", "generate_load");
@@ -177,6 +188,10 @@ export class ConfigFormComponent implements OnInit {
       this.submitted = true;
       this.lockForm();
     }
+  }
+
+  trimEndPointField() {
+    this.icap_endpoint_url.setValue(this.configForm.get('icap_endpoint_url').value.trim().replace(/\s+/g,' '))
   }
 
   lockForm() {
