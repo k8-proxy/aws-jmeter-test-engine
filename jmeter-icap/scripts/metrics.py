@@ -86,7 +86,7 @@ class InfluxDBMetrics():
     @staticmethod
     def count_query(prefix, start, finish, condition):
         try:
-            str_query = 'SELECT COUNT("avg") FROM '\
+            str_query = 'SELECT SUM("count") FROM '\
                     + prefix + '_jmetericap WHERE '\
                     + ' time >= \'' + start + '\' AND ' \
                     + ' time <= \'' + finish + '\' AND '\
