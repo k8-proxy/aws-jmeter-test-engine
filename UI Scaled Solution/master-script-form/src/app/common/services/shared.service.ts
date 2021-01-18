@@ -76,7 +76,7 @@ export class SharedService {
 
     buildResultsDataRow(dataRow, columnArray): ResultsRowElement {
         let _testName = this.buildTestName(dataRow[this.getDataItemIndex('Prefix', columnArray)], dataRow[this.getDataItemIndex('LoadType', columnArray)]);
-        let _startTime = new Date(dataRow[this.getDataItemIndex('StartTime', columnArray)]);
+        let _startTime = new Date(dataRow[this.getDataItemIndex('time', columnArray)]);
         let _runId = dataRow[this.getDataItemIndex('RunId', columnArray)];
         let _duration = dataRow[this.getDataItemIndex('Duration', columnArray)];
         let _rampUp = dataRow[this.getDataItemIndex('RampUp', columnArray)];
@@ -87,6 +87,7 @@ export class SharedService {
         let _averageResponseTime = dataRow[this.getDataItemIndex('AverageResponseTime', columnArray)];
         let _maxConcurrentPods = dataRow[this.getDataItemIndex('TotalUsers', columnArray)];
         let grafanaUid = dataRow[this.getDataItemIndex('GrafanaUid', columnArray)];
+        _startTime = new Date(_startTime.getTime() - (parseFloat(_duration) * 1000))
         let _dashboardUrl = this.buildGrafanaLink(dataRow[this.getDataItemIndex('Prefix', columnArray)], dataRow[this.getDataItemIndex('LoadType', columnArray)], _startTime, _duration, grafanaUid);
         let _status = dataRow[this.getDataItemIndex('Status', columnArray)]
         let row: ResultsRowElement = {
