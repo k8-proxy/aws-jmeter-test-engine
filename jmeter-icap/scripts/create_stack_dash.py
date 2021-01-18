@@ -103,6 +103,7 @@ def __get_commandline_args():
 
     parser.add_argument('--load_type', '-lt', default=Config.load_type,
                         help='Type of load to be generated (direct or proxy)')
+
     parser.add_argument('--use_iam_role', '-ir', default=Config.use_iam_role,
                         help='Whether or not to use IAM role for authentication')
     return parser.parse_args()
@@ -184,7 +185,7 @@ def create_stack_from_ui(json_params, ova=False):
     delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()
 
-    if not ova and bool(int(ui_config.store_results)):
+    if not ova and ui_config.store_results not in ["", None] and bool(int(ui_config.store_results)):
         results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(ui_config, grafana_uid))
         results_analysis_thread.start()
 
@@ -279,7 +280,6 @@ if __name__ == "__main__":
     Config.icap_server_port = args.icap_server_port
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
-    Config.store_results = args.store_results
     Config.load_type = args.load_type
     Config.use_iam_role = args.use_iam_role
     # these are flag/boolean arguments
