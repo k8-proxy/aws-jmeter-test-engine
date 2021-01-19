@@ -114,7 +114,7 @@ export class TestsTableComponent implements OnInit {
     const formData = new FormData();
     formData.append("button", "stop_individual_test");
     formData.append("stack", stackName);
-    this.http.post('http://127.0.0.1:5000/', formData).toPromise();
+    this.http.post(AppSettings.serverIp, formData).toPromise();
   }
 
   updateCookiesExistAndPrefixSet() {

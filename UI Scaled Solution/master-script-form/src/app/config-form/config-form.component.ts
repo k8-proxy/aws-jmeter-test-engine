@@ -156,11 +156,11 @@ export class ConfigFormComponent implements OnInit {
   }
 
   postFormToServer(formData: FormData) {
-    this.http.post('http://127.0.0.1:5000/', formData).subscribe(response => this.processResponse(response, formData), (err) => { this.onError(err) });
+    this.http.post(AppSettings.serverIp, formData).subscribe(response => this.processResponse(response, formData), (err) => { this.onError(err) });
   }
 
   postStopRequestToServer(formData: FormData) {
-    this.http.post('http://127.0.0.1:5000/', formData).toPromise();
+    this.http.post(AppSettings.serverIp, formData).toPromise();
   }
 
   onSubmit(): void {

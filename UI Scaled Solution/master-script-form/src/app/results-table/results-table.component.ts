@@ -19,7 +19,7 @@ export class ResultsTableComponent implements OnInit {
 
 
   dataSource: ResultsRowElement[] = [];
-  displayedColumns: string[] = ['testName', 'startTime', 'duration', 'totalRequests', 'successfulRequests', 'failedRequests', 'averageResponseTime', 'maxConcurrentPods', 'status']; //add and remove columns here before adding/remove in html
+  displayedColumns: string[] = ['testName', 'startTime', 'duration', 'totalRequests', 'successfulRequests', 'failedRequests', 'averageResponseTime']; //add and remove columns here before adding/remove in html
   testsExist: boolean;
 
   constructor(private sharedService: SharedService) {
