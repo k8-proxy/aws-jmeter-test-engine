@@ -198,7 +198,7 @@ export class ConfigFormComponent implements OnInit {
     if (this.configForm.valid) {
       AppSettings.addingPrefix = true;
       AppSettings.testPrefixSet.add(this.prefix.value);
-      this.trimEndPointField()
+      this.trimEndPointField();
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
       formData.append("button", "generate_load");
