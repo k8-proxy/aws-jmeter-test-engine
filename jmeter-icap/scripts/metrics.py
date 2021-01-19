@@ -11,9 +11,9 @@ class InfluxDBMetrics():
 
     hostname = ''
     hostport = ''
-    jmeter_db_client = ''
-    icapserver_db_client = ''
-    proxysite_db_client = ''
+    jmeter_db_client = InfluxDBClient()
+    icapserver_db_client = InfluxDBClient()
+    proxysite_db_client = InfluxDBClient()
 
     @staticmethod
     def verify_database(db):
@@ -43,13 +43,14 @@ class InfluxDBMetrics():
     @staticmethod
     def initial_time(prefix):
         try:
-            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT FIRST("avg") FROM ' + prefix + '_jmetericap;')
+            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT FIRST("count") FROM ' + prefix + '_jmetericap;')
             points = rs.get_points()
             for item in points:
                 time = item['time']
                 if time:
                     return time
             print('Error getting initial time')
+            exit(1)
         except Exception as e:
             print("ERROR: metrics.initial_time: {}".format(e))
             exit(1)
@@ -58,35 +59,22 @@ class InfluxDBMetrics():
     @staticmethod
     def final_time(prefix):
         try:
-            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT LAST("avg") FROM ' + prefix + '_jmetericap;')
+            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT LAST("count") FROM ' + prefix + '_jmetericap;')
             points = rs.get_points()
             for item in points:
                 time = item['time']
                 if time:
                     return time
-            print('Error getting initial time')
+            print('Error getting final time')
+            exit(1)
         except Exception as e:
             print("ERROR: metrics.final_time: {}".format(e))
             exit(1)
 
     @staticmethod
-    def record_count(prefix):
-        try:
-            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT LAST("avg") FROM ' + prefix + '_jmetericap;')
-            points = rs.get_points()
-            for item in points:
-                time = item['time']
-                if time:
-                    return time
-            print('Error getting initial time')
-        except Exception as e:
-            print("ERROR: metrics.record_count: {}".format(e))
-            exit(1)
- 
-    @staticmethod
     def count_query(prefix, start, finish, condition):
         try:
-            str_query = 'SELECT COUNT("avg") FROM '\
+            str_query = 'SELECT SUM("count") FROM '\
                     + prefix + '_jmetericap WHERE '\
                     + ' time >= \'' + start + '\' AND ' \
                     + ' time <= \'' + finish + '\' AND '\
@@ -96,7 +84,7 @@ class InfluxDBMetrics():
             rs = InfluxDBMetrics.jmeter_db_client.query(str_query)
             points = rs.get_points()
             for item in points:
-                count = item['count']
+                count = item['sum']
                 if count:
                     return int(count)
             return 0
@@ -131,7 +119,7 @@ class InfluxDBMetrics():
                 mean = item['mean']
                 if mean:
                     return float(mean)
-            return 0
+            return float(0)
         except Exception as e:
             print("ERROR: metrics.mean_query: {}".format(e))
             exit(1)
@@ -142,9 +130,10 @@ class InfluxDBMetrics():
 
     @staticmethod
     def main(argv):
+
         help_string = 'python3 metrics.py -n <host name> -p <host port>'
         try:
-            opts, args = getopt.getopt(argv,"hn:p:",["name=","port="])
+            opts, args = getopt.getopt(argv,"hn:p:r",["name=","port="])
         except getopt.GetoptError:
             print (help_string)
             sys.exit(2)
@@ -158,8 +147,8 @@ class InfluxDBMetrics():
                 InfluxDBMetrics.hostport = arg
 
         InfluxDBMetrics.log_level(LOG_LEVEL)
-        #print("host name - {}".format(InfluxDBMetrics.hostname))
-        #print("host port - {}".format(InfluxDBMetrics.hostport))
+        print("host name - {}".format(InfluxDBMetrics.hostname))
+        print("host port - {}".format(InfluxDBMetrics.hostport))      
 
         InfluxDBMetrics.init()
 
