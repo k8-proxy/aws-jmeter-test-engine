@@ -10,11 +10,12 @@ def terminate_java_processes():
     subprocess.Popen([script_path])
 
 
-def modify_hosts_file(ip_addr: str):
-    content = "127.0.0.1 localhost\n{0} www.gov.uk.local assets.publishing.service.gov.uk.local www.gov.uk assets.publishing.service.gov.uk.glasswall-icap.com".format(ip_addr)
-    with open("/etc/hosts", "w") as f:
-        f.write(content)
-        f.close()
+def modify_hosts_file(ip_addr: str, ova=False):
+    if ova:
+        content = "127.0.0.1 localhost\n{0} www.gov.uk.local assets.publishing.service.gov.uk.local www.gov.uk assets.publishing.service.gov.uk.glasswall-icap.com".format(ip_addr)
+        with open("/etc/hosts", "w") as f:
+            f.write(content)
+            f.close()
 
 def determine_load_type(config, ova=False):
     if config.load_type == "Direct":
@@ -61,7 +62,7 @@ def set_config_from_ui(config, json_params, ova=False):
         determine_load_type(config, ova=ova)
 
         if json_params['load_type'] == 'Proxy Offline':
-            modify_hosts_file(json_params['icap_endpoint_url'])
+            modify_hosts_file(json_params['icap_endpoint_url'], ova)
 
     # ensure that preserve stack and create_dashboard are at default values
     config.preserve_stack = False

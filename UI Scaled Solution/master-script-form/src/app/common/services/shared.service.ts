@@ -169,10 +169,13 @@ export class SharedService {
 
     public buildTestName(prefix: string, loadType: string): string {
         let name = prefix;
-        if (loadType === "Direct") {
-            name += " ICAP Live Performance Dashboard"
-        } else if (loadType === "Proxy") {
-            name += " Proxy Site Live Performance Dashboard"
+        //in order: Direct, Proxy Offline, Proxy SharePoint
+        if (loadType === AppSettings.loadTypes[0]) {
+            name += " " + AppSettings.testNames[0];
+        } else if (loadType === AppSettings.loadTypes[1]) {
+            name += " " + AppSettings.testNames[1];
+        } else if (loadType === AppSettings.loadTypes[2]) {
+            name += " " + AppSettings.testNames[2];
         }
         return name;
     }

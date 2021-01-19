@@ -4,6 +4,7 @@ export class AppSettings {
     public static loadTypes: string[] = ['Direct', 'Proxy Offline', 'Proxy SharePoint'];
     public static loadTypeFieldTitles: string[] = ["ICAP Server Endpoint URL*", "Proxy IP Address*", "SharePoint Proxy IP and URLs*"];
     public static loadTypeFieldExamples: string[] = ["Required", "Ex: 12.34.56.78 example1.sharepoint.com example2.sharepoint.com..."];
+    public static testNames: string[] = ["ICAP Live Performance Dashboard", "Proxy Site Live Performance Dashboard", "SharePoint Proxy Live Performance Dashboard"];
     public static cookiesExist: boolean;
     public static testPrefixSet = new Set<string>();
     public static addingPrefix: boolean = false;
