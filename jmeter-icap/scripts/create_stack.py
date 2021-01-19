@@ -48,6 +48,8 @@ class Config(object):
         store_results = os.getenv("STORE_RESULTS")
         load_type = os.getenv("LOAD_TYPE")
         use_iam_role = os.getenv("USE_IAM_ROLE")
+        sharepoint_proxy_ip = os.getenv("SHAREPOINT_PROXY_IP", '')
+        sharepoint_host_names = os.getenv("SHAREPOINT_HOST_NAMES", '')
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -138,8 +140,8 @@ def main(config):
     asg_name = prefix + "LoadTest-" + date_suffix
     hosts_file_command = ""
     if config.load_type == 'Proxy SharePoint':
-        hosts_file_command = "sudo echo 127.0.0.1 localhost > '/etc/hosts'\nsudo echo {0} >> '/etc/hosts'".format(config.icap_endpoint_url)
-        print('hosts file modified for sharepoint')
+        content = "{0} {1}".format(config.sharepoint_proxy_ip, config.sharepoint_host_names)
+        hosts_file_command = "sudo echo 127.0.0.1 localhost > '/etc/hosts'\nsudo echo {0} >> '/etc/hosts'".format(content)
 
 
     userdata = base64.b64encode(f"""#!/bin/bash

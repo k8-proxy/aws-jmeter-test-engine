@@ -109,6 +109,12 @@ def __get_commandline_args():
 
     parser.add_argument('--use_iam_role', '-ir', default=Config.use_iam_role,
                         help='Whether or not to use IAM role for authentication')
+
+    parser.add_argument('--sharepoint_proxy_ip', '-spip', default=Config.sharepoint_proxy_ip,
+                        help='Sharepoint Proxy IP address')
+
+    parser.add_argument('--sharepoint_host_names', '-sph', default=Config.sharepoint_host_names,
+                        help='Hostnames to use with SharePoint')
     return parser.parse_args()
 
 
@@ -289,6 +295,8 @@ if __name__ == "__main__":
     Config.enable_tls = args.enable_tls
     Config.load_type = args.load_type
     Config.use_iam_role = args.use_iam_role
+    Config.sharepoint_proxy_ip = args.sharepoint_proxy_ip
+    Config.sharepoint_host_names = args.sharepoint_host_names
     # these are flag/boolean arguments
     if args.exclude_dashboard:
         Config.exclude_dashboard = True

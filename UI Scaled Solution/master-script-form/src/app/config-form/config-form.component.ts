@@ -30,9 +30,9 @@ export class ConfigFormComponent implements OnInit {
   responseReceived = false;
   portDefault = '443';
   enableCheckboxes = true;
+  enableSharePointHostsField = false;
   enableIgnoreErrorCheckbox = true;
   LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[0];
-  LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[0];
   showErrorAlert = false;
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
@@ -47,22 +47,36 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.valueChanges.subscribe((data) => {
       this.hideSubmitMessages = true;
     });
-    this.setIcapOrProxyValidation();
+    this.setSharePointHostNamesRequirement();
   }
 
-  setIcapOrProxyValidation() {
+  setSharePointHostNamesRequirement() {
     //in order: direct, proxy, proxy sharepoint
     this.configForm.get('load_type').valueChanges.subscribe(loadType => {
       if (loadType == AppSettings.loadTypes[0]) {
-        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
+        this.sharepoint_hosts.setValidators([]);
       } else if (loadType == AppSettings.loadTypes[1]) {
-        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
+        this.sharepoint_hosts.setValidators([]);
       } else if (loadType == AppSettings.loadTypes[2]) {
-        this.icap_endpoint_url.setValidators([Validators.required]);
+        this.sharepoint_hosts.setValidators([Validators.required]);
       }
-      this.configForm.get('icap_endpoint_url').updateValueAndValidity();
+      this.configForm.get('sharepoint_hosts').updateValueAndValidity();
     })
   }
+
+  // setIcapOrProxyValidation() {
+  //   //in order: direct, proxy, proxy sharepoint
+  //   this.configForm.get('load_type').valueChanges.subscribe(loadType => {
+  //     if (loadType == AppSettings.loadTypes[0]) {
+  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
+  //     } else if (loadType == AppSettings.loadTypes[1]) {
+  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
+  //     } else if (loadType == AppSettings.loadTypes[2]) {
+  //       this.icap_endpoint_url.setValidators([Validators.required]);
+  //     }
+  //     this.configForm.get('icap_endpoint_url').updateValueAndValidity();
+  //   })
+  // }
 
   setTitle(newTitle: string) {
     this.titleService.setTitle(newTitle);
@@ -75,6 +89,7 @@ export class ConfigFormComponent implements OnInit {
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: AppSettings.loadTypes[0],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
+      sharepoint_hosts: new FormControl(''),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required]),
       enable_tls: true,
       tls_ignore_error: true,
@@ -87,16 +102,17 @@ export class ConfigFormComponent implements OnInit {
     if (this.configForm.get('load_type').value == AppSettings.loadTypes[0]) {
       this.enableCheckboxes = true;
       this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[0];
-      this.LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[0];
+      this.enableSharePointHostsField = false;
     } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[1]) {
       this.enableCheckboxes = false;
       this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[1];
-      this.LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[0];
+      this.enableSharePointHostsField = false;
     } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[2]) {
       this.enableCheckboxes = false;
       this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[2];
-      this.LoadTypeFieldExample = AppSettings.loadTypeFieldExamples[1];
+      this.enableSharePointHostsField = true;
     }
+    this.setSharePointHostNamesRequirement();
   }
 
   onTlsChange() {
@@ -127,6 +143,9 @@ export class ConfigFormComponent implements OnInit {
   }
   get prefix() {
     return this.configForm.get('prefix');
+  }
+  get sharepoint_hosts() {
+    return this.configForm.get('sharepoint_hosts');
   }
   get isValid() {
     return this.configForm.valid;
@@ -191,7 +210,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   trimEndPointField() {
-    this.icap_endpoint_url.setValue(this.configForm.get('icap_endpoint_url').value.trim().replace(/\s+/g,' '))
+    this.configForm.get('sharepoint_hosts').setValue(this.configForm.get('sharepoint_hosts').value.trim().replace(/\s+/g, ' '))
   }
 
   lockForm() {

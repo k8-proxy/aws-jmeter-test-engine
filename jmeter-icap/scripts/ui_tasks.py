@@ -63,6 +63,11 @@ def set_config_from_ui(config, json_params, ova=False):
 
         if json_params['load_type'] == 'Proxy Offline':
             modify_hosts_file(json_params['icap_endpoint_url'], ova)
+        elif json_params['load_type'] == 'Proxy SharePoint':
+            sharepoint_field_input = str(json_params['sharepoint_hosts'])
+            (sharepoint_ip, sharepoint_hosts) = sharepoint_field_input.split(maxsplit=1)
+            config.sharepoint_proxy_ip = sharepoint_ip
+            config.sharepoint_host_names = sharepoint_hosts
 
     # ensure that preserve stack and create_dashboard are at default values
     config.preserve_stack = False

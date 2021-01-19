@@ -61,7 +61,7 @@
 
     <div class="form-group">
         <label>{{ LoadTypeFieldTitle }}</label>
-        <input type="text" class="form-control" formControlName="icap_endpoint_url" placeholder="{{ LoadTypeFieldExample }}">
+        <input type="text" class="form-control" formControlName="icap_endpoint_url" placeholder="Required">
         <small class="form-text text-muted">*this field is required</small>
         <div *ngIf="icap_endpoint_url.invalid">
             <div class="alert alert-danger" *ngIf="icap_endpoint_url.touched && icap_endpoint_url.errors.required">This field is required.</div>
@@ -69,6 +69,16 @@
             <div class="alert alert-danger" *ngIf="icap_endpoint_url.touched && icap_endpoint_url.errors.pattern">Please provide a valid IP address.</div>
         </div>
     </div>
+
+    <div *ngIf="enableSharePointHostsField" class="form-group">
+        <label>SharePoint Proxy IP and Hostnames*</label>
+        <input type="text" class="form-control" formControlName="sharepoint_hosts" placeholder="Ex: 12.34.56.78 example1.sharepoint.com example2.sharepoint.com...">
+        <small class="form-text text-muted">*this field is required</small>
+        <div *ngIf="sharepoint_hosts.invalid && sharepoint_hosts.touched">
+            <div class="alert alert-danger" *ngIf="sharepoint_hosts.errors.required">This field is required.</div>
+        </div>
+    </div>
+    
 
     <div class="form-group">
         <label>Port</label>
