@@ -115,6 +115,16 @@ def __get_commandline_args():
 
     parser.add_argument('--sharepoint_host_names', '-sph', default=Config.sharepoint_host_names,
                         help='Hostnames to use with SharePoint')
+
+    parser.add_argument('--tenant_id', '-tid', default=Config.tenant_id,
+                        help='Sharepoint Tenant ID value')
+
+    parser.add_argument('--client_id', '-cid', default=Config.client_id,
+                        help='Sharepoint Client ID value')
+
+    parser.add_argument('--client_secret', '-cs', default=Config.client_secret,
+                        help='Sharepoint Client Secret')
+
     return parser.parse_args()
 
 
@@ -268,6 +278,17 @@ def set_grafana_key_and_url(config):
             print("Grafana secret key retrieved.")
 
 
+def adjust_load_type_from_input(config):
+
+    if config.load_type in ["", None]:
+        return
+
+    if str(config.load_type).lower() in ["proxy", "proxy offline"]:
+        config.load_type = 'Proxy Offline'
+    elif str(config.load_type).lower() in ["sharepoint", "proxy sharepoint"]:
+        config.load_type = 'Proxy SharePoint'
+
+
 if __name__ == "__main__":
     args = __get_commandline_args()
 
@@ -294,9 +315,14 @@ if __name__ == "__main__":
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
     Config.load_type = args.load_type
+    adjust_load_type_from_input(Config)
     Config.use_iam_role = args.use_iam_role
     Config.sharepoint_proxy_ip = args.sharepoint_proxy_ip
     Config.sharepoint_host_names = args.sharepoint_host_names
+    Config.tenant_id = args.tenant_id
+    Config.client_id = args.client_id
+    Config.client_secret = args.client_secret
+
     # these are flag/boolean arguments
     if args.exclude_dashboard:
         Config.exclude_dashboard = True
