@@ -210,7 +210,7 @@ FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">grant_type=client_credentials&#xd;
-&amp;resource=00000003-0000-0ff1-ce00-000000000000/saaspoc1.sharepoint.com@${tenantId}&#xd;
+&amp;resource=00000003-0000-0ff1-ce00-000000000000/${url}@${tenantId}&#xd;
 &amp;client_id= ${clientId}&#xd;
 &amp;client_secret=${clientSecret}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
