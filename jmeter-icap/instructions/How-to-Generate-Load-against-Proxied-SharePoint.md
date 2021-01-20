@@ -10,7 +10,7 @@ Sharepoint site load testing script requires:
 
 ## How to setup Sharepoint API Key?
 
-These settings needs to be done by someone who as **full admin** permissions to the sharepoint site:
+These settings needs to be done by someone who has **full admin** permissions to the sharepoint site:
 
 **Step 1 Register an App**
 
