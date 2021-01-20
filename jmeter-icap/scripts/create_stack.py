@@ -83,11 +83,11 @@ def add_sharepoint_params(config, script_data: str):
     for index, line in enumerate(script_data_lines):
         if line.startswith("sudo JVM_ARGS"):
             if config.tenant_id not in ["", None]:
-                line += " -Jp_tenant_id=" + config.tenant_id
+                line += " -Jp_tenantId=" + config.tenant_id
             if config.client_id not in ["", None]:
-                line += " -Jp_client_id=" + config.client_id
+                line += " -Jp_clientId=" + config.client_id
             if config.client_secret not in ["", None]:
-                line += " -Jp_client_secret=" + config.client_secret
+                line += " -Jp_clientSecret=" + config.client_secret
             script_data_lines[index] = line
     return "\n".join(script_data_lines[1:]) + '\n'
 
