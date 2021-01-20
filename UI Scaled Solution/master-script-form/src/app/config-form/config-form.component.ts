@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { AppSettings } from './../common/app settings/AppSettings';
+import { AppSettings, LoadTypes } from './../common/app settings/AppSettings';
 import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
@@ -51,13 +51,12 @@ export class ConfigFormComponent implements OnInit {
   }
 
   setSharePointHostNamesRequirement() {
-    //in order: direct, proxy, proxy sharepoint
     this.configForm.get('load_type').valueChanges.subscribe(loadType => {
-      if (loadType == AppSettings.loadTypes[0]) {
+      if (loadType == AppSettings.loadTypeNames[LoadTypes.Direct]) {
         this.sharepoint_hosts.setValidators([]);
-      } else if (loadType == AppSettings.loadTypes[1]) {
+      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
         this.sharepoint_hosts.setValidators([]);
-      } else if (loadType == AppSettings.loadTypes[2]) {
+      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
         this.sharepoint_hosts.setValidators([Validators.required]);
       }
       this.configForm.get('sharepoint_hosts').updateValueAndValidity();
@@ -87,7 +86,7 @@ export class ConfigFormComponent implements OnInit {
       total_users: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.hasNumberLimit]),
       duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
-      load_type: AppSettings.loadTypes[0],
+      load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
       sharepoint_hosts: new FormControl(''),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required]),
@@ -99,17 +98,17 @@ export class ConfigFormComponent implements OnInit {
 
   onLoadTypeChange() {
     //in order: direct, proxy, proxy sharepoint
-    if (this.configForm.get('load_type').value == AppSettings.loadTypes[0]) {
+    if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.Direct]) {
       this.enableCheckboxes = true;
-      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[0];
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.Direct];
       this.enableSharePointHostsField = false;
-    } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[1]) {
+    } else if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
       this.enableCheckboxes = false;
-      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[1];
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxyOffline];
       this.enableSharePointHostsField = false;
-    } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[2]) {
+    } else if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
       this.enableCheckboxes = false;
-      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[2];
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxySharePoint];
       this.enableSharePointHostsField = true;
     }
     this.setSharePointHostNamesRequirement();
@@ -163,7 +162,7 @@ export class ConfigFormComponent implements OnInit {
     return AppSettings.cookiesExist;
   }
   get loadTypes() {
-    return AppSettings.loadTypes;
+    return AppSettings.loadTypeNames;
   }
 
   processResponse(response: object, formData: FormData) {

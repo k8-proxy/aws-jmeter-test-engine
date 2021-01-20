@@ -1,7 +1,7 @@
 /*
     This service is responsible for querying the database and storing retrieved data for use in other componenets
 */
-import { AppSettings } from './../app settings/AppSettings';
+import { AppSettings, LoadTypes } from './../app settings/AppSettings';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
@@ -169,13 +169,12 @@ export class SharedService {
 
     public buildTestName(prefix: string, loadType: string): string {
         let name = prefix;
-        //in order: Direct, Proxy Offline, Proxy SharePoint
-        if (loadType === AppSettings.loadTypes[0]) {
-            name += " " + AppSettings.testNames[0];
-        } else if (loadType === AppSettings.loadTypes[1]) {
-            name += " " + AppSettings.testNames[1];
-        } else if (loadType === AppSettings.loadTypes[2]) {
-            name += " " + AppSettings.testNames[2];
+        if (loadType === AppSettings.loadTypeNames[LoadTypes.Direct]) {
+            name += " " + AppSettings.testNames[LoadTypes.Direct];
+        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+            name += " " + AppSettings.testNames[LoadTypes.ProxyOffline];
+        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+            name += " " + AppSettings.testNames[LoadTypes.ProxySharePoint];
         }
         return name;
     }
