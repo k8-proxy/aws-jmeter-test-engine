@@ -111,7 +111,7 @@ Click that link and it will open dashboard login page:
 
 ![vm_load_vision](img/Grafana-login.png)
 
-Enter admin/glasswall and then dashboard ui will be visible with your own set prefix:
+Enter admin/glasswall and then dashboard ui will be visible with your own prefix:
 
 ![vm_load_vision](img/Share-Point-Dashboard.png)
 
