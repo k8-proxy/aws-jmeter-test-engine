@@ -28,7 +28,7 @@ export class ConfigFormComponent implements OnInit {
   configForm: FormGroup;
   submitted = false;
   responseReceived = false;
-  portDefault = '443';
+  portDefaultPlaceHolder = 'Default: 443';
   enableCheckboxes = true;
   enableSharePointHostsField = false;
   enableIgnoreErrorCheckbox = true;
@@ -108,30 +108,33 @@ export class ConfigFormComponent implements OnInit {
       this.enableCheckboxes = true;
       this.enableSharePointHostsField = false;
       this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.Direct];
-      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct]
-      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.Direct]
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct];
+      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.Direct];
+      this.onTlsChange();
     } else if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
       this.enableCheckboxes = false;
       this.enableSharePointHostsField = false;
       this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxyOffline];
-      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline]
-      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxyOffline]
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline];
+      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxyOffline];
+      this.portDefaultPlaceHolder = '';
     } else if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
       this.enableCheckboxes = false;
       this.enableSharePointHostsField = true;
       this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxySharePoint];
-      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxySharePoint]
-      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxySharePoint]
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxySharePoint];
+      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxySharePoint];
+      this.portDefaultPlaceHolder = '';
     }
     this.setValidatorsDependingOnLoadType();
   }
 
   onTlsChange() {
     if (this.configForm.get('enable_tls').value == true) {
-      this.portDefault = '443';
+      this.portDefaultPlaceHolder = 'Default: 443';
       this.enableIgnoreErrorCheckbox = true;
     } else {
-      this.portDefault = '1344';
+      this.portDefaultPlaceHolder = 'Default: 1344';
       this.enableIgnoreErrorCheckbox = false;
     }
   }
