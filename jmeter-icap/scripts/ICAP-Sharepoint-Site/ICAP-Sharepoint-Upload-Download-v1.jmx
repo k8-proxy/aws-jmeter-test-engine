@@ -76,17 +76,17 @@
           </elementProp>
           <elementProp name="tenantId" elementType="Argument">
             <stringProp name="Argument.name">tenantId</stringProp>
-            <stringProp name="Argument.value">${__P(p_tenantId,13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_tenantId,sampletenant)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="clientId" elementType="Argument">
             <stringProp name="Argument.name">clientId</stringProp>
-            <stringProp name="Argument.value">${__P(p_clientId,fbd79ba4-6945-4d06-989f-934c5047bef9@13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_clientId,sampleClientId)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="clientSecret" elementType="Argument">
             <stringProp name="Argument.name">clientSecret</stringProp>
-            <stringProp name="Argument.value">${__P(p_clientSecret,Mgu85o6jhj1gKUqye%2BghVOlw9ApIt08wAq%2B4k9XE91A=)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_clientSecret,sampleSecretId)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -125,7 +125,7 @@
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-MoveFile2inFolder" enabled="false">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-MoveFile2inFolder" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -191,45 +191,6 @@ FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
           </JSR223Sampler>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="false">
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">grant_type=client_credentials&#xd;
-&amp;resource=00000003-0000-0ff1-ce00-000000000000/saaspoc1.sharepoint.com@13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c&#xd;
-&amp;client_id= 2ca04957-1546-44a0-93bd-808f2602e011@13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c&#xd;
-&amp;client_secret=vp6wve6da.2_fK-D75k4669N9U8-p1qiE~</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain">accounts.accesscontrol.windows.net</stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c/tokens/OAuth/2</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree/>
-        </hashTree>
         <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Generate UUID" enabled="true">
           <stringProp name="BeanShellSampler.query">
 
@@ -242,54 +203,6 @@ FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
           <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
         </BeanShellSampler>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="test-getaccesstoken" enabled="false">
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">grant_type=client_credentials&#xd;
-&amp;resource=00000003-0000-0ff1-ce00-000000000000/glasswallk8.sharepoint.com@0dcc7144-fa71-4884-844a-c0ede1e3260e&#xd;
-&amp;client_id= d5bcf390-b508-4a83-97ac-76609d6c7e8f@0dcc7144-fa71-4884-844a-c0ede1e3260e&#xd;
-&amp;client_secret=Dd8yMjg10JrDHuq9N3rhCmaiNLEKAtAJ776A3M5EDC8=</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain">accounts.accesscontrol.windows.net</stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/0dcc7144-fa71-4884-844a-c0ede1e3260e/tokens/OAuth/2</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-        </HTTPSamplerProxy>
-        <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
-          <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
-            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-            <stringProp name="RegexExtractor.refname">accessToken</stringProp>
-            <stringProp name="RegexExtractor.regex">access_token&quot;:&quot;(.+?)&quot;</stringProp>
-            <stringProp name="RegexExtractor.template">$1$</stringProp>
-            <stringProp name="RegexExtractor.default">1</stringProp>
-            <stringProp name="RegexExtractor.match_number">1</stringProp>
-          </RegexExtractor>
-          <hashTree/>
-        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="getaccesstoken" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
