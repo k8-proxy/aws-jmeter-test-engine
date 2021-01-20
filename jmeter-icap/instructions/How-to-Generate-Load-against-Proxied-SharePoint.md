@@ -1,4 +1,4 @@
-# How to generate against proxied Sharepoint site ?
+# How to generate load against proxied Sharepoint site ?
 
 This instruction assumes basic Load Test framework setup is done using the main instructions in https://github.com/k8-proxy/aws-jmeter-test-engine/README.MD
 
@@ -10,7 +10,7 @@ Sharepoint site load testing script requires:
 
 ## How to setup Sharepoint API Key?
 
-These settings needs to be done by someone who as full admin permissions to the sharepoint site:
+These settings needs to be done by someone who as **full admin** permissions to the sharepoint site:
 
 **Step 1 Register an App**
 
@@ -47,14 +47,14 @@ Right="Write"/></AppPermissionRequests>
 
 For new SharePoint subscription Grant App Permission is disabled by default or the browser link https://xxxx-admin.sharepoint.com/_layouts/15/appinv.aspx is disabled. To enable this feature, we need to connect to SharePoint using Windows PowerShell and then run set-spotenant -DisableCustomAppAuthentication $false.
 Run the following commands on PowerShell.
-
+```bash
 Install-Module -Name Microsoft.Online.SharePoint.PowerShell
 $adminUPN="<the full email address of a SharePoint administrator account, example: jdoe@contosotoycompany.onmicrosoft.com>"
 $orgName="<name of your Office 365 organization, example: contosotoycompany>"
 $userCredential = Get-Credential -UserName $adminUPN -Message "Type the password."
 Connect-SPOService -Url https://$orgName-admin.sharepoint.com -Credential $userCredential
 set-spotenant -DisableCustomAppAuthentication $false
-
+```
 ## Create folder name "pcre"
 
 Click on documents and create new folder named "pcre". files will be upload to this folder.
