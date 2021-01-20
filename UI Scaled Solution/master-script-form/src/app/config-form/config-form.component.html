@@ -61,8 +61,8 @@
 
     <div class="form-group">
         <label>{{ LoadTypeFieldTitle }}</label>
-        <input type="text" class="form-control" formControlName="icap_endpoint_url" placeholder="Required">
-        <small class="form-text text-muted">*this field is required</small>
+        <input type="text" class="form-control" formControlName="icap_endpoint_url" placeholder="{{ endPointFieldPlaceholder }}">
+        <small class="form-text text-muted">{{ endPointFieldDescription }}</small>
         <div *ngIf="icap_endpoint_url.invalid">
             <div class="alert alert-danger" *ngIf="icap_endpoint_url.touched && icap_endpoint_url.errors.required">This field is required.</div>
             <div class="alert alert-danger" *ngIf="icap_endpoint_url.dirty && icap_endpoint_url.errors.cannotContainSpaces">Field cannot contain spaces.</div>
