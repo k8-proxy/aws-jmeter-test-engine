@@ -45,6 +45,14 @@
             </td>
         </ng-container>
 
+        <!-- Header row title -->
+        <ng-container matColumnDef="header-row-title">
+            <th class="table-primary" *matHeaderCellDef [attr.colspan]="displayedColumns.length" style="text-align: center; font-weight: bold; font-size: larger;  background-color: #5cacfc;">
+                Currently Running Tests
+            </th>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['header-row-title']"></tr>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>

@@ -30,7 +30,7 @@ def get_jvm_memory(users_per_instance):
 
 def main(json_params):
 
-    set_config_from_ui(json_params, ova=True)
+    set_config_from_ui(Config, json_params, ova=True)
     Config.users_per_instance = Config.total_users
     jvm_memory = get_jvm_memory(Config.users_per_instance)
 
@@ -75,7 +75,7 @@ def main(json_params):
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        dashboard_url = create_dashboard.main(Config)
+        dashboard_url, grafana_uid = create_dashboard.main(Config)
 
     return dashboard_url
 

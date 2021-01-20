@@ -94,6 +94,9 @@ EXCLUDE_DASHBOARD=0
 PRESERVE_STACK=0
 GRAFANA_SERVER_TAG=GrafanaServer
 GRAFANA_SECRET=GrafanaSecret
+STORE_RESULTS=1
+MIN_AGE=0
+LOAD_TYPE=Direct
 ```
 
 These parameters have corresponding options that can be used during script execution, they do not have to be set in config.env. Many of the parameters above are also optional, they can be omitted. Any options input manually via the command line will override options within the config.env file. For example, if the config.env file is set to allow dashboard creation:
@@ -203,13 +206,13 @@ AWS Region to use
 <tr>
 <td> --preserve_stack, -s </td><td> PRESERVE_STACK (=0 or 1) </td>
 <td>
-This takes no arguments. If set (ex: create_stack_dash -s), it will prevent the stack created from being automatically deleted after the duration period specified above is complete.
+This takes no arguments if used in args, 0/1 values if used in config.env. If set (ex: create_stack_dash -s), it will prevent the stack created from being automatically deleted after the duration period specified above is complete.
 </td>
 </tr>
 <tr>
 <td> --exclude_dashboard, -x </td><td> EXCLUDE_DASHBOARD (=0 or 1)</td>
 <td>
-This takes no arguments. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script is run.
+This takes no arguments if used in args, 0/1 values if used in config.env. If set (ex: create_stack_dash -x), a Grafana dashboard will not be created when the script is run.
 </td>
 </tr>
 <tr>
@@ -222,6 +225,18 @@ This takes the tag of the server containing the Grafana database; this server wi
 <td>--grafana_secret, -gs</td><td> GRAFANA_SECRET </td>
 <td>
 The secret name of the Grafana API Key inside AWS Secrets Manager. This will be used to retrieve the key for use when generating Grafana dashboards. (Note: The --grafana_key option will prevent this option from taking effect; a user directly providing a key would negate the need for a key lookup).
+</td>
+</tr>
+<tr>
+<td>--store_results, -sr</td><td> STORE_RESULTS </td>
+<td>
+This takes no arguments if used in args, 0/1 values if used in config.env. If set (ex: create_stack_dash -sr), tests will be stored into the influxdb instance upon completion.
+</td>
+</tr>
+<tr>
+<td>--load_type, -lt</td><td> LOAD_TYPE </td>
+<td>
+The type of load to be generated (Direct or Proxy)
 </td>
 </tr>
 </table>

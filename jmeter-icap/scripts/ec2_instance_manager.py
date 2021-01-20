@@ -66,7 +66,10 @@ def get_ec2_client(config):
     # Authenticate to aws
     profile = config.aws_profile_name
     region = config.region
-    session = boto3.session.Session(profile_name=profile, region_name=region)
+    if config.use_iam_role == "yes":
+        session = boto3.session.Session(region_name=region)
+    else:
+        session = boto3.session.Session(profile_name=profile, region_name=region)
     ec2_client = session.client('ec2')
     return ec2_client
 

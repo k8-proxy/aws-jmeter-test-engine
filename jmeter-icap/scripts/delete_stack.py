@@ -3,14 +3,16 @@ from datetime import timedelta, datetime, timezone
 from create_stack import Config
 
 
-def main(config, stack_name_override=''):
+def main(config):
     profile_name = config.aws_profile_name
 
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     min_age = int(config.min_age)
-    stack_name = config.stack_name if stack_name_override == '' else stack_name_override
-
-    session = boto3.session.Session(profile_name=profile_name)
+    stack_name = config.stack_name
+    if config.use_iam_role == "yes":
+        session = boto3.session.Session(region_name=config.region)
+    else:
+        session = boto3.session.Session(profile_name=profile_name, region_name=config.region)
     client = session.client("cloudformation")
 
     now = datetime.now(timezone.utc)
@@ -34,6 +36,6 @@ def main(config, stack_name_override=''):
         print("deleting stack named: %s" % (stack_name))
         client.delete_stack(StackName=stack_name)
 
-        
+
 if __name__ == "__main__":
     main(Config)

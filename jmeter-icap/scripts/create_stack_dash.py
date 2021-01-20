@@ -10,12 +10,17 @@ from ec2_instance_manager import start_instance
 from aws_secrets import get_secret_value
 from ui_tasks import set_config_from_ui
 from threading import Thread
+from database_ops import database_insert_test
+import uuid
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
 DELETE_TIME_OFFSET = 900
 
 # Interval for how often "time elapsed" messages are displayed for delete stack process
-MESSAGE_INTERVAL = 30
+MESSAGE_INTERVAL = 600
+
+# set of stack names for currently running tests, used for preventing manually stopped tests from being added to influxdb
+running_tests = set()
 
 # set all possible arguments/options that can be input into the script
 def __get_commandline_args():
@@ -96,6 +101,14 @@ def __get_commandline_args():
     parser.add_argument('--enable_tls', '-et', default=Config.enable_tls,
                         help='Whether or not to enable TLS')
 
+    parser.add_argument('--store_results', '-sr', action='store_true',
+                        help='Setting this option will cause all test runs to be recorded into influxdb')
+
+    parser.add_argument('--load_type', '-lt', default=Config.load_type,
+                        help='Type of load to be generated (direct or proxy)')
+
+    parser.add_argument('--use_iam_role', '-ir', default=Config.use_iam_role,
+                        help='Whether or not to use IAM role for authentication')
     return parser.parse_args()
 
 
@@ -127,8 +140,8 @@ def __calculate_instances_required(total_users, users_per_instance):
 
 
 # Starts the process of calling delete_stack after duration. Starts timer and displays messages updating users on status
-def __start_delete_stack(additional_delay, config, duration, stack_name):
-    total_wait_time = additional_delay + int(duration)
+def __start_delete_stack(additional_delay, config):
+    total_wait_time = additional_delay + int(config.duration)
     minutes = total_wait_time / 60
     finish_time = datetime.now(timezone.utc) + timedelta(seconds=total_wait_time)
     start_time = datetime.now(timezone.utc)
@@ -142,7 +155,7 @@ def __start_delete_stack(additional_delay, config, duration, stack_name):
                     total_wait_time - diff.seconds) / 60))
             time.sleep(MESSAGE_INTERVAL)
 
-    delete_stack.main(config, stack_name_override=stack_name)
+    delete_stack.main(config)
 
 
 def __get_stack_name(config):
@@ -158,34 +171,53 @@ def __get_stack_name(config):
 
 
 def create_stack_from_ui(json_params, ova=False):
-    set_config_from_ui(json_params, ova=ova)
-    (instances_required, users_per_instance) = __calculate_instances_required(Config.total_users, Config.users_per_instance)
-    Config.users_per_instance = users_per_instance
-    Config.instances_required = instances_required
-    set_grafana_key_and_url(Config)
-    Config.min_age = 0
-    duration = json_params['duration']
+    ui_config = Config()
+    set_config_from_ui(ui_config, json_params, ova=ova)
+    (instances_required, users_per_instance) = __calculate_instances_required(ui_config.total_users, ui_config.users_per_instance)
+    ui_config.users_per_instance = users_per_instance
+    ui_config.instances_required = instances_required
+    set_grafana_key_and_url(ui_config)
+    ui_config.min_age = 0
     print("Creating Load Generators...")
-    stack_name = create_stack.main(Config)
-    Config.stack_name = stack_name
+    stack_name = create_stack.main(ui_config)
+    ui_config.stack_name = stack_name
 
     print("Creating dashboard...")
-    dashboard_url = create_dashboard.main(Config)
+    dashboard_url, grafana_uid = create_dashboard.main(ui_config)
 
-    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, Config, duration, stack_name))
+    delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()
+
+    if not ova and ui_config.store_results not in ["", None] and bool(int(ui_config.store_results)):
+        running_tests.add(stack_name)
+        results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(ui_config, grafana_uid))
+        results_analysis_thread.start()
 
     return dashboard_url, stack_name
 
 
+def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
+    start_time = str(datetime.now())
+    time.sleep(additional_delay + int(config.duration))
+    run_id = uuid.uuid4()
+    final_time = str(datetime.now())
+    if config.stack_name in running_tests:
+        print("test completed, storing results to the database")
+        database_insert_test(config, run_id, grafana_uid, start_time, final_time)
+        running_tests.remove(config.stack_name)
+
+
 def delete_stack_from_ui(stack_name):
-    Config.stack_name = stack_name
-    Config.min_age = 0
-    delete_stack.main(Config, stack_name_override=stack_name)
+    ui_config = Config()
+    ui_config.stack_name = stack_name
+    ui_config.min_age = 0
+    delete_stack.main(ui_config)
+    running_tests.remove(stack_name)
 
 
 def main(config):
     dashboard_url = ''
+    grafana_uid = ''
     print("Creating Load Generators...")
     stack_name = create_stack.main(config)
 
@@ -193,13 +225,17 @@ def main(config):
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        dashboard_url = create_dashboard.main(config)
+        dashboard_url, grafana_uid = create_dashboard.main(config)
 
     if config.preserve_stack:
         print("Stack will not be automatically deleted.")
     else:
-        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config, config.duration, config.stack_name))
+        delete_stack_thread = Thread(target=__start_delete_stack, args=(DELETE_TIME_OFFSET, config))
         delete_stack_thread.start()
+
+    if config.store_results:
+        analyzer_thread = Thread(target=store_and_analyze_after_duration, args=(config, grafana_uid))
+        analyzer_thread.start()
 
     return dashboard_url, stack_name
 
@@ -251,7 +287,8 @@ if __name__ == "__main__":
     Config.icap_server_port = args.icap_server_port
     Config.tls_verification_method = args.tls_verification_method
     Config.enable_tls = args.enable_tls
-
+    Config.load_type = args.load_type
+    Config.use_iam_role = args.use_iam_role
     # these are flag/boolean arguments
     if args.exclude_dashboard:
         Config.exclude_dashboard = True
@@ -262,6 +299,11 @@ if __name__ == "__main__":
         Config.preserve_stack = True
     elif Config.preserve_stack:
         Config.preserve_stack = int(Config.preserve_stack) == 1
+
+    if args.store_results:
+        Config.store_results = True
+    elif Config.store_results:
+        Config.store_results = int(Config.store_results) == 1
 
     Config.stack_name = __get_stack_name(Config)
 

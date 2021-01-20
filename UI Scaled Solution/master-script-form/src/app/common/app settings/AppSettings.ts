@@ -6,4 +6,5 @@ export class AppSettings {
     public static cookiesExist: boolean;
     public static testPrefixSet = new Set<string>();
     public static addingPrefix: boolean = false;
+    public static serverIp: string = "http://127.0.0.1:5000/"
 }

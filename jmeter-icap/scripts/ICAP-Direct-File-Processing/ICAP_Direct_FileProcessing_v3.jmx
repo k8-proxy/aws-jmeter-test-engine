@@ -434,11 +434,10 @@ File outFile = new File(&quot;${outputPath}/&quot;+uuid+&quot;_${fileName}&quot;
  
 //Use MD5 algorithm
 MessageDigest out_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
-String out_checksum=&quot;out&quot;;
+String out_checksum=&quot;not found&quot;;
  try {
 //Get the checksum
  out_checksum = getFileChecksum(out_Digest, outFile);
- 
 
  }
  catch (Exception e) {
@@ -465,18 +464,31 @@ while( (line = in.readLine()) != null) {
   logCommandOutput.append(line);
   log.info(&quot;line is &quot;+line);
 
+ if (line.contains(&quot;X-Adaptation-File-Id&quot;)) {
+    log.info(line+ &quot; for file&quot;+uuid+&quot;_${fileName}&quot;);
+  }
+
+  
   if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;&quot;${rebuild_hash}&quot;.equals(out_checksum)) {
      SampleResult.setSuccessful(true);
      SampleResult.setResponseCode(&quot;200&quot;);
      log.info(&quot;My line is &quot;+line);
   }
 
-  if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)) {
+  if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)&amp;&amp;!out_checksum.equals(&quot;not found&quot;)) {
   	SampleResult.setSuccessful(false);
      SampleResult.setResponseCode(&quot;555&quot;);
-     log.info(&quot;Hash is mismatching &quot;+ &quot;Rebuild hash is &quot;+ &quot;${rebuild_hash}&quot;+&quot;.Out File Hash is &quot;+out_checksum);
+     log.info(&quot;Hash is mismatching &quot;+ &quot;Rebuild hash is &quot;+ &quot;${rebuild_hash}&quot;+&quot;.Out File Hash is &quot;+out_checksum+ &quot;out file is &quot;+outFile);
   }
-  
+
+  /*if (line.contains(&quot;failed/timedout&quot;)) {
+
+  	SampleResult.setResponseCode(&quot;556&quot;);
+     SampleResult.setSuccessful(false);
+     SampleResult.setResponseMessage(&quot;Connection Time Out&quot;);
+     log.info(&quot;Response Code is 556&quot;+ &quot;Connection Time Out&quot;);
+  	
+  	}*/
   if (line.contains(&quot;ICAP/1.0 204&quot;)) {
      SampleResult.setResponseCode(&quot;204&quot;);
      SampleResult.setSuccessful(true);
@@ -546,7 +558,7 @@ while( (line = in.readLine()) != null) {
      break;
   }
 
-   if (line.contains(&quot;Failed to connect to icap server&quot;)) {
+   if (line.contains(&quot;Failed to connect to icap server&quot;)||line.contains(&quot;failed/timedout&quot;)) {
      SampleResult.setResponseCode(&quot;522&quot;);
      SampleResult.setResponseMessage(&quot;522 Failed to connect to icap server&quot;);
      log.info(&quot;Response Code is 522&quot;);
@@ -682,13 +694,21 @@ log.info(&quot;Host is &quot;+host);
 
  fileName=&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
  log.info(&quot;Filename is &quot;+fileName);
-
+try {
   s3client.putObject(
           bucketName, 
           fileName,
           new File(fileName)
         );
-   log.info(&quot;File is uploaded to out folder &quot;+fileName);</stringProp>
+   log.info(&quot;File is uploaded to out folder &quot;+fileName);
+
+}
+
+catch (Exception e){
+
+log.info (&quot;There is no out file generated for &quot;+fileName);
+	
+	} </stringProp>
             <stringProp name="scriptLanguage">java</stringProp>
           </JSR223Sampler>
           <hashTree/>
