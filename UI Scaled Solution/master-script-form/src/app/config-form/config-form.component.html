@@ -82,7 +82,7 @@
 
     <div class="form-group">
         <label>Port</label>
-        <input type="text" class="form-control" formControlName="port" placeholder="default: {{portDefault}}">
+        <input type="text" class="form-control" formControlName="port" placeholder="{{portDefaultPlaceHolder}}">
         <small class="form-text text-muted">Port used to connect ICAP endpoint</small>
         <div *ngIf="port.dirty && port.invalid">
             <div class="alert alert-danger" *ngIf="port.errors.pattern">Please provide a number value.</div>
