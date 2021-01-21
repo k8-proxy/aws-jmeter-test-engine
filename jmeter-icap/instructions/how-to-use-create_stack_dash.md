@@ -5,7 +5,7 @@
   * [Introduction](#introduction)
   * [Prerequisites](#prerequisites)
   * [Using config.env to pass parameters to create_stack_dash.py](#using-configenv-to-pass-parameters-to-create-stack-dashpy)
-  * [Options available for the create_stack_dash.py script](#options-available-for-the-create-stack-dashpy-script)
+  * [Options/Parameters available for the create_stack_dash.py script](#options-available-for-the-create-stack-dashpy-script)
   * [How create_stack_dash.py works](#how-create-stack-dashpy-works)
   * [Running the create_stack_dash.py script](#running-the-create-stack-dashpy-script)
   * [Troubleshooting](#troubleshooting)
