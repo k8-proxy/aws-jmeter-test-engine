@@ -28,6 +28,15 @@ sudo systemctl status apache2
 sudo systemctl enable apache2
 ```
 
+Make shell scripts executable
+
+```bash
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+sudo chmod +x exec_scaled.sh
+sudo chmod +x stopTests.sh
+sudo chmod +x changeIP.sh
+```
+
 For back end, install Flask and dependencies. A requirements file is already set up and can be used to get the necessary packages. Navigate to folder and install:
 
 ```
@@ -53,10 +62,11 @@ cd /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form
 sudo ng build --prod
 ```
 
-This will generate a dist folder that contains the files that need to be copied into the apache server.
+This will generate a dist folder that contains the files that need to be copied into the apache server. Once the files are copied to the html folder, the Apache server will need to be restarted:
 
 ```
 sudo cp -a /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form/dist/master-script-form/. /var/www/html/
+sudo systemctl restart apache2.service
 ```
 
 Now the UI should be accessible via the virtual machine's IP (i.e. http://virtual-macine-ip)
@@ -108,4 +118,11 @@ The service should now be started and running in the background. To view this se
 
 ```
 sudo journalctl -u flask_scaled
+```
+
+Lastly, the changeIP shell script will need to be executed:
+
+```
+cd /opt/script
+sudo ./changeIP.sh
 ```
