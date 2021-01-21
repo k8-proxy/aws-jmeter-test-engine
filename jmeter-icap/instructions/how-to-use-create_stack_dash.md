@@ -94,9 +94,12 @@ EXCLUDE_DASHBOARD=0
 PRESERVE_STACK=0
 GRAFANA_SERVER_TAG=GrafanaServer
 GRAFANA_SECRET=GrafanaSecret
+USE_IAM_ROLE=no
 STORE_RESULTS=1
 MIN_AGE=0
 LOAD_TYPE=Direct
+SHAREPOINT_IP=
+SHAREPOINT_HOST_NAMES=
 TENANT_ID=
 CLIENT_ID=
 CLIENT_SECRET=
@@ -240,6 +243,24 @@ This takes no arguments if used in args, 0/1 values if used in config.env. If se
 <td>--load_type, -lt</td><td> LOAD_TYPE </td>
 <td>
 The type of load to be generated (Direct, Proxy, or SharePoint)
+</td>
+</tr>
+<tr>
+<td>--use_iam_role, -lt</td><td>USE_IAM_ROLE</td>
+<td>
+Whether or not Load Generators will utilise an IAM role (takes "yes" or "no" as arguments)
+</td>
+</tr>
+<tr>
+<td> --sharepoint_ip, -spip </td> <td>SHAREPOINT_IP</td>
+<td>
+Sharepoint IP address
+</td>
+</tr>
+<tr>
+<td> --sharepoint_host_names, -sphosts </td> <td>SHAREPOINT_HOST_NAMES</td>
+<td>
+SharePoint Hostnames
 </td>
 </tr>
 <tr>
