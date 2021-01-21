@@ -193,7 +193,7 @@ The framework provides 2 options to trigger load:
 
 Option 1: UI interface. 
 - Please, follow the following instructions to start the load via UI:
-    - https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-generate-Scaled-Load-via-UI.md this link to be able to generate load via UI
+    - https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-generate-Scaled-Load-via-UI.md 
 
 Option 2: Via command line.
 - Please, follow the following instructions to start the load via command line:
