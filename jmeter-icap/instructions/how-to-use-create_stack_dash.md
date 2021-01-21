@@ -254,13 +254,13 @@ Whether or not Load Generators will utilise an IAM role (takes "yes" or "no" as 
 <tr>
 <td> --sharepoint_ip, -spip </td> <td>SHAREPOINT_IP</td>
 <td>
-Sharepoint IP address
+Sharepoint IP address that will be written to /etc/hosts in load generators
 </td>
 </tr>
 <tr>
 <td> --sharepoint_host_names, -sphosts </td> <td>SHAREPOINT_HOST_NAMES</td>
 <td>
-SharePoint Hostnames
+SharePoint Hostnames that will be written to /etc/hosts in load generators
 </td>
 </tr>
 <tr>
