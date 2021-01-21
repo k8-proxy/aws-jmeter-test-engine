@@ -41,9 +41,9 @@ class InfluxDBMetrics():
         print('Metrics module initialization PASSED')
 
     @staticmethod
-    def initial_time(prefix):
+    def initial_time(database):
         try:
-            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT FIRST("count") FROM ' + prefix + '_jmetericap;')
+            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT FIRST("count") FROM ' + database)
             points = rs.get_points()
             for item in points:
                 time = item['time']
@@ -57,9 +57,9 @@ class InfluxDBMetrics():
 
 
     @staticmethod
-    def final_time(prefix):
+    def final_time(database):
         try:
-            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT LAST("count") FROM ' + prefix + '_jmetericap;')
+            rs = InfluxDBMetrics.jmeter_db_client.query('SELECT LAST("count") FROM ' + database)
             points = rs.get_points()
             for item in points:
                 time = item['time']
@@ -72,10 +72,10 @@ class InfluxDBMetrics():
             exit(1)
 
     @staticmethod
-    def count_query(prefix, start, finish, condition):
+    def count_query(database, start, finish, condition):
         try:
             str_query = 'SELECT SUM("count") FROM '\
-                    + prefix + '_jmetericap WHERE '\
+                    + database + ' WHERE '\
                     + ' time >= \'' + start + '\' AND ' \
                     + ' time <= \'' + finish + '\' AND '\
                     + condition \
@@ -94,21 +94,21 @@ class InfluxDBMetrics():
 
     @staticmethod
     def total_reguests(prefix, start, finish):
-        return InfluxDBMetrics.count_query(prefix, start, finish, ' transaction =~ /ICAP-Document-Process/ AND statut =~ /o/')
+        return InfluxDBMetrics.count_query(prefix + '_jmetericap', start, finish, ' transaction =~ /ICAP-Document-Process/ AND statut =~ /o/')
 
     @staticmethod
     def failed_reguests(prefix, start, finish):
-        return InfluxDBMetrics.count_query(prefix, start, finish, ' transaction =~ /ICAP-Document-Process/ AND statut=\'ko\'')
+        return InfluxDBMetrics.count_query(prefix + '_jmetericap', start, finish, ' transaction =~ /ICAP-Document-Process/ AND statut=\'ko\'')
 
     @staticmethod
     def successful_reguests(prefix, start, finish):
-        return InfluxDBMetrics.count_query(prefix, start, finish, ' transaction =~ /ICAP-Document-Process/ AND statut=\'ok\'')
+        return InfluxDBMetrics.count_query(prefix + '_jmetericap', start, finish, ' transaction =~ /ICAP-Document-Process/ AND statut=\'ok\'')
 
     @staticmethod
-    def mean_query(prefix, start, finish, field):
+    def mean_query(database, start, finish, field):
         try:
             str_query = 'SELECT MEAN("' + field + '") FROM '\
-                    + prefix + '_jmetericap WHERE '\
+                    + database + ' WHERE '\
                     + 'statut =~ /o/ AND ' \
                     + ' time >= \'' + start + '\' AND ' \
                     + ' time <= \'' + finish + '\';'
@@ -126,14 +126,50 @@ class InfluxDBMetrics():
 
     @staticmethod
     def average_resp_time(prefix, start, finish):
-        return InfluxDBMetrics.mean_query(prefix, start, finish, 'pct95.0')
+        return InfluxDBMetrics.mean_query(prefix + '_jmetericap', start, finish, 'pct95.0')
+
+    # ProxySite
+    @staticmethod
+    def total_reguests_proxysite(prefix, start, finish):
+        return InfluxDBMetrics.count_query(prefix + '_jmeterproxysite', start, finish, ' transaction =~ /FileProcess/ AND statut =~ /o/')
+
+    @staticmethod
+    def successful_reguests_proxysite(prefix, start, finish):
+        return InfluxDBMetrics.count_query(prefix + '_jmeterproxysite', start, finish, ' transaction =~ /FileProcess/ AND statut = \'ok\'')
+
+    @staticmethod
+    def failed_reguests_proxysite(prefix, start, finish):
+        return InfluxDBMetrics.count_query(prefix + '_jmeterproxysite', start, finish, ' transaction =~ /FileProcess/ AND statut = \'ko\'')
+
+    @staticmethod
+    def average_resp_time_proxysite(prefix, start, finish):
+        return InfluxDBMetrics.mean_query(prefix + '_jmeterproxysite', start, finish, 'pct95.0')
+
+    # SharePoint
+    @staticmethod
+    def total_reguests_sharepoint(prefix, start, finish):
+        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /File/ AND statut =~ /o/')
+
+    @staticmethod
+    def successful_reguests_sharepoint(prefix, start, finish):
+        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /File/ AND statut = \'ok\'')
+
+    @staticmethod
+    def failed_reguests_sharepoint(prefix, start, finish):
+        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /File/ AND statut = \'ko\'')
+
+    @staticmethod
+    def average_resp_time_sharepoint(prefix, start, finish):
+        return InfluxDBMetrics.mean_query(prefix + '_jmetersharepoint', start, finish, 'pct95.0')
 
     @staticmethod
     def main(argv):
 
         help_string = 'python3 metrics.py -n <host name> -p <host port>'
+        prefix = 'demo'
+
         try:
-            opts, args = getopt.getopt(argv,"hn:p:r",["name=","port="])
+            opts, args = getopt.getopt(argv,"hn:p:r:",["name=","port=","prefix="])
         except getopt.GetoptError:
             print (help_string)
             sys.exit(2)
@@ -145,22 +181,48 @@ class InfluxDBMetrics():
                 InfluxDBMetrics.hostname = arg
             elif opt in ('-p', '--port'):
                 InfluxDBMetrics.hostport = arg
+            elif opt in ('-r', '--prefix'):
+                prefix = arg
 
         InfluxDBMetrics.log_level(LOG_LEVEL)
         print("host name - {}".format(InfluxDBMetrics.hostname))
         print("host port - {}".format(InfluxDBMetrics.hostport))      
+        print("prefix    - {}".format(prefix))      
 
         InfluxDBMetrics.init()
 
-        prefix = 'demo'
-        start_time = InfluxDBMetrics.initial_time(prefix)
-        finish_time = InfluxDBMetrics.final_time(prefix)
+        print('\n\nICAP Test')
+        start_time = InfluxDBMetrics.initial_time(prefix + '_jmetericap')
+        finish_time = InfluxDBMetrics.final_time(prefix + '_jmetericap')
         print('Initial time {}'.format(start_time))
         print('Final time {}'.format(finish_time))
         print('Total requests {}'.format(InfluxDBMetrics.total_reguests(prefix, start_time, finish_time)))
         print('Failed requests {}'.format(InfluxDBMetrics.failed_reguests(prefix, start_time, finish_time)))
         print('Successfull requests {}'.format(InfluxDBMetrics.successful_reguests(prefix, start_time, finish_time)))
         print('Average response time {}'.format(InfluxDBMetrics.average_resp_time(prefix, start_time, finish_time)))
+
+        print('\n\nProxySite Test')
+        prefix = 'ajProxyTest'
+        start_time = InfluxDBMetrics.initial_time(prefix + '_jmeterproxysite')
+        finish_time = InfluxDBMetrics.final_time(prefix + '_jmeterproxysite')
+        print('Initial time {}'.format(start_time))
+        print('Final time {}'.format(finish_time))
+        print('Total requests {}'.format(InfluxDBMetrics.total_reguests_proxysite(prefix, start_time, finish_time)))
+        print('Failed requests {}'.format(InfluxDBMetrics.failed_reguests_proxysite(prefix, start_time, finish_time)))
+        print('Successfull requests {}'.format(InfluxDBMetrics.successful_reguests_proxysite(prefix, start_time, finish_time)))
+        print('Average response time {}'.format(InfluxDBMetrics.average_resp_time_proxysite(prefix, start_time, finish_time)))
+
+        print('\n\nSharepoint Test')
+        prefix = 'sharepoint'    
+        start_time = InfluxDBMetrics.initial_time(prefix + '_jmetersharepoint')
+        finish_time = InfluxDBMetrics.final_time(prefix + '_jmetersharepoint')
+        print('Initial time {}'.format(start_time))
+        print('Final time {}'.format(finish_time))
+        print('Total requests {}'.format(InfluxDBMetrics.total_reguests_sharepoint(prefix, start_time, finish_time)))
+        print('Failed requests {}'.format(InfluxDBMetrics.failed_reguests_sharepoint(prefix, start_time, finish_time)))
+        print('Successfull requests {}'.format(InfluxDBMetrics.successful_reguests_sharepoint(prefix, start_time, finish_time)))
+        print('Average response time {}'.format(InfluxDBMetrics.average_resp_time_sharepoint(prefix, start_time, finish_time)))
+
 
 if __name__ == "__main__":
     InfluxDBMetrics.main(sys.argv[1:])

@@ -183,10 +183,12 @@ export class SharedService {
         let start = startTime.getTime(); //gets time in epoch, for use when setting grafana time window
         let end = start + (runTime * 1000);
         let name = prefix;
-        if (loadType === "Direct") {
-            name += "-icap-live-performance-dashboard"
-        } else if (loadType === "Proxy") {
-            name += "-proxy-site-live-performance-dashboard"
+        if (loadType === AppSettings.loadTypeNames[LoadTypes.Direct]) {
+            name += "-icap-live-performance-dashboard";
+        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+            name += "-proxy-site-live-performance-dashboard";
+        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+            name += "-demo-dashboard-sharepoint";
         }
 
         let link = this.grafanaUrl + 'd/' + grafanaUid + '/' + name + "?&from=" + start + "&to=" + end;
