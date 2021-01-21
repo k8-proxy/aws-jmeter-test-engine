@@ -74,6 +74,21 @@
             <stringProp name="Argument.value">${__P(p_filetype,sharepoint_files.csv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="tenantId" elementType="Argument">
+            <stringProp name="Argument.name">tenantId</stringProp>
+            <stringProp name="Argument.value">${__P(p_tenantId,testTenant)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="clientId" elementType="Argument">
+            <stringProp name="Argument.name">clientId</stringProp>
+            <stringProp name="Argument.value">${__P(p_clientId,testClient)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="clientSecret" elementType="Argument">
+            <stringProp name="Argument.name">clientSecret</stringProp>
+            <stringProp name="Argument.value">${__P(p_clientSecret,testSecret)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
         <stringProp name="TestPlan.comments">aws-testengine-s3  ${__P(p_url,gw-icap01.westeurope.azurecontainer.io)} ${__P(p_influxHost,localhost)}</stringProp>
       </Arguments>
@@ -91,7 +106,7 @@
       </CSVDataSet>
       <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
@@ -110,43 +125,70 @@
           <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
         </CookieManager>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="false">
-          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-            <collectionProp name="Arguments.arguments">
-              <elementProp name="" elementType="HTTPArgument">
-                <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">grant_type=client_credentials&#xd;
-&amp;resource=00000003-0000-0ff1-ce00-000000000000/saaspoc1.sharepoint.com@13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c&#xd;
-&amp;client_id= 2ca04957-1546-44a0-93bd-808f2602e011@13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c&#xd;
-&amp;client_secret=vp6wve6da.2_fK-D75k4669N9U8-p1qiE~</stringProp>
-                <stringProp name="Argument.metadata">=</stringProp>
-              </elementProp>
-            </collectionProp>
-          </elementProp>
-          <stringProp name="HTTPSampler.domain">accounts.accesscontrol.windows.net</stringProp>
-          <stringProp name="HTTPSampler.port"></stringProp>
-          <stringProp name="HTTPSampler.protocol">https</stringProp>
-          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c/tokens/OAuth/2</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
-          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
-        </HTTPSamplerProxy>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-MoveFile2inFolder" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-            <collectionProp name="HeaderManager.headers">
-              <elementProp name="" elementType="Header">
-                <stringProp name="Header.name">Content-Type</stringProp>
-                <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
-              </elementProp>
-            </collectionProp>
-          </HeaderManager>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Move2in" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import org.apache.commons.io.FileUtils;
+
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+
+access_key = vars.get(&quot;aws_access_key&quot;);
+ secret_key = vars.get(&quot;aws_secret_key&quot;);
+service = vars.get(&quot;aws_service_name&quot;);
+bucketName = vars.get(&quot;s3bucketName&quot;);
+region=vars.get(&quot;aws_region&quot;);
+
+host = bucketName+&quot;.&quot;+service+&quot;.&quot;+region+&quot;.&quot;+&quot;amazonaws.com&quot;;
+
+log.info(&quot;Host is &quot;+host);
+
+
+
+        //put your accesskey and secretkey here
+ private static final AWSCredentials credentials = new BasicAWSCredentials(
+          access_key, 
+          secret_key
+        );
+  
+  
+ AmazonS3 s3client = AmazonS3ClientBuilder
+          .standard()
+          .withCredentials(new AWSStaticCredentialsProvider(credentials))
+          .withRegion(region)
+          .build();
+
+
+ fileName=vars.get(&quot;path&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
+ log.info(&quot;Filename is &quot;+fileName);
+ inFileName=vars.get(&quot;inPath&quot;)+&quot;/&quot;+vars.get(&quot;path&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
+
+ S3Object s3object = s3client.getObject(bucketName, fileName);
+S3ObjectInputStream inputStream = s3object.getObjectContent();
+FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
+
+   log.info(&quot;File is downloaded to in folder &quot;+inFileName);</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
           <hashTree/>
         </hashTree>
         <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Generate UUID" enabled="true">
@@ -168,9 +210,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">grant_type=client_credentials&#xd;
-&amp;resource=00000003-0000-0ff1-ce00-000000000000/saaspoc1.sharepoint.com@13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c&#xd;
-&amp;client_id= fbd79ba4-6945-4d06-989f-934c5047bef9@13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c&#xd;
-&amp;client_secret=Mgu85o6jhj1gKUqye%2BghVOlw9ApIt08wAq%2B4k9XE91A=</stringProp>
+&amp;resource=00000003-0000-0ff1-ce00-000000000000/${url}@${tenantId}&#xd;
+&amp;client_id= ${clientId}&#xd;
+&amp;client_secret=${clientSecret}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -179,7 +221,7 @@
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/13dfd3fd-d53d-4cb7-bc40-9fdd4c666d9c/tokens/OAuth/2</stringProp>
+          <stringProp name="HTTPSampler.path">/${tenantId}/tokens/OAuth/2</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -245,8 +287,8 @@
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="${type}_Upload_File" enabled="true">
           <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
             <collectionProp name="HTTPFileArgs.files">
-              <elementProp name="/Users/faridsha/Documents/GitHub/aws-jmeter-test-engine-v1/jmeter-icap/test-data/gov_uk_files/${path}/${fileName}" elementType="HTTPFileArg">
-                <stringProp name="File.path">/Users/faridsha/Documents/GitHub/aws-jmeter-test-engine-v1/jmeter-icap/test-data/gov_uk_files/${path}/${fileName}</stringProp>
+              <elementProp name="${inPath}/${path}/${fileName}" elementType="HTTPFileArg">
+                <stringProp name="File.path">${inPath}/${path}/${fileName}</stringProp>
                 <stringProp name="File.paramname"></stringProp>
                 <stringProp name="File.mimetype"></stringProp>
               </elementProp>
@@ -268,6 +310,7 @@
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="TestPlan.comments">${inPath}/${fileName}</stringProp>
         </HTTPSamplerProxy>
         <hashTree>
           <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
@@ -336,8 +379,136 @@
             <intProp name="Assertion.test_type">16</intProp>
           </ResponseAssertion>
           <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="FileSaver.filename"></stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.successonly">false</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">false</boolProp>
+            <stringProp name="FileSaver.variablename">${outPath}/${uid}_${fileName}</stringProp>
+          </ResultSaver>
+          <hashTree/>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="JSR223 Assertion" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+
+private static String getFileChecksum(MessageDigest digest, File file) throws IOException
+{
+	
+    //Get file input stream for reading the file content
+    FileInputStream fis = new FileInputStream(file);
+     
+    //Create byte array to read data in chunks
+    byte[] byteArray = new byte[1024];
+    int bytesCount = 0; 
+      
+    //Read file data and update in message digest
+    while ((bytesCount = fis.read(byteArray)) != -1) {
+        digest.update(byteArray, 0, bytesCount);
+    };
+     
+    //close the stream; We don&apos;t need it now.
+    fis.close();
+     
+    //Get the hash&apos;s bytes
+    byte[] bytes = digest.digest();
+     
+    //This bytes[] has bytes in decimal format;
+    //Convert it to hexadecimal format
+   StringBuilder sb = new StringBuilder();
+    for(int i=0; i&lt; bytes.length ;i++)
+    {
+        sb.append(Integer.toString((bytes[i] &amp; 0xff) + 0x100, 16).substring(1));
+    }
+  
+    //return complete hash
+     return sb.toString();
+}
+
+ String uuid=vars.get(&quot;uid&quot;);
+ 
+//Create checksum for this file
+File outFile = new File(&quot;${outPath}/&quot;+uuid+&quot;_${fileName}&quot;);
+
+//Use MD5 algorithm
+MessageDigest out_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
+String out_checksum=&quot;not found&quot;;
+ try {
+//Get the checksum
+ out_checksum = getFileChecksum(out_Digest, outFile);
+
+ }
+ catch (Exception e) {
+
+log.info (&quot;Failed to check out file hash&quot;);
+
+ }
+SampleResult.setSuccessful(true);
+SampleResult.setResponseCode(&quot;555&quot;);
+//see checksum
+log.info(&quot;Out file hash is &quot;+out_checksum);
+
+if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)&amp;&amp;!out_checksum.equals(&quot;not found&quot;)) {
+  	SampleResult.setSuccessful(false);
+     SampleResult.setResponseCode(&quot;555&quot;);
+     log.info(&quot;Hash is mismatching &quot;+ &quot;Rebuild hash is &quot;+ &quot;${rebuild_hash}&quot;+&quot;.Out File Hash is &quot;+out_checksum+ &quot;out file is &quot;+outFile);
+  }</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Assertion>
+          <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="${type}_Delete_File" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_CleanOutFile" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CleanOutFile" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+
+
+log.info(&quot;Cleaning file from out folder &quot;);
+
+//clean out folder
+String removeOutFile=&quot;rm -Rf &quot;+&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+s3p_out = Runtime.getRuntime().exec(removeOutFile);
+s3p_out.waitFor();
+
+log.info(&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; file deleted from out folder &quot;);
+/*
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+
+in.readLine();
+String line;
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;OK&quot;))
+     SampleResult.setSuccessful(false);
+     break;
+     
+}
+
+in.close();
+log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="${type}_Delete_File" enabled="false">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -443,7 +614,7 @@
         </BackendListener>
         <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
-          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <boolProp name="ResultCollector.error_logging">true</boolProp>
           <objProp>
             <name>saveConfig</name>
             <value class="SampleSaveConfiguration">
