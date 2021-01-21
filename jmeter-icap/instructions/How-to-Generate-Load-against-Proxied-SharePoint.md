@@ -70,6 +70,33 @@ Click on documents and create new folder named "pcre". files will be upload to t
 
 ![vm_load_vision](img/Share-Point-Folder.png)
 
+## Modify Sharepoint related parameters in config.env file
+
+The Sharepoint Load Script needs to know tenant id, client id and secret key to successfully upload and download files.
+
+Once these parameters are created then they need to be put in the framework config.env file.
+
+In EC2 virtual machine created via provided AMI, the following manual configurations needed to be done:
+
+- Go to scripts folder and open config.env file for editing:
+
+```bash
+sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/config.env
+```
+ Modify the following parameters:
+
+- TENANT_ID : same as what is created above.
+- CLIENT_ID: same as what is created above
+- CLIENT_SECRET: same as what is created above.
+
+save the file and restart the following service:
+
+```bash
+sudo systemctl stop flask_scaled 
+sudo systemctl start flask_scaled
+sudo systemctl status flask_scaled
+```
+
 ## How to run load against Sharepoint end point?
 
 Load generation can be triggered via provided UI interface.
