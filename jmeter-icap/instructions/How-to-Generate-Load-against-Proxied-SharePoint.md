@@ -36,17 +36,25 @@ Note: Client Id generated during APP registration appended with an @, followed b
 - Paste the value of “Client Id:” from the notepad in the App Id field
 - Click Lookup
 - Update the Permission Request XML: field the below values:
-
+```bash
 <AppPermissionRequests AllowAppOnlyPolicy="true"><AppPermissionRequest
 Scope="http://sharepoint/content/sitecollection/web"
 Right="Write"/></AppPermissionRequests>
-
+```
 - Click Create
+
+The following links have information regarding recommended practices with respect to security and best practices: 
+https://docs.microsoft.com/en-us/sharepoint/dev/sp-add-ins/add-in-permissions-in-sharepoint
+https://docs.microsoft.com/en-us/sharepoint/dev/solution-guidance/security-apponly-azureacs 
 
 **Step3. Enable Grant App Permission**
 
-For new SharePoint subscription Grant App Permission is disabled by default or the browser link https://xxxx-admin.sharepoint.com/_layouts/15/appinv.aspx is disabled. To enable this feature, we need to connect to SharePoint using Windows PowerShell and then run set-spotenant -DisableCustomAppAuthentication $false.
-Run the following commands on PowerShell.
+For new SharePoint subscription Grant App Permission is disabled by default or the browser link https://xxxx-admin.sharepoint.com/_layouts/15/appinv.aspx is disabled. 
+
+To enable this feature, we need to connect to SharePoint using Windows PowerShell and then run set-spotenant -DisableCustomAppAuthentication $false.
+
+Run the following commands on PowerShell:
+
 ```bash
 Install-Module -Name Microsoft.Online.SharePoint.PowerShell
 $adminUPN="<the full email address of a SharePoint administrator account, example: jdoe@contosotoycompany.onmicrosoft.com>"
