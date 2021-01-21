@@ -193,7 +193,7 @@ export class SharedService {
         if (!this.grafanaUrl.endsWith('/')) {
             this.grafanaUrl += '/';
         }
-        if (!this.grafanaUrl.startsWith('http://')) {
+        if (!this.grafanaUrl.startsWith('http')) {
             this.grafanaUrl = 'http://' + this.grafanaUrl;
         }
         let link = this.grafanaUrl + 'd/' + grafanaUid + '/' + name + "?&from=" + start + "&to=" + end;
