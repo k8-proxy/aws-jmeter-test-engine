@@ -10,12 +10,12 @@ def terminate_java_processes():
     subprocess.Popen([script_path])
 
 
-def modify_hosts_file(ip_addr: str):
-    content = "127.0.0.1 localhost\n{0} www.gov.uk.local assets.publishing.service.gov.uk.local www.gov.uk assets.publishing.service.gov.uk.glasswall-icap.com".format(ip_addr)
-    with open("/etc/hosts", "w") as f:
-        f.write(content)
-        f.close()
-
+def modify_hosts_file(ip_addr: str, ova=False):
+    if ova:
+        content = "127.0.0.1 localhost\n{0} www.gov.uk.local assets.publishing.service.gov.uk.local www.gov.uk assets.publishing.service.gov.uk.glasswall-icap.com".format(ip_addr)
+        with open("/etc/hosts", "w") as f:
+            f.write(content)
+            f.close()
 
 def determine_load_type(config, ova=False):
     if config.load_type == "Direct":
@@ -24,11 +24,18 @@ def determine_load_type(config, ova=False):
         config.grafana_file = 'aws-test-engine-dashboard.json'
         config.test_data_file = 'gov_uk_files.csv'
 
-    elif config.load_type == "Proxy":
+    elif config.load_type == "Proxy Offline":
         config.test_directory = 'ICAP-Proxy-Site'
         config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
         config.grafana_file = 'ProxySite_Dashboard_Template.json'
         config.test_data_file = 'proxysitefiles.csv'
+
+    elif config.load_type == "Proxy SharePoint":
+        config.test_directory = 'ICAP-Sharepoint-Site'
+        config.jmx_script_name = 'ICAP-Sharepoint-Upload-Download-v1.jmx'
+        config.grafana_file = 'Sharepoint-Demo-Dashboard.json'
+        config.test_data_file = 'sharepoint_files.csv'
+
 
 
 def set_config_from_ui(config, json_params, ova=False):
@@ -54,8 +61,19 @@ def set_config_from_ui(config, json_params, ova=False):
         config.load_type = json_params['load_type']
         determine_load_type(config, ova=ova)
 
-        if json_params['load_type'] == 'Proxy':
-            modify_hosts_file(json_params['icap_endpoint_url'])
+        if json_params['load_type'] == 'Proxy Offline':
+            modify_hosts_file(json_params['icap_endpoint_url'], ova)
+        elif json_params['load_type'] == 'Proxy SharePoint':
+
+            sharepoint_ip = str(json_params['sharepoint_hosts'])
+            sharepoint_hosts = ""
+            sharepoint_field_input = str(json_params['sharepoint_hosts'])
+            try:
+                (sharepoint_ip, sharepoint_hosts) = sharepoint_field_input.split(maxsplit=1)
+            except ValueError:
+                print("Please insert both sharepoint IP and Sharepoint Hosts")
+            config.sharepoint_proxy_ip = sharepoint_ip
+            config.sharepoint_host_names = sharepoint_hosts
 
     # ensure that preserve stack and create_dashboard are at default values
     config.preserve_stack = False
