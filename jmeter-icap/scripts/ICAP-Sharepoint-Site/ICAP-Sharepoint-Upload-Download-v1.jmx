@@ -76,17 +76,17 @@
           </elementProp>
           <elementProp name="tenantId" elementType="Argument">
             <stringProp name="Argument.name">tenantId</stringProp>
-            <stringProp name="Argument.value">${__P(p_tenantId,sampletenant)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_tenantId,testTenant)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="clientId" elementType="Argument">
             <stringProp name="Argument.name">clientId</stringProp>
-            <stringProp name="Argument.value">${__P(p_clientId,sampleClientId)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_clientId,testClient)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="clientSecret" elementType="Argument">
             <stringProp name="Argument.name">clientSecret</stringProp>
-            <stringProp name="Argument.value">${__P(p_clientSecret,sampleSecretId)}</stringProp>
+            <stringProp name="Argument.value">${__P(p_clientSecret,testSecret)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -379,8 +379,136 @@ FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
             <intProp name="Assertion.test_type">16</intProp>
           </ResponseAssertion>
           <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="FileSaver.filename"></stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.successonly">false</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">false</boolProp>
+            <stringProp name="FileSaver.variablename">${outPath}/${uid}_${fileName}</stringProp>
+          </ResultSaver>
+          <hashTree/>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="JSR223 Assertion" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+
+private static String getFileChecksum(MessageDigest digest, File file) throws IOException
+{
+	
+    //Get file input stream for reading the file content
+    FileInputStream fis = new FileInputStream(file);
+     
+    //Create byte array to read data in chunks
+    byte[] byteArray = new byte[1024];
+    int bytesCount = 0; 
+      
+    //Read file data and update in message digest
+    while ((bytesCount = fis.read(byteArray)) != -1) {
+        digest.update(byteArray, 0, bytesCount);
+    };
+     
+    //close the stream; We don&apos;t need it now.
+    fis.close();
+     
+    //Get the hash&apos;s bytes
+    byte[] bytes = digest.digest();
+     
+    //This bytes[] has bytes in decimal format;
+    //Convert it to hexadecimal format
+   StringBuilder sb = new StringBuilder();
+    for(int i=0; i&lt; bytes.length ;i++)
+    {
+        sb.append(Integer.toString((bytes[i] &amp; 0xff) + 0x100, 16).substring(1));
+    }
+  
+    //return complete hash
+     return sb.toString();
+}
+
+ String uuid=vars.get(&quot;uid&quot;);
+ 
+//Create checksum for this file
+File outFile = new File(&quot;${outPath}/&quot;+uuid+&quot;_${fileName}&quot;);
+
+//Use MD5 algorithm
+MessageDigest out_Digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
+String out_checksum=&quot;not found&quot;;
+ try {
+//Get the checksum
+ out_checksum = getFileChecksum(out_Digest, outFile);
+
+ }
+ catch (Exception e) {
+
+log.info (&quot;Failed to check out file hash&quot;);
+
+ }
+SampleResult.setSuccessful(true);
+SampleResult.setResponseCode(&quot;555&quot;);
+//see checksum
+log.info(&quot;Out file hash is &quot;+out_checksum);
+
+if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)&amp;&amp;!out_checksum.equals(&quot;not found&quot;)) {
+  	SampleResult.setSuccessful(false);
+     SampleResult.setResponseCode(&quot;555&quot;);
+     log.info(&quot;Hash is mismatching &quot;+ &quot;Rebuild hash is &quot;+ &quot;${rebuild_hash}&quot;+&quot;.Out File Hash is &quot;+out_checksum+ &quot;out file is &quot;+outFile);
+  }</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Assertion>
+          <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="${type}_Delete_File" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_CleanOutFile" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CleanOutFile" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+
+
+log.info(&quot;Cleaning file from out folder &quot;);
+
+//clean out folder
+String removeOutFile=&quot;rm -Rf &quot;+&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+s3p_out = Runtime.getRuntime().exec(removeOutFile);
+s3p_out.waitFor();
+
+log.info(&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; file deleted from out folder &quot;);
+/*
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+
+in.readLine();
+String line;
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;OK&quot;))
+     SampleResult.setSuccessful(false);
+     break;
+     
+}
+
+in.close();
+log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="${type}_Delete_File" enabled="false">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
