@@ -37,9 +37,9 @@ Note: Client Id generated during APP registration appended with an @, followed b
 - Click Lookup
 - Update the Permission Request XML: field the below values:
 ```bash
-<AppPermissionRequests AllowAppOnlyPolicy="true"><AppPermissionRequest
+\<AppPermissionRequests AllowAppOnlyPolicy="true"\>\<AppPermissionRequest
 Scope="http://sharepoint/content/sitecollection/web"
-Right="Write"/></AppPermissionRequests>
+Right="Write"\/\>\<\/AppPermissionRequests\>
 ```
 - Click Create
 
