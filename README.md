@@ -178,7 +178,7 @@ Store keys in AWS Secrets Manager using same steps as step 4.
 Secret Key = Grafana_Api_Key
 Secret Value = Your grafana api key value here
 
-# Step 7. Copy Test Data to S3 & Run python script to trigger load
+# Step 7. Copy Test Data to S3 & Generate load
 
 **Copy Test Data**
 
@@ -187,11 +187,17 @@ Secret Value = Your grafana api key value here
 - upload it's contents to s3 bucket created earlier
 - The folder structure of the test files s3 bucket should be ->  filetype->hashfolders->files
 
-**Run python script to trigger load**
+**How to generate load?**
 
-Next step, please, follow the following instructions to start the load:
+The framework provides 2 options to trigger load:
 
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_stack_dash.md
+Option 1: UI interface. 
+- Please, follow the following instructions to start the load via UI:
+    - https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-generate-Scaled-Load-via-UI.md this link to be able to generate load via UI
+
+Option 2: Via command line.
+- Please, follow the following instructions to start the load via command line:
+    - https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_stack_dash.md
 
 
 

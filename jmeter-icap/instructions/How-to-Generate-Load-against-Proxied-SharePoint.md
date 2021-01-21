@@ -96,6 +96,7 @@ sudo systemctl stop flask_scaled
 sudo systemctl start flask_scaled
 sudo systemctl status flask_scaled
 ```
+Above modifications are specific to sharepoint, see https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-generate-Scaled-Load-via-UI.md this to ensure that other generic paremeters are also modified, if they are not already done. 
 
 ## How to run load against Sharepoint end point?
 

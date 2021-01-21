@@ -106,3 +106,4 @@ Enter admin/glasswall and then dashboard ui will be visible with your own prefix
 
 ![vm_load_vision](img/Dashboard-sample.png)
 
+![vm_load_vision](img/dashboard.png)
