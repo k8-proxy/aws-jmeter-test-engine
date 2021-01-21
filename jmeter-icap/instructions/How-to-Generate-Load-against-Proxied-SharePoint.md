@@ -45,6 +45,7 @@ Right="Write"\/\>\<\/AppPermissionRequests\>
 
 The following links have information regarding recommended practices with respect to security and best practices: 
 https://docs.microsoft.com/en-us/sharepoint/dev/sp-add-ins/add-in-permissions-in-sharepoint
+
 https://docs.microsoft.com/en-us/sharepoint/dev/solution-guidance/security-apponly-azureacs 
 
 **Step3. Enable Grant App Permission**
