@@ -123,6 +123,6 @@ sudo journalctl -u flask_scaled
 Lastly, the changeIP shell script will need to be executed:
 
 ```
-cd /opt/script
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo ./changeIP.sh
 ```
