@@ -48,6 +48,12 @@ class Config(object):
         store_results = os.getenv("STORE_RESULTS")
         load_type = os.getenv("LOAD_TYPE")
         use_iam_role = os.getenv("USE_IAM_ROLE")
+        sharepoint_proxy_ip = os.getenv("SHAREPOINT_PROXY_IP", '')
+        sharepoint_host_names = os.getenv("SHAREPOINT_HOST_NAMES", '')
+
+        tenant_id = os.getenv("TENANT_ID", '')
+        client_id = os.getenv("CLIENT_ID", '')
+        client_secret = os.getenv("CLIENT_SECRET", '')
     except Exception as e:
         print(
             "Please create config.env file similar to config.env.sample or set environment variables for all variables in config.env.sample file")
@@ -71,6 +77,19 @@ def get_size(users_per_instance):
 
     return instance_type, jvm_memory
 
+
+def add_sharepoint_params(config, script_data: str):
+    script_data_lines = script_data.splitlines()
+    for index, line in enumerate(script_data_lines):
+        if line.startswith("sudo JVM_ARGS"):
+            if config.tenant_id not in ["", None]:
+                line += " -Jp_tenantId=" + config.tenant_id
+            if config.client_id not in ["", None]:
+                line += " -Jp_clientId=" + config.client_id
+            if config.client_secret not in ["", None]:
+                line += " -Jp_clientSecret=" + config.client_secret
+            script_data_lines[index] = line
+    return "\n".join(script_data_lines[1:]) + '\n'
 
 def main(config):
     # Authenticate to aws
@@ -106,6 +125,9 @@ def main(config):
     script_data = re.sub("-Jp_use_tls=[a-zA-Z]*", "-Jp_use_tls=" + str(config.enable_tls), script_data)
     script_data = re.sub("-Jp_tls=[a-zA-Z0-9\-\.]*", "-Jp_tls=" + str(config.tls_verification_method), script_data)
 
+    if config.load_type == 'Proxy SharePoint':
+        script_data = add_sharepoint_params(config, script_data)
+
     s3_client = session.client('s3')
     s3_client.put_object(Bucket=config.script_bucket,
                          Body=script_data,
@@ -136,6 +158,15 @@ def main(config):
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = prefix + "LoadTest-" + date_suffix
+    hosts_file_command = ""
+
+    if config.load_type == 'Proxy SharePoint':
+        content = "{0} {1}".format(config.sharepoint_proxy_ip, config.sharepoint_host_names)
+        hosts_file_command = "sudo echo 127.0.0.1 localhost > '/etc/hosts'\nsudo echo {0} >> '/etc/hosts'".format(content)
+    elif config.load_type == 'Proxy Offline':
+        content = "{0} {1}".format(config.icap_endpoint_url, 'assets.publishing.service.gov.uk')
+        hosts_file_command = "sudo echo 127.0.0.1 localhost > '/etc/hosts'\nsudo echo {0} >> '/etc/hosts'".format(content)
+
     userdata = base64.b64encode(f"""#!/bin/bash
 touch /var/lock/subsys/local
 sudo aws s3 cp s3://{config.script_bucket}/{file_name} /home/ec2-user/apache-jmeter-5.3/bin/
@@ -147,6 +178,7 @@ sudo aws s3 cp s3://{config.script_bucket}/{config.prefix}_script/config-promtai
 sudo ./promtail-linux-amd64 -config.file=config-promtail.yml > /dev/null 2>&1 &
 cd /home/ec2-user/apache-jmeter-5.3/bin
 sudo chmod +x StartExecution.sh
+{hosts_file_command}
 ./StartExecution.sh
     """.encode("utf-8")).decode("ascii")
     print("Deploying %s instances in the ASG by creating %s cloudformation stack" % (

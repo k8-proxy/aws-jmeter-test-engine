@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { AppSettings } from './../common/app settings/AppSettings';
+import { AppSettings, LoadTypes } from './../common/app settings/AppSettings';
 import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
@@ -28,10 +28,13 @@ export class ConfigFormComponent implements OnInit {
   configForm: FormGroup;
   submitted = false;
   responseReceived = false;
-  portDefault = '443';
+  portDefaultPlaceHolder = 'Default: 443';
   enableCheckboxes = true;
+  enableSharePointHostsField = false;
   enableIgnoreErrorCheckbox = true;
-  IcapOrProxy = AppSettings.urlChoices[0];
+  LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.Direct];
+  endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct]
+  endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.Direct]
   showErrorAlert = false;
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
@@ -46,19 +49,39 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.valueChanges.subscribe((data) => {
       this.hideSubmitMessages = true;
     });
-    this.setIcapOrProxyValidation();
+    this.setValidatorsDependingOnLoadType();
   }
 
-  setIcapOrProxyValidation() {
+  setValidatorsDependingOnLoadType() {
     this.configForm.get('load_type').valueChanges.subscribe(loadType => {
-      if (loadType == "Proxy") {
-        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
-      } else {
+      if (loadType == AppSettings.loadTypeNames[LoadTypes.Direct]) {
+        this.sharepoint_hosts.setValidators([]);
         this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
+      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+        this.sharepoint_hosts.setValidators([]);
+        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
+      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+        this.sharepoint_hosts.setValidators([Validators.required]);
+        this.icap_endpoint_url.setValidators([Validators.required]);
       }
+      this.configForm.get('sharepoint_hosts').updateValueAndValidity();
       this.configForm.get('icap_endpoint_url').updateValueAndValidity();
     })
   }
+
+  // setEndPointFieldValidation() {
+  //   //in order: direct, proxy, proxy sharepoint
+  //   this.configForm.get('load_type').valueChanges.subscribe(loadType => {
+  //     if (loadType == AppSettings.loadTypeNames[LoadTypes.Direct]) {
+  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
+  //     } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
+  //     } else if (loadType == AppSettings.loadTypeNames[2]) {
+  //       this.icap_endpoint_url.setValidators([Validators.required]);
+  //     }
+  //     this.configForm.get('icap_endpoint_url').updateValueAndValidity();
+  //   })
+  // }
 
   setTitle(newTitle: string) {
     this.titleService.setTitle(newTitle);
@@ -69,8 +92,9 @@ export class ConfigFormComponent implements OnInit {
       total_users: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.hasNumberLimit]),
       duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
-      load_type: AppSettings.loadTypes[0],
+      load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
+      sharepoint_hosts: new FormControl(''),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required]),
       enable_tls: true,
       tls_ignore_error: true,
@@ -79,22 +103,38 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onLoadTypeChange() {
-    //if direct, else proxy
-    if (this.configForm.get('load_type').value == AppSettings.loadTypes[0]) {
+    //in order: direct, proxy, proxy sharepoint
+    if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.Direct]) {
       this.enableCheckboxes = true;
-      this.IcapOrProxy = AppSettings.urlChoices[0];
-    } else if (this.configForm.get('load_type').value == AppSettings.loadTypes[1]) {
+      this.enableSharePointHostsField = false;
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.Direct];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct];
+      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.Direct];
+      this.onTlsChange();
+    } else if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
       this.enableCheckboxes = false;
-      this.IcapOrProxy = AppSettings.urlChoices[1];
+      this.enableSharePointHostsField = false;
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxyOffline];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline];
+      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxyOffline];
+      this.portDefaultPlaceHolder = '';
+    } else if (this.configForm.get('load_type').value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+      this.enableCheckboxes = false;
+      this.enableSharePointHostsField = true;
+      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxySharePoint];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxySharePoint];
+      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxySharePoint];
+      this.portDefaultPlaceHolder = '';
     }
+    this.setValidatorsDependingOnLoadType();
   }
 
   onTlsChange() {
     if (this.configForm.get('enable_tls').value == true) {
-      this.portDefault = '443';
+      this.portDefaultPlaceHolder = 'Default: 443';
       this.enableIgnoreErrorCheckbox = true;
     } else {
-      this.portDefault = '1344';
+      this.portDefaultPlaceHolder = 'Default: 1344';
       this.enableIgnoreErrorCheckbox = false;
     }
   }
@@ -118,6 +158,9 @@ export class ConfigFormComponent implements OnInit {
   get prefix() {
     return this.configForm.get('prefix');
   }
+  get sharepoint_hosts() {
+    return this.configForm.get('sharepoint_hosts');
+  }
   get isValid() {
     return this.configForm.valid;
   }
@@ -134,7 +177,7 @@ export class ConfigFormComponent implements OnInit {
     return AppSettings.cookiesExist;
   }
   get loadTypes() {
-    return AppSettings.loadTypes;
+    return AppSettings.loadTypeNames;
   }
 
   processResponse(response: object, formData: FormData) {
@@ -169,6 +212,7 @@ export class ConfigFormComponent implements OnInit {
     if (this.configForm.valid) {
       AppSettings.addingPrefix = true;
       AppSettings.testPrefixSet.add(this.prefix.value);
+      this.trimEndPointField();
       //append the necessary data to formData and send to Flask server
       const formData = new FormData();
       formData.append("button", "generate_load");
@@ -177,6 +221,10 @@ export class ConfigFormComponent implements OnInit {
       this.submitted = true;
       this.lockForm();
     }
+  }
+
+  trimEndPointField() {
+    this.configForm.get('sharepoint_hosts').setValue(this.configForm.get('sharepoint_hosts').value.trim().replace(/\s+/g, ' '))
   }
 
   lockForm() {
