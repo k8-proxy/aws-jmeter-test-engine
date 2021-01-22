@@ -80,7 +80,7 @@
     </div>
     
 
-    <div class="form-group">
+    <div *ngIf="enablePortField" class="form-group">
         <label>Port</label>
         <input type="text" class="form-control" formControlName="port" placeholder="{{portDefaultPlaceHolder}}">
         <small class="form-text text-muted">Port used to connect ICAP endpoint</small>
