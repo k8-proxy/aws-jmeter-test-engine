@@ -46,7 +46,7 @@ sudo systemctl status flask_scaled
 Next go to 
 
 ```bash
-/opt/git/aws-jmeter-test-engine_old/jmeter-icap/scripts
+/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo sh changeIP.sh
 ```
 
