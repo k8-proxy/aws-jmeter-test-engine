@@ -5,7 +5,9 @@ Overall, logical structure looks like this:
 
 ![vm_load_vision](jmeter-icap/instructions/img/ICAPServer-Performance-Analytics-Dashboard_v2.png)
 
-In nutshell, user triggers python script to indicate what kind of load needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
+There are 2 ways to trigger load: via UI interface or via command line python script.
+
+In nutshell, user triggers load via UI or command line python script to indicate what kind of traffic needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
 
 There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon and North California regions in order to make use of this performance test framework more easier:
 
@@ -48,28 +50,11 @@ aws cloudformation create-stack --stack-name myteststack --template-body file://
        - port 3000 - from your local IP
        - port 80 - from your local IP
        - port 5000 - from your local IP
+       - port 22 - from your local IP
        - port 3100 - from load generator security group
        - port 8086 - from load generator security group
        
 
-**Checking & replacing values in the GenerateLoadGenerators.json script**
-
-In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/GenerateLoadGenerators.json
-
-**Replace & save the following parameters with your own value**:
-
-- VpcId - vpc id created above
-
-- SubnetIds - public subnets ids list created above
-
-- KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
-
-- AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
-
-- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above) security group id
-
-AMI, Security Group, and Key Pair Name can all be found under the EC2 Service.
-VPC and Subnets can be found under the VPC Service.
 
 # Step 2. Setup Performance Dashboard system
 
@@ -88,6 +73,29 @@ Create new EC2 instance using ICAPServer Performance Test and Analytics Ubuntu -
 - Open Browser and enter http://[instance public ip]:3000
 - Grafana ui opens and login with username/password: admin/glasswall
 
+**Checking & replacing values in the GenerateLoadGenerators.json script**
+
+Next step is to ssh to this EC2 instance and :
+```bash
+sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoadGenerators.json
+```
+
+**Replace & save the following parameters with your own value**:
+
+- VpcId - vpc id created above
+
+- SubnetIds - public subnets ids list created above
+
+- KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
+
+- AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
+
+- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above) security group id
+
+AMI, Security Group, and Key Pair Name can all be found under the EC2 Service.
+VPC and Subnets can be found under the VPC Service.
+
+Note: If you would like to use command line options to trigger load from your local machine then above modifications needs to be done in your local copy of GenerateLoadGenerators.json file. 
 
 # Step 3. Create S3 bucket
 
