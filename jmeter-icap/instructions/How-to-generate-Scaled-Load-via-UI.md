@@ -1,6 +1,6 @@
 # How to generate Scaled Load Via UI ?
 
-This instruction assumes basic Load Test framework setup is done using the main instructions in https://github.com/k8-proxy/aws-jmeter-test-engine/README.MD
+This instruction assumes basic Load Test framework setup is done using the main instructions in https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/README.md
 
 The AWS Performance Test Execution Framework provided possibility to run scaled load via it's UI interface.
 
