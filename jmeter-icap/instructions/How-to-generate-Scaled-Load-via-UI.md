@@ -27,6 +27,7 @@ sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/config.env
  - SCRIPT_BUCKET - this is bucket name you created in initial setup
  - TEST_DATA_BUCKET - unless otherwise different bucket used for test data, this is usually exactly same as script_bucket. Provide the bucket name.
  - TEST_DATA_ACCESS_SECRET - this is AWS secret key name you created in inital setup
+ - REGION - default region is eu-west-1. If you are working on other region, please, provide that region info here.
  
 In case of Proxy Sharepoint load type, the following additional parameters needs to be modified :
 - TENANT_ID : This is tenant id
@@ -42,7 +43,12 @@ sudo systemctl stop flask_scaled
 sudo systemctl start flask_scaled
 sudo systemctl status flask_scaled
 ```
+Next go to 
 
+```bash
+/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
+sudo sh changeIP.sh
+```
 
 ## How to generate load?
 
