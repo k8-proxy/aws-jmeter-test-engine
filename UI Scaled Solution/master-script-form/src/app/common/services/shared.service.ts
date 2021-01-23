@@ -62,7 +62,7 @@ export class SharedService {
     }
 
     getTestsFromDatabase() {
-        this.http.get(AppSettings.serverIp).subscribe(response => this.processRetrievedTestData(response), (err) => { this.onError(err) });
+        this.http.get(AppSettings.serverIp, { params: { request_type: 'test_results'}}).subscribe(response => this.processRetrievedTestData(response), (err) => { this.onError(err) });
     }
 
     processRetrievedTestData(response) {

@@ -27,14 +27,17 @@ export class SetupFormComponent implements OnInit {
 
   setupForm: FormGroup;
   submitted: boolean = false;
-  showErrorAlert = false;
-  responseReceived = false;
+  showAlert = false;
+  alertClass = "";
+  alertText = "";
+  submitButtonText = "Submit Configurations";
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.titleService.setTitle("Setup Configurations");
     this.initializeForm();
+    this.getExistingConfigFromServer();
   }
 
   initializeForm(): void {
@@ -46,6 +49,17 @@ export class SetupFormComponent implements OnInit {
       client_id: new FormControl(''),
       client_secret: new FormControl('')
     });
+  }
+
+  setFormFieldsFromServerData(serverData) {
+    console.log("in");
+    this.script_bucket.setValue(serverData['script_bucket']);
+    this.test_data_bucket.setValue(serverData['test_data_bucket']);
+    this.test_data_access_secret.setValue(serverData['test_data_access_secret']);
+    this.tenant_id.setValue(serverData['tenant_id']);
+    this.client_id.setValue(serverData['client_id']);
+    this.client_secret.setValue(serverData['client_secret']);
+    this.setupForm.updateValueAndValidity();
   }
 
   get script_bucket() {
@@ -69,6 +83,9 @@ export class SetupFormComponent implements OnInit {
   get isValid() {
     return this.setupForm.valid;
   }
+  get animState() {
+    return this.showAlert ? 'show' : 'hide';
+  }
 
   onSubmit(): void {
 
@@ -80,34 +97,56 @@ export class SetupFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.setupForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
+      this.lockForm();
     }
   }
 
   postFormToServer(formData: FormData) {
-    this.http.post(AppSettings.serverIp, formData).toPromise();
+    this.http.post(AppSettings.serverIp, formData).subscribe(response => this.processPostResponse(response), (err) => { this.onError(err) });
   }
 
   getExistingConfigFromServer() {
-    this.http.get(AppSettings.serverIp).subscribe(response => this.processGetResponse(response), (err) => { this.onError(err) });
+    this.http.get(AppSettings.serverIp, { params: { request_type: 'config_fields'}}).subscribe(response => this.processGetResponse(response), (err) => { this.onError(err) });
   }
 
-  processPostResponse(response: object, formData: FormData) {
-    
+  processPostResponse(response: object) {
+    this.toggleAlert(true);
+    this.submitted = true;
+    this.unlockForm();
+    setTimeout(() => this.toggleAlert(true), 3000);
   }
 
   processGetResponse(response: object) {
-    
+    this.setFormFieldsFromServerData(response);
   }
 
   onError(error) {
     console.log(error);
-    this.toggleErrorMessage();
+    this.toggleAlert(false);
     this.submitted = false;
-    this.responseReceived = false;
-    setTimeout(() => this.toggleErrorMessage(), 3000);
+    this.unlockForm();
+    setTimeout(() => this.toggleAlert(false), 3000);
   }
 
-  toggleErrorMessage() {
-    this.showErrorAlert = !this.showErrorAlert;
+  toggleAlert(success: boolean) {
+
+    if(success) {
+      this.alertClass = "alert-success";
+      this.alertText = "Success! Configuration updated"
+    } else {
+      this.alertClass = "alert-danger";
+      this.alertText = "Error submitting to server"      
+    }
+    this.showAlert = !this.showAlert;
+  }
+
+  lockForm() {
+    this.submitButtonText = "Submitting Configuration..."
+    this.setupForm.disable();
+  }
+
+  unlockForm() {
+    this.submitButtonText = "Submit Configurations"
+    this.setupForm.enable();
   }
 }

@@ -49,12 +49,11 @@
         <small class="form-text text-muted">Client Secret value (for use with SharePoint)</small>
     </div>
 
-    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid"> Submit Configurations </button>
+    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid"> {{ submitButtonText }} </button>
 
-    <br>
-    <div [@animationState]="animState" class="alert alert-danger" role="alert" style="opacity: 0; display:inline-block;"
+    <div [@animationState]="animState" class="alert {{alertClass}}" role="alert" style="opacity: 0; display:inline-block;"
         type="text">
-        Error submitting to server
+        {{alertText}}
     </div>
     
 </form>
