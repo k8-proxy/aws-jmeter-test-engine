@@ -40,7 +40,7 @@ export class ConfigFormComponent implements OnInit {
   GenerateLoadButtonText = "Generate Load";
   enablePortField = true;
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) {
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) {
     this.testsStoppedSubscription = this.sharedService.getStopSingleEvent().subscribe((prefix) => this.onTestStopped(prefix));
   }
 
