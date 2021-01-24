@@ -1,12 +1,11 @@
 import { Subscription } from 'rxjs';
-import { AppSettings, LoadTypes } from './../common/app settings/AppSettings';
+import { AppSettings } from './../common/app settings/AppSettings';
 import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
-import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 
@@ -31,7 +30,6 @@ export class SetupFormComponent implements OnInit {
   alertClass = "";
   alertText = "";
   submitButtonText = "Submit Configurations";
-
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) { }
 
   ngOnInit(): void {
@@ -49,17 +47,6 @@ export class SetupFormComponent implements OnInit {
       client_id: new FormControl(''),
       client_secret: new FormControl('')
     });
-  }
-
-  setFormFieldsFromServerData(serverData) {
-    console.log("in");
-    this.script_bucket.setValue(serverData['script_bucket']);
-    this.test_data_bucket.setValue(serverData['test_data_bucket']);
-    this.test_data_access_secret.setValue(serverData['test_data_access_secret']);
-    this.tenant_id.setValue(serverData['tenant_id']);
-    this.client_id.setValue(serverData['client_id']);
-    this.client_secret.setValue(serverData['client_secret']);
-    this.setupForm.updateValueAndValidity();
   }
 
   get script_bucket() {
@@ -105,10 +92,7 @@ export class SetupFormComponent implements OnInit {
     this.http.post(AppSettings.serverIp, formData).subscribe(response => this.processPostResponse(response), (err) => { this.onError(err) });
   }
 
-  getExistingConfigFromServer() {
-    this.http.get(AppSettings.serverIp, { params: { request_type: 'config_fields'}}).subscribe(response => this.processGetResponse(response), (err) => { this.onError(err) });
-  }
-
+  
   processPostResponse(response: object) {
     this.toggleAlert(true);
     this.submitted = true;
@@ -116,8 +100,22 @@ export class SetupFormComponent implements OnInit {
     setTimeout(() => this.toggleAlert(true), 3000);
   }
 
+  getExistingConfigFromServer() {
+    this.http.get(AppSettings.serverIp, { params: { request_type: 'config_fields' }}).subscribe(response => this.processGetResponse(response), (err) => { this.onError(err) });
+  }
+
   processGetResponse(response: object) {
     this.setFormFieldsFromServerData(response);
+  }
+
+  setFormFieldsFromServerData(serverData) {
+    this.script_bucket.setValue(serverData['script_bucket']);
+    this.test_data_bucket.setValue(serverData['test_data_bucket']);
+    this.test_data_access_secret.setValue(serverData['test_data_access_secret']);
+    this.tenant_id.setValue(serverData['tenant_id']);
+    this.client_id.setValue(serverData['client_id']);
+    this.client_secret.setValue(serverData['client_secret']);
+    this.setupForm.updateValueAndValidity();
   }
 
   onError(error) {
