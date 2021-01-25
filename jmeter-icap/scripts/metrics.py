@@ -105,11 +105,11 @@ class InfluxDBMetrics():
         return InfluxDBMetrics.count_query(prefix + '_jmetericap', start, finish, ' transaction =~ /ICAP-Document-Process/ AND statut=\'ok\'')
 
     @staticmethod
-    def mean_query(database, start, finish, field):
+    def mean_query(database, start, finish, field, condition = 'statut =~ /o/'):
         try:
             str_query = 'SELECT MEAN("' + field + '") FROM '\
                     + database + ' WHERE '\
-                    + 'statut =~ /o/ AND ' \
+                    + condition + ' AND ' \
                     + ' time >= \'' + start + '\' AND ' \
                     + ' time <= \'' + finish + '\';'
             #print (str_query)
@@ -126,7 +126,7 @@ class InfluxDBMetrics():
 
     @staticmethod
     def average_resp_time(prefix, start, finish):
-        return InfluxDBMetrics.mean_query(prefix + '_jmetericap', start, finish, 'pct95.0')
+        return InfluxDBMetrics.mean_query(prefix + '_jmetericap', start, finish, 'pct95.0', ' transaction =~ /ICAP-Document-Process/ AND statut =~ /o/')
 
     # ProxySite
     @staticmethod
@@ -143,24 +143,24 @@ class InfluxDBMetrics():
 
     @staticmethod
     def average_resp_time_proxysite(prefix, start, finish):
-        return InfluxDBMetrics.mean_query(prefix + '_jmeterproxysite', start, finish, 'pct95.0')
+        return InfluxDBMetrics.mean_query(prefix + '_jmeterproxysite', start, finish, 'pct95.0', ' transaction =~ /FileProcess/ AND statut =~ /o/')
 
     # SharePoint
     @staticmethod
     def total_reguests_sharepoint(prefix, start, finish):
-        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /File/ AND statut =~ /o/')
+        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /load_File/ AND statut =~ /o/')
 
     @staticmethod
     def successful_reguests_sharepoint(prefix, start, finish):
-        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /File/ AND statut = \'ok\'')
+        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /load_File/ AND statut = \'ok\'')
 
     @staticmethod
     def failed_reguests_sharepoint(prefix, start, finish):
-        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /File/ AND statut = \'ko\'')
+        return InfluxDBMetrics.count_query(prefix + '_jmetersharepoint', start, finish, ' transaction =~ /load_File/ AND statut = \'ko\'')
 
     @staticmethod
     def average_resp_time_sharepoint(prefix, start, finish):
-        return InfluxDBMetrics.mean_query(prefix + '_jmetersharepoint', start, finish, 'pct95.0')
+        return InfluxDBMetrics.mean_query(prefix + '_jmetersharepoint', start, finish, 'pct95.0', ' transaction =~ /load_File/ AND statut =~ /o/')
 
     @staticmethod
     def main(argv):
