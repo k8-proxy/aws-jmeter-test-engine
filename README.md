@@ -75,7 +75,7 @@ Create new EC2 instance using ICAPServer Performance Test and Analytics Ubuntu -
 
 **Checking & replacing values in the GenerateLoadGenerators.json script**
 
-Next step is to ssh to this EC2 instance and :
+Next step is to ssh to this EC2 instance (username: ubuntu) and :
 ```bash
 sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 ```
@@ -92,8 +92,11 @@ sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoa
 
 - InstanceSecurityGroup - ICAP-Performance-LG-SG (created above) security group id
 
-AMI, Security Group, and Key Pair Name can all be found under the EC2 Service.
-VPC and Subnets can be found under the VPC Service.
+All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
+- VPC and Subnets can be found on the top of this page.
+- AMI and Key Pair Name can be found under the Details tab. 
+- Security Group can be found under Security tab. 
+
 
 Note: If you would like to use command line options to trigger load from your local machine then above modifications needs to be done in your local copy of GenerateLoadGenerators.json file. 
 
@@ -182,7 +185,7 @@ aws cloudformation create-stack --stack-name myteststack --template-body file://
 
 **Copy Test Data**
 
-- Download gov_uk_files.zip to your local machine from jmeter-icap/test-data/
+- Download gov_uk_files.zip to your local machine [from git repo](https://github.com/k8-proxy/aws-jmeter-test-engine.git), located at jmeter-icap/test-data/
 - unzip the file
 - upload it's contents to s3 bucket created earlier
 - The folder structure of the test files s3 bucket should be ->  filetype->hashfolders->files
