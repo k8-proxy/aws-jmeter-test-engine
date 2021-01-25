@@ -66,7 +66,8 @@ This will generate a dist folder that contains the files that need to be copied 
 
 ```
 sudo cp -a /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form/dist/master-script-form/. /var/www/html/
-sudo systemctl restart apache2.service
+sudo systemctl stop apache2.service
+sudo systemctl start apache2.service
 ```
 
 Now the UI should be accessible via the virtual machine's IP (i.e. http://virtual-macine-ip)
@@ -123,6 +124,6 @@ sudo journalctl -u flask_scaled
 Lastly, the changeIP shell script will need to be executed:
 
 ```
-cd /opt/script
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo ./changeIP.sh
 ```
