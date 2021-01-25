@@ -77,8 +77,7 @@ export class SetupFormComponent implements OnInit {
   onSubmit(): void {
 
     if (this.setupForm.valid) {
-      AppSettings.addingPrefix = true;
-      //append the necessary data to formData and send to Flask server
+      this.trimInput();
       const formData = new FormData();
       formData.append("button", "setup_config");
       formData.append('form', JSON.stringify(this.setupForm.getRawValue()));
@@ -146,5 +145,12 @@ export class SetupFormComponent implements OnInit {
   unlockForm() {
     this.submitButtonText = "Submit Configurations"
     this.setupForm.enable();
+  }
+
+  trimInput() {
+    // this.setupForm.get('sharepoint_hosts').setValue(this.configForm.get('sharepoint_hosts').value.trim().replace(/\s+/g, ' '))
+    Object.keys(this.setupForm.controls).forEach(key => {
+      this.setupForm.get(key).setValue(this.setupForm.get(key).value.trim().replace(/\s+/g, ' '))
+    });
   }
 }
