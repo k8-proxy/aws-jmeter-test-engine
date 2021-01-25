@@ -57,8 +57,8 @@ export class SharedService {
     }
 
     init(): void {
-        //this.getTestsFromDatabase();
-        // setInterval(() => { this.getTestsFromDatabase(); }, 60000); //used to refresh list and remove expired tests.
+        this.getTestsFromDatabase();
+        setInterval(() => { this.getTestsFromDatabase(); }, 60000); //used to refresh list and remove expired tests.
     }
 
     getTestsFromDatabase() {
