@@ -16,7 +16,7 @@
 		"editable": true,
 		"gnetId": null,
 		"graphTooltip": 0,
-		"id": 11,
+		"id": 42,
 		"links": [],
 		"panels": [
 			{
@@ -35,7 +35,7 @@
 				},
 				"id": 20,
 				"options": {
-					"content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \nicap-client.northeurope.cloudapp.azure.com. Total users are 1000. Duration of test is 660 seconds  </p>    ",
+					"content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \ngw-icap-prd-nor.prd.icap-proxy.curlywurly.me. Total users are 20. Duration of test is 28800 seconds  </p>    ",
 					"mode": "html"
 				},
 				"pluginVersion": "7.3.2",
@@ -97,7 +97,7 @@
 				"fillGradient": 0,
 				"gridPos": {
 					"h": 9,
-					"w": 8,
+					"w": 12,
 					"x": 0,
 					"y": 2
 				},
@@ -253,7 +253,7 @@
 				"gridPos": {
 					"h": 9,
 					"w": 4,
-					"x": 8,
+					"x": 12,
 					"y": 2
 				},
 				"id": 6,
@@ -327,7 +327,7 @@
 				"gridPos": {
 					"h": 9,
 					"w": 4,
-					"x": 12,
+					"x": 16,
 					"y": 2
 				},
 				"id": 4,
@@ -401,7 +401,7 @@
 				"gridPos": {
 					"h": 9,
 					"w": 4,
-					"x": 16,
+					"x": 20,
 					"y": 2
 				},
 				"id": 9,
@@ -454,80 +454,6 @@
 				"timeFrom": null,
 				"timeShift": null,
 				"title": "Total Process Requests",
-				"type": "gauge"
-			},
-			{
-				"datasource": "InfluxDB",
-				"fieldConfig": {
-					"defaults": {
-						"custom": {},
-						"mappings": [],
-						"thresholds": {
-							"mode": "absolute",
-							"steps": [
-								{
-									"color": "green",
-									"value": null
-								},
-								{
-									"color": "green",
-									"value": 5
-								}
-							]
-						}
-					},
-					"overrides": []
-				},
-				"gridPos": {
-					"h": 9,
-					"w": 4,
-					"x": 20,
-					"y": 2
-				},
-				"id": 22,
-				"options": {
-					"reduceOptions": {
-						"calcs": [
-							"sum"
-						],
-						"fields": "",
-						"values": false
-					},
-					"showThresholdLabels": false,
-					"showThresholdMarkers": true
-				},
-				"pluginVersion": "7.3.2",
-				"targets": [
-					{
-						"alias": "Total Requests",
-						"groupBy": [],
-						"measurement": "jmetericap",
-						"orderByTime": "ASC",
-						"policy": "default",
-						"refId": "B",
-						"resultFormat": "time_series",
-						"select": [
-							[
-								{
-									"params": [
-										"count"
-									],
-									"type": "field"
-								}
-							]
-						],
-						"tags": [
-							{
-								"key": "transaction",
-								"operator": "=~",
-								"value": "/ICAP-Document-Process/"
-							}
-						]
-					}
-				],
-				"timeFrom": null,
-				"timeShift": null,
-				"title": "Total  Requests",
 				"type": "gauge"
 			},
 			{
@@ -2167,8 +2093,8 @@
 					"max": false,
 					"min": false,
 					"show": true,
-					"total": false,
-					"values": false
+					"total": true,
+					"values": true
 				},
 				"lines": true,
 				"linewidth": 1,
@@ -3167,7 +3093,7 @@
 			"list": []
 		},
 		"time": {
-			"from": "now-5m",
+			"from": "now-1h",
 			"to": "now"
 		},
 		"timepicker": {
