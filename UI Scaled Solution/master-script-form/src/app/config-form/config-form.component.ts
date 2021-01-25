@@ -70,20 +70,6 @@ export class ConfigFormComponent implements OnInit {
     })
   }
 
-  // setEndPointFieldValidation() {
-  //   //in order: direct, proxy, proxy sharepoint
-  //   this.configForm.get('load_type').valueChanges.subscribe(loadType => {
-  //     if (loadType == AppSettings.loadTypeNames[LoadTypes.Direct]) {
-  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
-  //     } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
-  //     } else if (loadType == AppSettings.loadTypeNames[2]) {
-  //       this.icap_endpoint_url.setValidators([Validators.required]);
-  //     }
-  //     this.configForm.get('icap_endpoint_url').updateValueAndValidity();
-  //   })
-  // }
-
   setTitle(newTitle: string) {
     this.titleService.setTitle(newTitle);
   }
