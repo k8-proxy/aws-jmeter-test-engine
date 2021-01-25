@@ -1,6 +1,6 @@
 # How to generate load against proxied Sharepoint site ?
 
-This instruction assumes basic Load Test framework setup is done using the main instructions in https://github.com/k8-proxy/aws-jmeter-test-engine/README.MD
+This instruction assumes basic Load Test framework setup is done using the main instructions in https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/README.md
 
 Sharepoint site load testing script requires:
 - Sharepoint API key setup to be able to upload and download files.

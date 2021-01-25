@@ -190,7 +190,12 @@ export class SharedService {
         } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
             name += "-demo-dashboard-sharepoint";
         }
-
+        if (!this.grafanaUrl.endsWith('/')) {
+            this.grafanaUrl += '/';
+        }
+        if (!this.grafanaUrl.startsWith('http')) {
+            this.grafanaUrl = 'http://' + this.grafanaUrl;
+        }
         let link = this.grafanaUrl + 'd/' + grafanaUid + '/' + name + "?&from=" + start + "&to=" + end;
         return link;
     }
