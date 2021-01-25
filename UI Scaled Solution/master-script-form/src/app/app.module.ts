@@ -40,7 +40,7 @@ import { RouterModule } from '@angular/router'
     RouterModule.forRoot([
       { path: '', component: ConfigFormComponent},
       { path: 'setup', component: SetupFormComponent}
-    ])
+    ], {useHash: true})
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [FormBuilder, CookieService],
