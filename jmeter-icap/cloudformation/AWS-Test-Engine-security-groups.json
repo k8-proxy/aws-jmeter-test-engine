@@ -1,0 +1,113 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "CloudFormation template for AWS Test Engine Security Groups",
+
+  "Parameters" : {
+
+
+    "MyPublicIP": {
+      "Description": "What is my public ip",
+      "Type": "String",
+      "Default": "127.0.0.1"
+    },
+
+    "VPCId" : {
+      "Description" : "VPC for security groups",
+      "Type" : "AWS::EC2::VPC::Id"
+    }
+
+  },
+
+  "Resources" : {
+
+    "ICAP-Performance-LG-SG" : {
+        "Type" : "AWS::EC2::SecurityGroup",
+        "Properties" : {
+          "GroupDescription" : "Security Group used for Load Generators",
+          "Tags" : [
+            { "Key" : "Name", "Value" : { "Fn::Join" : [ "", [ "icap-performance-lg-sg" ] ] } },
+            { "Key" : "Service", "Value" : "AWS-Test-Engine" }
+          ],
+          "VpcId" : { "Ref" : "VPCId" },
+          "SecurityGroupIngress" : [
+            {
+              "IpProtocol" : "tcp",
+              "FromPort" : "22",
+              "ToPort" : "22",
+              "CidrIp" : "10.114.48.0/20"
+            }
+          ]
+        }
+      },
+
+    "ICAP-Performance-Dashboard-SG" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Security Group for Dashboard",
+        "Tags" : [
+          { "Key" : "Name", "Value" : { "Fn::Join" : [ "", [ "icap-performance-dashboard-sg" ] ] } },
+          { "Key" : "Service", "Value" : "AWS-Test-Engine" }
+        ],
+        "VpcId" : { "Ref" : "VPCId" },
+        "SecurityGroupIngress" : [
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "3100",
+            "ToPort" : "3100",
+            "SourceSecurityGroupId" : { "Ref" : "ICAP-Performance-LG-SG" }
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "8086",
+            "ToPort" : "8086",
+            "SourceSecurityGroupId" : { "Ref" : "ICAP-Performance-LG-SG" }
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "3000",
+            "ToPort" : "3000",
+            "SourceSecurityGroupId" : { "Ref" : "ICAP-Performance-Dashboard-SG" }
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "5000",
+            "ToPort" : "5000",
+            "SourceSecurityGroupId" : { "Ref" : "MyPublicIP" }
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "80",
+            "ToPort" : "80",
+            "SourceSecurityGroupId" : { "Ref" : "MyPublicIP" }
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "3000",
+            "ToPort" : "3000",
+            "SourceSecurityGroupId" : { "Ref" : "MyPublicIP" }
+          },
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "22",
+            "ToPort" : "22",
+            "SourceSecurityGroupId" : { "Ref" : "MyPublicIP" }
+          },
+        ]
+      }
+    }
+  },
+  "Outputs" : {
+    "ICAP-Performance-LG-SG" : {
+      "Description" : "Security Group ID",
+      "Value" :  { "Fn::GetAtt" : ["ICAP-Performance-LG-SG", "GroupId"] },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-DashboardSecurityGroupId" }}
+    },
+    "ICAP-Performance-Dashboard-SG" : {
+      "Description" : "Security Group ID",
+      "Value" :  { "Fn::GetAtt" : ["ICAP-Performance-Dashboard-SG", "GroupId"] },
+      "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-LoadGeneratorSecurityGroupId" }}
+    }
+
+  }
+}
