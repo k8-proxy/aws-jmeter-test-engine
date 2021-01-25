@@ -100,6 +100,7 @@
             <div class="alert alert-danger" *ngIf="prefix.dirty && prefix.errors.cannotContainSpaces">Field cannot contain spaces.</div>
             <div class="alert alert-danger" *ngIf="prefix.touched && prefix.errors.required">This field is required.</div>
             <div class="alert alert-danger" *ngIf="prefix.dirty && prefix.errors.cannotContainDuplicatePrefix">A test with that prefix is already running.</div>
+            <div class="alert alert-danger" *ngIf="prefix.errors.pattern">Prefix must start with letter, cannot contain hyphens or underscores.</div>
         </div>
     </div>
     <!--

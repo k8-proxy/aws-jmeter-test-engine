@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 
 
 @Component({
@@ -40,8 +41,8 @@ export class SetupFormComponent implements OnInit {
 
   initializeForm(): void {
     this.setupForm = this.fb.group({
-      script_bucket: new FormControl('', [Validators.required]),
-      test_data_bucket: new FormControl('', [Validators.required]),
+      script_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
+      test_data_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
       test_data_access_secret: new FormControl('', [Validators.required]),
       tenant_id: new FormControl(''),
       client_id: new FormControl(''),
@@ -88,10 +89,10 @@ export class SetupFormComponent implements OnInit {
   }
 
   postFormToServer(formData: FormData) {
-    this.http.post(AppSettings.serverIp, formData).subscribe(response => this.processPostResponse(response), (err) => { this.onError(err) });
+    this.http.post(AppSettings.serverIp, formData).subscribe(response => this.processPostResponse(response), (err) => { this.onErrorSubmitting(err) });
   }
 
-  
+
   processPostResponse(response: object) {
     this.toggleAlert(true);
     this.submitted = true;
@@ -100,7 +101,7 @@ export class SetupFormComponent implements OnInit {
   }
 
   getExistingConfigFromServer() {
-    this.http.get(AppSettings.serverIp, { params: { request_type: 'config_fields' }}).subscribe(response => this.processGetResponse(response), (err) => { this.onError(err) });
+    this.http.get(AppSettings.serverIp, { params: { request_type: 'config_fields' } }).subscribe(response => this.processGetResponse(response), (err) => { this.onErrorRetrievingData(err) });
   }
 
   processGetResponse(response: object) {
@@ -117,7 +118,7 @@ export class SetupFormComponent implements OnInit {
     this.setupForm.updateValueAndValidity();
   }
 
-  onError(error) {
+  onErrorSubmitting(error) {
     console.log(error);
     this.toggleAlert(false);
     this.submitted = false;
@@ -125,14 +126,18 @@ export class SetupFormComponent implements OnInit {
     setTimeout(() => this.toggleAlert(false), 3000);
   }
 
+  onErrorRetrievingData(error) {
+    console.log("Setup Form Component: Error retrieving current config field values from server. Is the server running?");
+  }
+
   toggleAlert(success: boolean) {
 
-    if(success) {
+    if (success) {
       this.alertClass = "alert-success";
       this.alertText = "Success! Configuration updated"
     } else {
       this.alertClass = "alert-danger";
-      this.alertText = "Error submitting to server"      
+      this.alertText = "Error submitting to server"
     }
     this.showAlert = !this.showAlert;
   }
@@ -148,7 +153,6 @@ export class SetupFormComponent implements OnInit {
   }
 
   trimInput() {
-    // this.setupForm.get('sharepoint_hosts').setValue(this.configForm.get('sharepoint_hosts').value.trim().replace(/\s+/g, ' '))
     Object.keys(this.setupForm.controls).forEach(key => {
       this.setupForm.get(key).setValue(this.setupForm.get(key).value.trim().replace(/\s+/g, ' '))
     });
