@@ -53,6 +53,7 @@ aws cloudformation create-stack --stack-name myteststack --template-body file://
        - port 22 - from your local IP
        - port 3100 - from load generator security group
        - port 8086 - from load generator security group
+       - port 3000 - from ICAP-Performance-Dashboard-SG (i.e to itself)
        
 
 
@@ -180,6 +181,8 @@ There are 2 ways to run CloudFormation script in aws:
 aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json --parameters SecretManagerArn=enter secret ARN created in step 4
 
 ```
+
+Attach this role to your EC2 instance: Select EC2 from AWS console -> Actions (from menu) ->Security-> Modify IAM role and select IAM role created above and click save.
 
 # Step 6. Copy Test Data to S3 & Generate load
 
