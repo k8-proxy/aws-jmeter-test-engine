@@ -53,6 +53,22 @@ Resources:
         FromPort: 3100
         ToPort: 3100
         CidrIp: !Ref 'DefaultIPRange'
+      - IpProtocol: tcp
+        FromPort: 8086
+        ToPort: 8086
+        CidrIp: !Ref 'DefaultIPRange'
+      - IpProtocol: tcp
+        FromPort: 5000
+        ToPort: 5000
+        CidrIp: !Ref 'DefaultIPRange'
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: !Ref 'DefaultIPRange'
+      - IpProtocol: tcp
+        FromPort: 3000
+        ToPort: 3000
+        CidrIp: !Ref 'DefaultIPRange'
 Outputs:
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
