@@ -171,10 +171,19 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref 'InstanceType'
-      SecurityGroups: [!Ref 'ICAPPerformanceLGSG']
+      SecurityGroups: [!Ref 'ICAPPerformanceDashboardSG']
       KeyName: !Ref 'KeyName'
       ImageId: !FindInMap [AWSRegionArch2AMI, !Ref 'AWS::Region', !FindInMap [AWSInstanceType2Arch, !Ref InstanceType, Arch]]
   ICAPPerformanceLGSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access to the load generators
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref 'DefaultIPRange'
+  ICAPPerformanceDashboardSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable access to the cluster ports
