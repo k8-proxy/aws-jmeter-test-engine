@@ -112,13 +112,16 @@ Mappings:
     ap-northeast-2:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
+    ap-south-1:
+      HVM64: NOT_SUPPORTED
+      PV64: NOT_SUPPORTED
     ap-southeast-1:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     ap-southeast-2:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
-    cn-north-1:
+    ca-central-1:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     eu-central-1:
@@ -127,14 +130,32 @@ Mappings:
     eu-west-1:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
+    eu-west-2:
+      HVM64: NOT_SUPPORTED
+      PV64: NOT_SUPPORTED
+    eu-west-3:
+      HVM64: NOT_SUPPORTED
+      PV64: NOT_SUPPORTED
+    eu-south-1:
+      HVM64: NOT_SUPPORTED
+      PV64: NOT_SUPPORTED
+    eu-north-1:
+      HVM64: NOT_SUPPORTED
+      PV64: NOT_SUPPORTED
+    eu-west-2:
+      HVM64: NOT_SUPPORTED
+      PV64: NOT_SUPPORTED
     sa-east-1:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     us-east-1:
+      HVM64: ami-078f899d5342f05bd
+      PV64: NOT_SUPPORTED
+    us-east-2:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     us-west-1:
-      HVM64: NOT_SUPPORTED
+      HVM64: ami-0fb15ed83e62d193e
       PV64: NOT_SUPPORTED
     us-west-2:
       HVM64: ami-0b4982c20268f003a
