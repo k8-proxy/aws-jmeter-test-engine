@@ -21,7 +21,7 @@
 
   "Resources" : {
 
-    "ICAP-Performance-LG-SG" : {
+    "ICAPPerformanceLGSG" : {
         "Type" : "AWS::EC2::SecurityGroup",
         "Properties" : {
           "GroupDescription" : "Security Group used for Load Generators",
@@ -41,7 +41,7 @@
         }
       },
 
-    "ICAP-Performance-Dashboard-SG" : {
+    "ICAPPerformanceDashboardSG" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
         "GroupDescription" : "Security Group for Dashboard",
@@ -55,20 +55,15 @@
             "IpProtocol" : "tcp",
             "FromPort" : "3100",
             "ToPort" : "3100",
-            "SourceSecurityGroupId" : { "Ref" : "ICAP-Performance-LG-SG" }
+            "SourceSecurityGroupId" : { "Ref" : "ICAPPerformanceLGSG" }
           },
           {
             "IpProtocol" : "tcp",
             "FromPort" : "8086",
             "ToPort" : "8086",
-            "SourceSecurityGroupId" : { "Ref" : "ICAP-Performance-LG-SG" }
+            "SourceSecurityGroupId" : { "Ref" : "ICAPPerformanceLGSG" }
           },
-          {
-            "IpProtocol" : "tcp",
-            "FromPort" : "3000",
-            "ToPort" : "3000",
-            "SourceSecurityGroupId" : { "Ref" : "ICAP-Performance-Dashboard-SG" }
-          },
+        
           {
             "IpProtocol" : "tcp",
             "FromPort" : "5000",
@@ -98,14 +93,14 @@
     }
   },
   "Outputs" : {
-    "ICAP-Performance-LG-SG" : {
+    "ICAPPerformanceLGSG" : {
       "Description" : "Security Group ID",
-      "Value" :  { "Fn::GetAtt" : ["ICAP-Performance-LG-SG", "GroupId"] },
+      "Value" :  { "Fn::GetAtt" : ["ICAPPerformanceLGSG", "GroupId"] },
       "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-DashboardSecurityGroupId" }}
     },
-    "ICAP-Performance-Dashboard-SG" : {
+    "ICAPPerformanceDashboardSG" : {
       "Description" : "Security Group ID",
-      "Value" :  { "Fn::GetAtt" : ["ICAP-Performance-Dashboard-SG", "GroupId"] },
+      "Value" :  { "Fn::GetAtt" : ["ICAPPerformanceDashboardSG", "GroupId"] },
       "Export" : { "Name" : {"Fn::Sub": "${AWS::StackName}-LoadGeneratorSecurityGroupId" }}
     }
 
