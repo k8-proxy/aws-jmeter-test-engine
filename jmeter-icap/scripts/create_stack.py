@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 import argparse
 import base64
-
+from ui_tasks import LoadType
 
 class Config(object):
     # Load configuration
@@ -124,7 +124,7 @@ def main(config):
     script_data = re.sub("-Jp_use_tls=[a-zA-Z]*", "-Jp_use_tls=" + str(config.enable_tls), script_data)
     script_data = re.sub("-Jp_tls=[a-zA-Z0-9\-\.]*", "-Jp_tls=" + str(config.tls_verification_method), script_data)
 
-    if config.load_type == 'Proxy SharePoint':
+    if config.load_type == LoadType.proxy_sharepoint.value:
         script_data = add_sharepoint_params(config, script_data)
 
     s3_client = session.client('s3')
@@ -159,10 +159,10 @@ def main(config):
     asg_name = prefix + "LoadTest-" + date_suffix
     hosts_file_command = ""
 
-    if config.load_type == 'Proxy SharePoint':
+    if config.load_type == LoadType.proxy_sharepoint.value:
         content = "{0} {1}".format(config.sharepoint_proxy_ip, config.sharepoint_host_names)
         hosts_file_command = "sudo echo 127.0.0.1 localhost > '/etc/hosts'\nsudo echo {0} >> '/etc/hosts'".format(content)
-    elif config.load_type == 'Proxy Offline':
+    elif config.load_type == LoadType.proxy.value:
         content = "{0} {1}".format(config.icap_endpoint_url, 'assets.publishing.service.gov.uk')
         hosts_file_command = "sudo echo 127.0.0.1 localhost > '/etc/hosts'\nsudo echo {0} >> '/etc/hosts'".format(content)
 

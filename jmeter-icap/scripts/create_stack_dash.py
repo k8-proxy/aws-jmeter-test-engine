@@ -8,7 +8,7 @@ import create_dashboard
 from create_stack import Config
 from ec2_instance_manager import start_instance
 from aws_secrets import get_secret_value
-from ui_tasks import set_config_from_ui
+from ui_tasks import set_config_from_ui, LoadType
 from threading import Thread
 from database_ops import database_insert_test
 import uuid
@@ -284,9 +284,9 @@ def adjust_load_type_from_input(config):
         return
 
     if str(config.load_type).lower() in ["proxy", "proxy offline"]:
-        config.load_type = 'Proxy Offline'
+        config.load_type = LoadType.proxy.value
     elif str(config.load_type).lower() in ["sharepoint", "proxy sharepoint"]:
-        config.load_type = 'Proxy SharePoint'
+        config.load_type = LoadType.proxy_sharepoint.value
 
 
 if __name__ == "__main__":
