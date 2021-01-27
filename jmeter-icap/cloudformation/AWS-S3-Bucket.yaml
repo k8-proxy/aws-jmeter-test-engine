@@ -13,6 +13,23 @@ Resources:
     DeletionPolicy: Delete
   S3User:
     Type: AWS::IAM::User
+  S3UserGroup:
+    Type: AWS::IAM::Group
+  Users:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref 'S3UserGroup'
+      Users: [!Ref 'S3User']
+  S3UserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3Access
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: ['s3:*']
+          Resource: '*'
+      Groups: [!Ref 'S3UserGroup']
   S3UserKeys:
     Type: AWS::IAM::AccessKey
     Properties:
