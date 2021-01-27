@@ -3,7 +3,7 @@
 <br>
 
 <form [formGroup]="setupForm" (ngSubmit)="onSubmit()" name="setupForm">
-    
+
     <div class="form-group">
         <label>Script Bucket*</label>
         <input type="text" class="form-control" formControlName="script_bucket" placeholder="">
@@ -25,6 +25,12 @@
     </div>
 
     <div class="form-group">
+        <label>
+            <input type="checkbox" formControlName="upload_test_data" type="checkbox"> Upload Test Data to S3
+        </label>
+    </div>
+
+    <div class="form-group">
         <label>Test Data Access Secret*</label>
         <input type="text" class="form-control" formControlName="test_data_access_secret" placeholder="">
         <small class="form-text text-muted">The secret stored in AWS Secrets Manager containing the credentials of the IAM user that has S3 read/write permissions for the above buckets *This field is required.</small>
@@ -32,7 +38,7 @@
             <div class="alert alert-danger" *ngIf="test_data_access_secret.touched && test_data_access_secret.errors.required">This field is required.</div>
         </div>
     </div>
-    
+
     <div class="form-group">
         <label>Tenant ID</label>
         <input type="text" class="form-control" formControlName="tenant_id" placeholder="">
@@ -57,5 +63,4 @@
         type="text">
         {{alertText}}
     </div>
-    
 </form>
