@@ -199,7 +199,7 @@ def create_stack_from_ui(json_params, ova=False):
     ui_config.stack_name = stack_name
 
     print("Creating dashboard...")
-    dashboard_url, grafana_uid = create_dashboard.main(ui_config)
+    dashboard_url, grafana_uid = create_dashboard.main(ui_config, from_ui=True)
 
     delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()

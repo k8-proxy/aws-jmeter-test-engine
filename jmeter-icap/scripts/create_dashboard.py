@@ -66,7 +66,7 @@ def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_ur
 
 
 # responsible for posting the dashboard to Grafana and returning the URL to it
-def __post_grafana_dash(config):
+def __post_grafana_dash(config, from_ui=False):
     key = config.grafana_key
     grafana_template = './' + config.test_directory + '/' + config.grafana_file
     prefix = config.prefix
@@ -85,7 +85,7 @@ def __post_grafana_dash(config):
     if grafana_url[len(grafana_url) - 1] != '/':
         grafana_api_url += '/'
 
-    grafana_api_url = grafana_api_url + 'api/dashboards/db'
+    grafana_api_url = "http://localhost:3000/api/dashboards/db" if from_ui else grafana_api_url + 'api/dashboards/db'
     headers = {
         "Authorization": "Bearer " + key,
         "Content-Type": "application/json"}
@@ -102,7 +102,7 @@ def __post_grafana_dash(config):
     resp = requests.post(grafana_api_url, json=grafana_json, headers=headers)
     d = eval(resp.text)
     # if the response contains a URL, use it to build a url that links directly to the newly created dashboard
-    if "url" in d:
+    if "url" in d and 'uid' in d:
         if grafana_url[len(grafana_url) - 1] == '/':
             grafana_url = grafana_url[:-1]
         return grafana_url + d.get('url'), d.get('uid')
@@ -110,8 +110,8 @@ def __post_grafana_dash(config):
         print("Dashboard creation failed: {0}".format(resp.text))
 
 
-def main(config):
-    created_dashboard_url, grafana_uid = __post_grafana_dash(config)
+def main(config, from_ui=False):
+    created_dashboard_url, grafana_uid = __post_grafana_dash(config, from_ui)
 
     if created_dashboard_url:
         print("Dashboard created at: ")
