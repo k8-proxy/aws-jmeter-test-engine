@@ -1,6 +1,7 @@
 import requests
 import json
 from create_stack import Config
+from ui_tasks import LoadType
 
 
 # If the grafana file passed does not contain the appropriate elements with appropriate values, modify it
@@ -22,7 +23,6 @@ def __convert_grafana_json_to_template(grafana_json):
 
 #  Appends prefix to title and all occurrences of "measurement" value in the Grafana JSON file
 def __add_prefix_to_grafana_json(grafana_json, prefix):
-    grafana_json["dashboard"]["title"] = prefix + ' ' + grafana_json["dashboard"]["title"]
     if 'panels' in grafana_json["dashboard"]:
         for i in grafana_json["dashboard"]['panels']:
             for j in i:
@@ -30,6 +30,13 @@ def __add_prefix_to_grafana_json(grafana_json, prefix):
                     for k in i['targets']:
                         if 'measurement' in k:
                             k['measurement'] = prefix + '_' + k['measurement']
+
+
+def set_title_by_load_type(load_type, grafana_json, prefix):
+    if load_type == LoadType.direct_sharepoint.value:
+        grafana_json["dashboard"]["title"] = prefix + ' ' + "SharePoint Direct Live Performance Dashboard"
+    else:
+        grafana_json["dashboard"]["title"] = prefix + ' ' + grafana_json["dashboard"]["title"]
 
 
 def __add_prefix_to_grafana_loki_source_job(grafana_json, prefix):
@@ -68,6 +75,7 @@ def __post_grafana_dash(config):
     total_users = config.total_users
     duration = config.duration
     endpoint_url = config.icap_endpoint_url
+    load_type = config.load_type
 
     if not grafana_url.startswith("http"):
         grafana_url = "http://" + grafana_url
@@ -86,6 +94,7 @@ def __post_grafana_dash(config):
         grafana_json = json.load(json_file)
         grafana_json = __convert_grafana_json_to_template(grafana_json)
         __add_users_req_to_grafana_json(grafana_json, instances_required)
+        set_title_by_load_type(load_type, grafana_json, prefix)
         __add_prefix_to_grafana_json(grafana_json, prefix)
         __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url)
         __add_prefix_to_grafana_loki_source_job(grafana_json, prefix)

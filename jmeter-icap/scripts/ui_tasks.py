@@ -19,7 +19,7 @@ def modify_hosts_file(ip_addr: str, ova=False):
             f.close()
 
 def determine_load_type(config, ova=False):
-    if config.load_type == LoadType.direct.value:
+    if config.load_type == LoadType.direct.value or config.load_type == LoadType.direct_sharepoint.value:
         config.test_directory = 'ICAP-Direct-File-Processing'
         config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx' if ova else 'ICAP_Direct_FileProcessing_v3.jmx'
         config.grafana_file = 'aws-test-engine-dashboard.json'
@@ -105,7 +105,7 @@ def determine_tls_and_port_params(config, input_enable_tls, input_tls_ignore_ver
 
 
 class LoadType(str, Enum):
-    direct = "Direct"
+    direct = "Direct ICAP Server"
     proxy = "Proxy Offline"
     proxy_sharepoint = "Proxy SharePoint"
     direct_sharepoint = "Direct Sharepoint"

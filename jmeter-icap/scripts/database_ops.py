@@ -51,7 +51,7 @@ def database_insert_test(config, run_id, grafana_uid, start_time, final_time):
             "Status": 0
         }}])
         return
-    if config.load_type == LoadType.proxy_sharepoint.value:
+    if config.load_type == LoadType.proxy_sharepoint.value or config.load_type == LoadType.direct_sharepoint.value:
         client.write_points([{"measurement": "TestResults", "fields": {
             "RunId": run_id,
             "StartTime": start_time,
