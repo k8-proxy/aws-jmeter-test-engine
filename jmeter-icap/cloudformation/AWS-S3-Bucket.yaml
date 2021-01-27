@@ -11,7 +11,24 @@ Parameters:
   PublisherAccountID:
     Type: String
     Description: 'The AWS account ID with whom you are sharing access'
+  Password:
+    NoEcho: 'true'
+    Type: String
+    Description: New account password
+    MinLength: '1'
+    MaxLength: '41'
+    ConstraintDescription: the password must be between 1 and 41 characters
 Resources:
+  S3User:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'Password'
+  S3UserKeys:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref 'S3User'
+
   S3BUCKET:
     Type: 'AWS::S3::Bucket'
     Properties:
@@ -44,3 +61,9 @@ Outputs:
   BucketPolicy:
     Description: S3 Bucket Policy Name
     Value: !Ref S3BUCKETPOL
+  AccessKey:
+    Value: !Ref 'S3UserKeys'
+    Description: AWSAccessKeyId of new user
+  SecretKey:
+    Value: !GetAtt [S3UserKeys, SecretAccessKey]
+    Description: AWSSecretAccessKey of new user
