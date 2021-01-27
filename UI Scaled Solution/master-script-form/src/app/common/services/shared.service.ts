@@ -177,11 +177,16 @@ export class SharedService {
         let name = prefix;
         if (loadType === AppSettings.loadTypeNames[LoadTypes.Direct]) {
             name += " " + AppSettings.testNames[LoadTypes.Direct];
-        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-            name += " " + AppSettings.testNames[LoadTypes.ProxyOffline];
-        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+        } 
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
             name += " " + AppSettings.testNames[LoadTypes.ProxySharePoint];
         }
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
+            name += " " + AppSettings.testNames[LoadTypes.DirectSharePoint];
+        }
+        else if (loadType === "Proxy Offline") {
+            name += " " + "Proxy Site Live Performance Dashboard";
+        } 
         return name;
     }
 
@@ -190,12 +195,15 @@ export class SharedService {
         let end = start + (runTime * 1000);
         let name = prefix;
         if (loadType === AppSettings.loadTypeNames[LoadTypes.Direct]) {
-            name += "-icap-live-performance-dashboard";
-        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-            name += "-proxy-site-live-performance-dashboard";
-        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
-            name += "-demo-dashboard-sharepoint";
+            name += AppSettings.dashboardNames[LoadTypes.Direct];
+        } 
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+            name += AppSettings.dashboardNames[LoadTypes.ProxySharePoint];
+        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
+            name += AppSettings.dashboardNames[LoadTypes.DirectSharePoint];
         }
+
+
         if (!this.grafanaUrl.endsWith('/')) {
             this.grafanaUrl += '/';
         }

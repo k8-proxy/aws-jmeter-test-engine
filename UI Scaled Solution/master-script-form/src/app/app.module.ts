@@ -16,6 +16,7 @@ import { ResultsTableComponent } from './results-table/results-table.component';
 import { SetupFormComponent } from './setup-form/setup-form.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router'
+import { LoadPipe } from './common/Pipes/load.pipe';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { RouterModule } from '@angular/router'
     ResultsTableComponent,
     SetupFormComponent,
     NavbarComponent,
+    LoadPipe
   ],
   imports: [
     BrowserModule,

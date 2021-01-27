@@ -32,9 +32,9 @@ export class ConfigFormComponent implements OnInit {
   enableCheckboxes = true;
   enableSharePointHostsField = false;
   enableIgnoreErrorCheckbox = true;
-  LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.Direct];
+  endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.Direct];
   endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct]
-  endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.Direct]
+  endPointFieldDescription = "*this field is required, endpoint should not begin with http(s)://"
   showErrorAlert = false;
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
@@ -50,24 +50,19 @@ export class ConfigFormComponent implements OnInit {
     this.configForm.valueChanges.subscribe((data) => {
       this.hideSubmitMessages = true;
     });
-    this.setValidatorsDependingOnLoadType();
+    this.setValidatorsDependingOnLoadType(this.loadType.value);
+    this.loadType.valueChanges.subscribe(loadType => {this.setValidatorsDependingOnLoadType(loadType)})
   }
 
-  setValidatorsDependingOnLoadType() {
-    this.loadType.valueChanges.subscribe(loadType => {
-      if (loadType == AppSettings.loadTypeNames[LoadTypes.Direct]) {
-        this.sharepoint_hosts.setValidators([]);
-        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
-      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-        this.sharepoint_hosts.setValidators([]);
-        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
-      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+  setValidatorsDependingOnLoadType(loadType) {
+      
+      if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
         this.sharepoint_hosts.setValidators([Validators.required]);
-        this.icap_endpoint_url.setValidators([Validators.required]);
+      } else {
+        this.sharepoint_hosts.clearValidators();
       }
       this.configForm.get('sharepoint_hosts').updateValueAndValidity();
       this.configForm.get('icap_endpoint_url').updateValueAndValidity();
-    })
   }
 
   setTitle(newTitle: string) {
@@ -80,7 +75,7 @@ export class ConfigFormComponent implements OnInit {
       duration: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       ramp_up_time: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
       load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
-      icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
+      icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotStartWithHttp]),
       sharepoint_hosts: new FormControl(''),
       prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required, Validators.pattern(/^([A-Za-z])[0-9a-zA-Z]*$/)]),
       enable_tls: true,
@@ -92,28 +87,24 @@ export class ConfigFormComponent implements OnInit {
   onLoadTypeChange() {
     //in order: direct, proxy, proxy sharepoint
     if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.Direct]) {
-      this.enableCheckboxes = true;
-      this.enablePortField = true;
-      this.enableSharePointHostsField = false;
-      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.Direct];
+      this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.Direct];
       this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct];
-      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.Direct];
-    } else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-      this.enableCheckboxes = false;
-      this.enablePortField = false;
-      this.enableSharePointHostsField = false;
-      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxyOffline];
-      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline];
-      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxyOffline];
-    } else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
-      this.enableCheckboxes = false;
-      this.enablePortField = false;
-      this.enableSharePointHostsField = true;
-      this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxySharePoint];
-      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxySharePoint];
-      this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxySharePoint];
     }
-    this.setValidatorsDependingOnLoadType();
+    // else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+    //   this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxyOffline];
+    //   this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline];
+    //   this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxyOffline];
+    // }
+    else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+      this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.ProxySharePoint];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxySharePoint];
+    }
+    else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
+      this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.DirectSharePoint];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.DirectSharePoint];
+    }
+    this.enableCheckboxes = this.enablePortField = this.loadType.value == AppSettings.loadTypeNames[LoadTypes.Direct];
+    this.enableSharePointHostsField = this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint];
   }
 
   onTlsChange() {
@@ -197,7 +188,7 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if(this.loadType.value != "Direct") {
+    if (this.loadType.value != "Direct") {
       this.port.setValue('');
     }
     this.setFormDefaults();
@@ -244,12 +235,12 @@ export class ConfigFormComponent implements OnInit {
       this.ramp_up_time.setValue('300');
     }
 
-    //if user enters no duration, default is 900. If they enter a less than 60 second duration, default to 60.
+    //if user enters no duration, default is 900. If they enter a less than 300 second duration, default to 300.
     if (this.duration.value === '') {
       this.duration.setValue('900');
     }
-    else if (this.duration.value < 60) {
-      this.duration.setValue('60');
+    else if (this.duration.value < 300) {
+      this.duration.setValue('300');
     }
   }
 
