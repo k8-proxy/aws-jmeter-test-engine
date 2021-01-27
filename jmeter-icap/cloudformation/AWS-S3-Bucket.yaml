@@ -1,21 +1,10 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: 'AWS CloudFormation Sample Template:
-  Sample template which will create an s3 bucket with deletion retention
-  enabled and a bucket policy to enable cross account acccess. The template
-  requires you to provide an AWS account ID to provide cross account access to,
-  and a globally unique name for an s3 bucket.'
+Description: 'AWS CloudFormation Template:
+  Creates S3 bucket and a user to access it programmatically.'
 Parameters:
   BucketName:
     Type: String
     Description: 'The name of the S3 Bucket to create, make this unique'
-  Password:
-    NoEcho: 'true'
-    Type: String
-    Description: S3 account password
-    MinLength: '1'
-    MaxLength: '41'
-    ConstraintDescription: the password must be between 1 and 41 characters
-    Default: 'Gl@sswall'
 Resources:
   S3BUCKET:
     Type: 'AWS::S3::Bucket'
@@ -24,9 +13,6 @@ Resources:
     DeletionPolicy: Delete
   S3User:
     Type: AWS::IAM::User
-    Properties:
-      LoginProfile:
-        Password: !Ref 'Password'
   S3UserKeys:
     Type: AWS::IAM::AccessKey
     Properties:
