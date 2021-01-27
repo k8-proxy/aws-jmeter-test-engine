@@ -63,7 +63,3 @@ def upload_test_data_to_s3(config):
     bucket_path = "s3://{}".format(config.test_data_bucket)
 
     subprocess.call(['aws', 's3', 'sync', root_dir, bucket_path])
-
-
-if __name__ == "__main__":
-    upload_test_data_to_s3(Config)
