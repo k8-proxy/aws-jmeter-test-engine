@@ -8,17 +8,20 @@ Parameters:
   BucketName:
     Type: String
     Description: 'The name of the S3 Bucket to create, make this unique'
-  PublisherAccountID:
-    Type: String
-    Description: 'The AWS account ID with whom you are sharing access'
   Password:
     NoEcho: 'true'
     Type: String
-    Description: New account password
+    Description: S3 account password
     MinLength: '1'
     MaxLength: '41'
     ConstraintDescription: the password must be between 1 and 41 characters
+    Default: 'Gl@sswall'
 Resources:
+  S3BUCKET:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref BucketName
+    DeletionPolicy: Delete
   S3User:
     Type: AWS::IAM::User
     Properties:
@@ -28,39 +31,10 @@ Resources:
     Type: AWS::IAM::AccessKey
     Properties:
       UserName: !Ref 'S3User'
-
-  S3BUCKET:
-    Type: 'AWS::S3::Bucket'
-    Properties:
-      BucketName: !Ref BucketName
-    DeletionPolicy: Retain
-  S3BUCKETPOL:
-    Type: 'AWS::S3::BucketPolicy'
-    Properties:
-      Bucket: !Ref S3BUCKET
-      PolicyDocument:
-        Id: CrossAccessPolicy
-        Version: "2012-10-17"
-        Statement:
-          - Sid: CrossAccPolicyDoc
-            Action: "s3:ListBucket"
-            Effect: Allow
-            Resource: !Sub 'arn:aws:s3:::${S3BUCKET}'
-            Principal:
-              AWS: !Join ['', ["arn:aws:iam::", !Ref PublisherAccountID, ":root"]]
-          - Sid: CrossAccPolicyDoc
-            Action: "s3:GetObject"
-            Effect: Allow
-            Resource: !Sub 'arn:aws:s3:::${S3BUCKET}/*'
-            Principal:
-              AWS: !Join ['', ["arn:aws:iam::", !Ref PublisherAccountID, ":root"]]
 Outputs:
   Bucket:
     Description: S3 Bucket Name
     Value: !Ref S3BUCKET
-  BucketPolicy:
-    Description: S3 Bucket Policy Name
-    Value: !Ref S3BUCKETPOL
   AccessKey:
     Value: !Ref 'S3UserKeys'
     Description: AWSAccessKeyId of new user
