@@ -1,5 +1,7 @@
 import dotenv
 from create_stack import Config
+import boto3
+import subprocess
 
 CONFIG_ENV_PATH = './config.env'
 
@@ -27,6 +29,9 @@ def update_config_env(setup_json):
             dotenv.set_key(CONFIG_ENV_PATH, "CLIENT_SECRET", setup_json['client_secret'], "never")
             Config.client_secret = setup_json['client_secret']
 
+    if setup_json['upload_test_data']:
+        upload_test_data_to_s3(Config)
+
 
 def retrieve_config_fields():
     params = {
@@ -51,3 +56,10 @@ def adjust_eof_newline():
                 f.write('\n')
 
         f.close()
+
+
+def upload_test_data_to_s3(config):
+    root_dir = '/opt/data/'
+    bucket_path = "s3://{}".format(config.test_data_bucket)
+
+    subprocess.call(['aws', 's3', 'sync', root_dir, bucket_path])

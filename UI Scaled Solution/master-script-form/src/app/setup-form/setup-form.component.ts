@@ -43,6 +43,7 @@ export class SetupFormComponent implements OnInit {
     this.setupForm = this.fb.group({
       script_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
       test_data_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
+      upload_test_data: false,
       test_data_access_secret: new FormControl('', [Validators.required]),
       tenant_id: new FormControl(''),
       client_id: new FormControl(''),
@@ -154,7 +155,9 @@ export class SetupFormComponent implements OnInit {
 
   trimInput() {
     Object.keys(this.setupForm.controls).forEach(key => {
-      this.setupForm.get(key).setValue(this.setupForm.get(key).value.trim().replace(/\s+/g, ' '))
+      if(key != 'upload_test_data') {
+        this.setupForm.get(key).setValue(this.setupForm.get(key).value.trim().replace(/\s+/g, ' '));
+      }
     });
   }
 }
