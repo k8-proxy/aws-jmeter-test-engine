@@ -235,12 +235,12 @@ export class ConfigFormComponent implements OnInit {
       this.ramp_up_time.setValue('300');
     }
 
-    //if user enters no duration, default is 900. If they enter a less than 60 second duration, default to 60.
+    //if user enters no duration, default is 900. If they enter a less than 300 second duration, default to 300.
     if (this.duration.value === '') {
       this.duration.setValue('900');
     }
-    else if (this.duration.value < 60) {
-      this.duration.setValue('60');
+    else if (this.duration.value < 300) {
+      this.duration.setValue('300');
     }
   }
 

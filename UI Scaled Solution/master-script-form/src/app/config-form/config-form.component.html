@@ -31,7 +31,7 @@
     <div class="form-group">
         <label>Duration</label>
         <input type="text" class="form-control" formControlName="duration" placeholder="Default: 900">
-        <small class="form-text text-muted">Duration of test in seconds (minimum 60 seconds)</small>
+        <small class="form-text text-muted">Duration of test in seconds (minimum 300 seconds)</small>
         <div *ngIf="duration.dirty && duration.invalid">
             <div class="alert alert-danger" *ngIf="duration.errors.pattern">Please provide only number values.</div>
             <div class="alert alert-danger" *ngIf="duration.errors.cannotContainSpaces">Field cannot contain spaces.
