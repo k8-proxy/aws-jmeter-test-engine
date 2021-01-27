@@ -206,6 +206,13 @@ Resources:
         FromPort: 8086
         ToPort: 8086
         SourceSecurityGroupId: !GetAtt ICAPPerformanceLGSG.GroupId
+  ICAPPerformanceDashboardSGFromSelf:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Ingress from other containers in the same security group
+      GroupId: !GetAtt ICAPPerformanceDashboardSG.GroupId
+      IpProtocol: -1
+      SourceSecurityGroupId: !GetAtt ICAPPerformanceDashboardSG.GroupId
 Outputs:
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
