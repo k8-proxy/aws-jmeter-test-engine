@@ -1,5 +1,7 @@
 import dotenv
 from create_stack import Config
+import boto3
+import subprocess
 
 CONFIG_ENV_PATH = './config.env'
 
@@ -51,3 +53,15 @@ def adjust_eof_newline():
                 f.write('\n')
 
         f.close()
+
+
+def upload_test_data_to_s3(config):
+    root_dir = '/opt/data/'
+    bucket_path = "s3://{}".format(config.test_data_bucket)
+    profile = config.aws_profile_name
+
+    subprocess.call(['aws', 's3', 'sync', root_dir, bucket_path])
+
+
+if __name__ == "__main__":
+    upload_test_data_to_s3(Config)

@@ -18,6 +18,7 @@ def modify_hosts_file(ip_addr: str, ova=False):
             f.write(content)
             f.close()
 
+
 def determine_load_type(config, ova=False):
     if config.load_type == LoadType.direct.value or config.load_type == LoadType.direct_sharepoint.value:
         config.test_directory = 'ICAP-Direct-File-Processing'
