@@ -209,9 +209,11 @@ Resources:
   ICAPPerformanceDashboardSGFromSelf:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      Description: Ingress from other containers in the same security group
+      Description: Ingress from other containers port 3000 in the same security group
       GroupId: !GetAtt ICAPPerformanceDashboardSG.GroupId
-      IpProtocol: -1
+      IpProtocol: tcp
+      FromPort: 3000
+      ToPort: 3000
       SourceSecurityGroupId: !GetAtt ICAPPerformanceDashboardSG.GroupId
 Outputs:
   InstanceId:
