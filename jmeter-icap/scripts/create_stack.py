@@ -50,7 +50,6 @@ class Config(object):
         use_iam_role = os.getenv("USE_IAM_ROLE")
         sharepoint_proxy_ip = os.getenv("SHAREPOINT_PROXY_IP", '')
         sharepoint_host_names = os.getenv("SHAREPOINT_HOST_NAMES", '')
-
         tenant_id = os.getenv("TENANT_ID", '')
         client_id = os.getenv("CLIENT_ID", '')
         client_secret = os.getenv("CLIENT_SECRET", '')

@@ -40,7 +40,7 @@ export class ConfigFormComponent implements OnInit {
   GenerateLoadButtonText = "Generate Load";
   enablePortField = true;
 
-  constructor(private fb: FormBuilder, private readonly http: HttpClient, private router: Router, private titleService: Title, private sharedService: SharedService) {
+  constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) {
     this.testsStoppedSubscription = this.sharedService.getStopSingleEvent().subscribe((prefix) => this.onTestStopped(prefix));
   }
 
@@ -70,20 +70,6 @@ export class ConfigFormComponent implements OnInit {
     })
   }
 
-  // setEndPointFieldValidation() {
-  //   //in order: direct, proxy, proxy sharepoint
-  //   this.configForm.get('load_type').valueChanges.subscribe(loadType => {
-  //     if (loadType == AppSettings.loadTypeNames[LoadTypes.Direct]) {
-  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces]);
-  //     } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-  //       this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
-  //     } else if (loadType == AppSettings.loadTypeNames[2]) {
-  //       this.icap_endpoint_url.setValidators([Validators.required]);
-  //     }
-  //     this.configForm.get('icap_endpoint_url').updateValueAndValidity();
-  //   })
-  // }
-
   setTitle(newTitle: string) {
     this.titleService.setTitle(newTitle);
   }
@@ -96,7 +82,7 @@ export class ConfigFormComponent implements OnInit {
       load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces]),
       sharepoint_hosts: new FormControl(''),
-      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required]),
+      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required, Validators.pattern(/^([A-Za-z])[0-9a-zA-Z]*$/)]),
       enable_tls: true,
       tls_ignore_error: true,
       port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),

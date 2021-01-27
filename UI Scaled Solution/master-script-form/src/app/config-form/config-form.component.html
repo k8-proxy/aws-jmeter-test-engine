@@ -1,6 +1,8 @@
-<h1><img src="assets/gwl.png"> ICAP Performance Testing </h1>
+<br>
+<h3> ICAP Performance Testing </h3>
 
 <a href="https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-generate-Scaled-Load-via-UI.md" target="_blank" style="float: right;">Instructions on How to Generate Load</a>
+<br>
 
 <form [formGroup]="configForm" (ngSubmit)="onSubmit()" name="configForm">
     <div class="form-group">
@@ -98,6 +100,7 @@
             <div class="alert alert-danger" *ngIf="prefix.dirty && prefix.errors.cannotContainSpaces">Field cannot contain spaces.</div>
             <div class="alert alert-danger" *ngIf="prefix.touched && prefix.errors.required">This field is required.</div>
             <div class="alert alert-danger" *ngIf="prefix.dirty && prefix.errors.cannotContainDuplicatePrefix">A test with that prefix is already running.</div>
+            <div class="alert alert-danger" *ngIf="prefix.errors.pattern">Prefix must start with letter, cannot contain hyphens or underscores.</div>
         </div>
     </div>
     <!--
@@ -130,3 +133,8 @@
         Test submitted. Generating Load...
     </div>
 </form>
+
+<tests-table></tests-table>
+<br>
+<br>
+<results-table></results-table>
