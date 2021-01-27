@@ -42,7 +42,7 @@
     <div class="form-group">
         <label>Load Type</label>
         <select class="form-control" formControlName="load_type" (change)="onLoadTypeChange()">
-            <option *ngFor="let load of loadTypes" [ngValue]="load">{{load}}</option>
+            <option *ngFor="let load of loadTypes" [ngValue]="load">{{load | adjustLoadName}}</option>
         </select>
     </div>
 

@@ -184,6 +184,9 @@ export class SharedService {
         else if (loadType === AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
             name += " " + AppSettings.testNames[LoadTypes.DirectSharePoint];
         }
+        else if (loadType === "Proxy Offline") {
+            name += " " + "Proxy Site Live Performance Dashboard";
+        } 
         return name;
     }
 
