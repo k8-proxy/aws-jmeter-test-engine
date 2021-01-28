@@ -83,10 +83,16 @@ The newly created IAM role will be automatically attached the EC2 instances of t
 
 # Step 3. Setup Performance Dashboard system, create the S3 bucket, create a user with S3 bucket access
 
-- From your local repo clone run the following cloud formation script: jmeter-icap/cloudformation/AWS-Performance-Dashboard-and-S3-Bucket.yaml 
-The following paramaters are to be provided: Stack Name, the SSH key name (choose from the drop down box), public IP range, S3 bucket name to be created
+- From your local repo clone run the following cloud formation script: jmeter-icap/cloudformation/AWS-Performance-Dashboard-and-S3-Bucket.yaml using console
+   - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
+   - Click on Create Stack
+   - Select Upload Template
+   - Click Next
+   - Give stack name
+   - Enter the SSH key name (choose from the drop down box), public IP range, S3 bucket name to be created.
 ![Dashboard_CF_params](jmeter-icap/instructions/img/Dashboard_CF_params.png)
-- Before starting the script, confirm that the script can create IAM resources
+   - Click next until it says "Create Stack".
+   - Confirm that the script can create IAM resources and click "Create Stack".
 ![Acknowledge_IAM_resources](jmeter-icap/instructions/img/Acknowledge_IAM_resources.png)
 - After the script completes successfully open the OUTPUT tab and save the newly created Secret Key and Access Key in the Secret Manager
 ![KeysInTheOutput](jmeter-icap/instructions/img/KeysInTheOutput.png)
