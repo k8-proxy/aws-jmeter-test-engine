@@ -7,7 +7,7 @@ CONFIG_ENV_PATH = './config.env'
 
 
 def update_config_env(setup_json):
-
+    result = 0
     found = dotenv.find_dotenv(CONFIG_ENV_PATH)
     if not found:
         print("Please create config.env file similar to config.env.sample")
@@ -30,7 +30,8 @@ def update_config_env(setup_json):
             Config.client_secret = setup_json['client_secret']
 
     if setup_json['upload_test_data']:
-        upload_test_data_to_s3(Config)
+        result = upload_test_data_to_s3(Config)
+    return result
 
 
 def retrieve_config_fields():
@@ -61,5 +62,10 @@ def adjust_eof_newline():
 def upload_test_data_to_s3(config):
     root_dir = '/opt/data/'
     bucket_path = "s3://{}".format(config.test_data_bucket)
+    output = 1
+    try:
+        output = subprocess.call(['aws', 's3', 'sync', root_dir, bucket_path])
+    except Exception as e:
+        print("Error uploading to S3: {}".format(e))
 
-    subprocess.call(['aws', 's3', 'sync', root_dir, bucket_path])
+    return output
