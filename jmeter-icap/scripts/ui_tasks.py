@@ -102,7 +102,7 @@ def determine_tls_and_port_params(config, input_enable_tls, input_tls_ignore_ver
 
         # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
         if input_enable_tls:
-            config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
+            config.tls_verification_method = "-tls-no-verify" if input_tls_ignore_verification else ""
 
 
 class LoadType(str, Enum):
