@@ -53,18 +53,19 @@ There is cloudformation in place to automatically create the IAM role.
 The cloudformation script is located in your local clone of git repo under jmeter-icap/cloudformation/aws-secret-manager-with_iam_role.json or direct url from the repo is: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
 
 There are 2 ways to run CloudFormation script in aws:
+
 1. Using Console
    - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
    - Click on Create Stack
    - Select Upload Template
    - Click Next
    - Give stack name
-   - Enter Secrets manager Secret ARN created in step 2 above for AWS keys.
-   - Click next until it says create and then click create.
+   - Click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
+
 2. Using AWS CLI
 
 ```bash
-aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json --parameters SecretManagerArn=<The ARN of the secret manager>
+aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json
 
 ```
 
