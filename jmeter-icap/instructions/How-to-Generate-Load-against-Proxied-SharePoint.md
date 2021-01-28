@@ -76,26 +76,16 @@ The Sharepoint Load Script needs to know tenant id, client id and secret key to 
 
 Once these parameters are created then they need to be put in the framework config.env file.
 
-In EC2 virtual machine created via provided AMI, the following manual configurations needed to be done:
+- - Open browser and goto http://give-virtual-machine-ip/setup or click Setup menu from http://give-virtual-machine-ip
 
-- Go to scripts folder and open config.env file for editing:
-
-```bash
-sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/config.env
-```
  Modify the following parameters:
 
 - TENANT_ID : same as what is created above.
 - CLIENT_ID: same as what is created above
 - CLIENT_SECRET: same as what is created above.
 
-save the file and restart the following service:
+Click Submit Configurations button.
 
-```bash
-sudo systemctl stop flask_scaled 
-sudo systemctl start flask_scaled
-sudo systemctl status flask_scaled
-```
 Above modifications are specific to sharepoint, see https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-generate-Scaled-Load-via-UI.md this to ensure that other generic paremeters are also modified, if they are not already done. 
 
 ## How to run load against Sharepoint end point?
