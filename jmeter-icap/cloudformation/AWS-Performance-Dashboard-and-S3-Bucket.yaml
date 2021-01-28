@@ -32,9 +32,6 @@ Parameters:
   BucketName:
     Type: String
     Description: 'The name of the S3 Bucket to create, make this unique'
-  PublisherAccountID:
-    Type: String
-    Description: 'The AWS account ID with whom you are sharing access'
 Mappings:
   AWSInstanceType2Arch:
     t2.nano:
