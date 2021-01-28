@@ -269,7 +269,7 @@
       "pluginVersion": "7.3.7",
       "targets": [
         {
-          "alias": "Uploaded_Files-Success",
+          "alias": "Uploaded_Files",
           "groupBy": [],
           "measurement": "jmetersharepoint",
           "orderByTime": "ASC",
@@ -301,7 +301,7 @@
           ]
         },
         {
-          "alias": "Downloaded_Files-Success",
+          "alias": "Downloaded_Files",
           "groupBy": [],
           "measurement": "jmetersharepoint",
           "orderByTime": "ASC",
@@ -323,6 +323,46 @@
               "key": "transaction",
               "operator": "=~",
               "value": "/Download_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            }
+          ]
+        },
+        {
+          "alias": "Total_Files",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"count\" FROM \"jmetersharepoint\" WHERE (\"transaction\" =~ /Download_File/ AND \"statut\" = 'ok' AND \"transaction\" =~ /Upload_File/) AND $timeFilter",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            },
+            {
+              "condition": "AND",
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/_File/"
             },
             {
               "condition": "AND",
@@ -389,7 +429,7 @@
       "pluginVersion": "7.3.7",
       "targets": [
         {
-          "alias": "Uploaded_Files-Fail",
+          "alias": "Uploaded_Files",
           "groupBy": [],
           "measurement": "jmetersharepoint",
           "orderByTime": "ASC",
@@ -421,7 +461,7 @@
           ]
         },
         {
-          "alias": "Downloaded_Files-Fail",
+          "alias": "Downloaded_Files",
           "groupBy": [],
           "measurement": "jmetersharepoint",
           "orderByTime": "ASC",
@@ -443,6 +483,38 @@
               "key": "transaction",
               "operator": "=~",
               "value": "/Download_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "Total_Files",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/_File/"
             },
             {
               "condition": "AND",
@@ -3528,7 +3600,7 @@
       "type": "logs"
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -3536,12 +3608,12 @@
     "list": []
   },
   "time": {
-    "from": "2021-01-27T17:00:28.600Z",
-    "to": "2021-01-27T17:15:28.600Z"
+    "from": "now-15m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Demo-Dashboard SharePoint",
   "uid": "62c9MnLGk",
-  "version": 7
+  "version": 9
 }
