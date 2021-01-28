@@ -67,6 +67,7 @@ def upload_test_data_to_s3(config):
     output = 1
     try:
         output = subprocess.call(['aws', 's3', 'cp', root_dir, bucket_path, '--recursive'])
+
     except Exception as e:
         print("Error uploading to S3: {}".format(e))
 

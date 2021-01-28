@@ -7,7 +7,7 @@ The AWS Performance Test Execution Framework provided possibility to run scaled 
 UI interface provided possibility to run 3 types of Load:
 
 - Direct ICAP server: this load will generate load directly to ICAP end point.
-- Proxy Offline: this load will generate traffic against proxied offline gov.uk site
+- Direct Sharepoint: this load will generate traffic against sharepoint without a proxy
 - Proxy Sharepoint: this load will generate traffic against proxied sharepoint site.
 
 Once EC2 instance created using provided AMI, there are certain configurations needed in that EC2 machine to be able to successfull run scaled load against target systems.
@@ -16,19 +16,20 @@ This document will explain those needed configuration details and UI interface f
 
 ## What do I need to configire in EC2?
 
-In EC2 virtual machine created via provided AMI, the following manual configurations needed to be done:
 
-- Go to scripts folder and open config.env file for editing:
 
-```bash
-sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/config.env
-```
- Modify the following parameters:
+- Open browser and goto http://give-virtual-machine-ip/setup or click Setup menu from http://give-virtual-machine-ip
+
+
+ Modify the following parameters in UI:
  - SCRIPT_BUCKET - this is bucket name you created in initial setup
  - TEST_DATA_BUCKET - unless otherwise different bucket used for test data, this is usually exactly same as script_bucket. Provide the bucket name.
  - TEST_DATA_ACCESS_SECRET - this is AWS secret key name you created in inital setup
  - REGION - default region is eu-west-1. If you are working on other region, please, provide that region info here.
- 
+ -  Upload Test Data to S3 Test Data Bucket - tick this checkbox if you have not already done it during initial setup. It will upload test data files to s3 bucket.
+
+![UISetup](jmeter-icap/instructions/img/ui-set-up.png)
+
 In case of Proxy Sharepoint load type, the following additional parameters needs to be modified :
 - TENANT_ID : This is tenant id
 - CLIENT_ID: this is client id
@@ -36,19 +37,8 @@ In case of Proxy Sharepoint load type, the following additional parameters needs
 
 https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Generate-Load-against-Proxied-SharePoint.md instructions has details about how to setup Proxied Sharepoint load.
 
-save the file and restart the following service:
+Click Submit Configurations button.
 
-```bash
-sudo systemctl stop flask_scaled 
-sudo systemctl start flask_scaled
-sudo systemctl status flask_scaled
-```
-Next go to 
-
-```bash
-/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
-sudo sh changeIP.sh
-```
 
 ## How to generate load?
 
