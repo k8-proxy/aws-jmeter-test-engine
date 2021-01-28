@@ -1,6 +1,7 @@
 import requests
 import json
 from create_stack import Config
+from ui_tasks import LoadType
 
 
 # If the grafana file passed does not contain the appropriate elements with appropriate values, modify it
@@ -22,7 +23,6 @@ def __convert_grafana_json_to_template(grafana_json):
 
 #  Appends prefix to title and all occurrences of "measurement" value in the Grafana JSON file
 def __add_prefix_to_grafana_json(grafana_json, prefix):
-    grafana_json["dashboard"]["title"] = prefix + ' ' + grafana_json["dashboard"]["title"]
     if 'panels' in grafana_json["dashboard"]:
         for i in grafana_json["dashboard"]['panels']:
             for j in i:
@@ -30,6 +30,13 @@ def __add_prefix_to_grafana_json(grafana_json, prefix):
                     for k in i['targets']:
                         if 'measurement' in k:
                             k['measurement'] = prefix + '_' + k['measurement']
+
+
+def set_title_by_load_type(load_type, grafana_json, prefix):
+    if load_type == LoadType.direct_sharepoint.value:
+        grafana_json["dashboard"]["title"] = prefix + ' ' + "SharePoint Direct Live Performance Dashboard"
+    else:
+        grafana_json["dashboard"]["title"] = prefix + ' ' + grafana_json["dashboard"]["title"]
 
 
 def __add_prefix_to_grafana_loki_source_job(grafana_json, prefix):
@@ -59,7 +66,7 @@ def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_ur
 
 
 # responsible for posting the dashboard to Grafana and returning the URL to it
-def __post_grafana_dash(config):
+def __post_grafana_dash(config, from_ui=False):
     key = config.grafana_key
     grafana_template = './' + config.test_directory + '/' + config.grafana_file
     prefix = config.prefix
@@ -68,6 +75,7 @@ def __post_grafana_dash(config):
     total_users = config.total_users
     duration = config.duration
     endpoint_url = config.icap_endpoint_url
+    load_type = config.load_type
 
     if not grafana_url.startswith("http"):
         grafana_url = "http://" + grafana_url
@@ -77,7 +85,7 @@ def __post_grafana_dash(config):
     if grafana_url[len(grafana_url) - 1] != '/':
         grafana_api_url += '/'
 
-    grafana_api_url = grafana_api_url + 'api/dashboards/db'
+    grafana_api_url = "http://localhost:3000/api/dashboards/db" if from_ui else grafana_api_url + 'api/dashboards/db'
     headers = {
         "Authorization": "Bearer " + key,
         "Content-Type": "application/json"}
@@ -86,6 +94,7 @@ def __post_grafana_dash(config):
         grafana_json = json.load(json_file)
         grafana_json = __convert_grafana_json_to_template(grafana_json)
         __add_users_req_to_grafana_json(grafana_json, instances_required)
+        set_title_by_load_type(load_type, grafana_json, prefix)
         __add_prefix_to_grafana_json(grafana_json, prefix)
         __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url)
         __add_prefix_to_grafana_loki_source_job(grafana_json, prefix)
@@ -93,7 +102,7 @@ def __post_grafana_dash(config):
     resp = requests.post(grafana_api_url, json=grafana_json, headers=headers)
     d = eval(resp.text)
     # if the response contains a URL, use it to build a url that links directly to the newly created dashboard
-    if "url" in d:
+    if "url" in d and 'uid' in d:
         if grafana_url[len(grafana_url) - 1] == '/':
             grafana_url = grafana_url[:-1]
         return grafana_url + d.get('url'), d.get('uid')
@@ -101,8 +110,8 @@ def __post_grafana_dash(config):
         print("Dashboard creation failed: {0}".format(resp.text))
 
 
-def main(config):
-    created_dashboard_url, grafana_uid = __post_grafana_dash(config)
+def main(config, from_ui=False):
+    created_dashboard_url, grafana_uid = __post_grafana_dash(config, from_ui)
 
     if created_dashboard_url:
         print("Dashboard created at: ")

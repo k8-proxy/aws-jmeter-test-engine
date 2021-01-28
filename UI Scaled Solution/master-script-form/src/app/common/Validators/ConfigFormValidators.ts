@@ -7,7 +7,13 @@ export class ConfigFormValidators {
         if(control.value > 4000) {
             return {exceedsNumberLimit: true};
         }
+        return null;
+    }
 
+    static cannotStartWithHttp(control: AbstractControl) : ValidationErrors | null {
+        if((control.value as string).startsWith('http')) {
+            return {cannotStartWithHttp: true};
+        }
         return null;
     }
 

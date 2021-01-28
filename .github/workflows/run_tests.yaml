@@ -30,8 +30,8 @@ jobs:
         run: |
           pip install boto3 python-dotenv requests
           sudo apt-get install -y c-icap
-          ./icap-status.sh
           cd jmeter-icap/scripts
+          ./icap-status.sh
           cp config.env.sample config.env
           sed -i -e '/AWS_PROFILE_NAME/ { d; } ' config.env
           python3 create_stack_dash.py --exclude_dashboard --preserve_stack
