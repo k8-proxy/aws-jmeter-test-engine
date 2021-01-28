@@ -1,6 +1,6 @@
 export class AppSettings {
 
-    public static regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
+    public static regions: string[] = ['eu-west-1', 'us-east-1', 'us-west-1', 'us-west-2'];
     public static loadTypeNames: string[] = ['Direct', 'Proxy SharePoint', 'Direct Sharepoint'];
     public static endPointFieldTitles: string[] = ["ICAP Server Endpoint URL*", "SharePoint Endpoint URL*", "SharePoint Endpoint URL*", "Proxy IP Address*"];
     public static endPointFieldPlaceholders: string[] = ["Ex: icap-client.region.app.provider.com", "Ex: saas1.sharepoint.com", "Ex: saas1.sharepoint.com"]

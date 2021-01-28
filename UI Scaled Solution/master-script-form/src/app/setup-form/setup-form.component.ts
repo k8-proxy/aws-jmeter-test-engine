@@ -44,6 +44,7 @@ export class SetupFormComponent implements OnInit {
 
   initializeForm(): void {
     this.setupForm = this.fb.group({
+      region: AppSettings.regions[0],
       script_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
       test_data_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
       upload_test_data: false,
@@ -54,6 +55,9 @@ export class SetupFormComponent implements OnInit {
     });
   }
 
+  get region() {
+    return this.setupForm.get('region');
+  }
   get script_bucket() {
     return this.setupForm.get('script_bucket');
   }
@@ -77,6 +81,9 @@ export class SetupFormComponent implements OnInit {
   }
   get animState() {
     return this.showAlert ? 'show' : 'hide';
+  }
+  get regions() {
+    return AppSettings.regions;
   }
 
   onSubmit(): void {
@@ -117,6 +124,9 @@ export class SetupFormComponent implements OnInit {
   }
 
   setFormFieldsFromServerData(serverData) {
+    if(AppSettings.regions.includes(serverData['region'])) {
+      this.region.setValue(serverData['region']);
+    }
     this.script_bucket.setValue(serverData['script_bucket']);
     this.test_data_bucket.setValue(serverData['test_data_bucket']);
     this.test_data_access_secret.setValue(serverData['test_data_access_secret']);

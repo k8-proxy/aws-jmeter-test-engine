@@ -5,6 +5,13 @@
 <form [formGroup]="setupForm" (ngSubmit)="onSubmit()" name="setupForm">
 
     <div class="form-group">
+        <label>Region</label>
+        <select class="form-control" formControlName="region">
+            <option *ngFor="let region of regions" [ngValue]="region">{{region}}</option>
+        </select>
+    </div>
+
+    <div class="form-group">
         <label>Script Bucket*</label>
         <input type="text" class="form-control" formControlName="script_bucket" placeholder="">
         <small class="form-text text-muted">The bucket where scripts will be uploaded to *This field is required.</small>
