@@ -112,7 +112,7 @@ The newly created IAM role will be automatically attached the EC2 instances of t
 - Grafana ui opens and login with username/password: admin/glasswall
 - Verify that Load Generator UI is also visible: http://[instance public ip]
 
-# Step 4. Prepare the Load Generator script
+# Step 5. Prepare the Load Generator script
 
 **Checking & replacing values in the GenerateLoadGenerators.json script**
 
@@ -131,7 +131,7 @@ sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoa
 
 - AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
 
-- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above) security group id
+- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above with cloud formation) security group id
 
 All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
 - VPC and Subnets can be found on the top of this page.
@@ -141,7 +141,7 @@ All these data can be found under EC2 Service > Instances > Click on Your Instan
 
 Note: If you would like to use command line options to trigger load from your local machine then above modifications needs to be done in your local copy of GenerateLoadGenerators.json file. 
 
-# Step 5. UI Setup, Copy Test Data to S3 & Generate load
+# Step 6. UI Setup, Copy Test Data to S3 & Generate load
 
 **UI Setup**
 
