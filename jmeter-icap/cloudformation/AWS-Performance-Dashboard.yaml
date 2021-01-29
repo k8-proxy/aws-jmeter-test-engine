@@ -149,16 +149,16 @@ Mappings:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     us-east-1:
-      HVM64: ami-078f899d5342f05bd
+      HVM64: ami-087797f9aa7d8dd4a
       PV64: NOT_SUPPORTED
     us-east-2:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     us-west-1:
-      HVM64: ami-0fb15ed83e62d193e
+      HVM64: ami-05e5f150ac5548618
       PV64: NOT_SUPPORTED
     us-west-2:
-      HVM64: ami-0b4982c20268f003a
+      HVM64: ami-05a0d9418cd5ca817
       PV64: NOT_SUPPORTED
 Resources:
   EC2Instance:
