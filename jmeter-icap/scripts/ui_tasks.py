@@ -20,7 +20,7 @@ def modify_hosts_file(ip_addr: str, ova=False):
 
 
 def determine_load_type(config, ova=False):
-    if config.load_type == LoadType.direct.value or config.load_type == LoadType.direct_sharepoint.value:
+    if config.load_type == LoadType.direct.value:
         config.test_directory = 'ICAP-Direct-File-Processing'
         config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx' if ova else 'ICAP_Direct_FileProcessing_v3.jmx'
         config.grafana_file = 'aws-test-engine-dashboard.json'
@@ -32,7 +32,7 @@ def determine_load_type(config, ova=False):
         config.grafana_file = 'ProxySite_Dashboard_Template.json'
         config.test_data_file = 'proxysitefiles.csv'
 
-    elif config.load_type == LoadType.proxy_sharepoint.value:
+    elif config.load_type == LoadType.proxy_sharepoint.value or config.load_type == LoadType.direct_sharepoint.value:
         config.test_directory = 'ICAP-Sharepoint-Site'
         config.jmx_script_name = 'ICAP-Sharepoint-Upload-Download-v1.jmx'
         config.grafana_file = 'Sharepoint-Demo-Dashboard.json'
@@ -102,7 +102,7 @@ def determine_tls_and_port_params(config, input_enable_tls, input_tls_ignore_ver
 
         # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
         if input_enable_tls:
-            config.tls_verification_method = "tls-no-verify" if input_tls_ignore_verification else ""
+            config.tls_verification_method = "-tls-no-verify" if input_tls_ignore_verification else ""
 
 
 class LoadType(str, Enum):

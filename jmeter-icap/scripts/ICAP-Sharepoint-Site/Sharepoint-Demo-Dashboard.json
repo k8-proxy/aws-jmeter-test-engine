@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 27,
+  "id": 24,
   "links": [],
   "panels": [
     {
@@ -35,10 +35,10 @@
       },
       "id": 13,
       "options": {
-        "content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The proxy site url is is: \nsaaspoc1.sharepoint.com. Total users are 20. Duration of test is 900 seconds  </p>    ",
+        "content": "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \nsaaspoc1.sharepoint.com. Total users are 25. Duration of test is 900 seconds  </p>    ",
         "mode": "html"
       },
-      "pluginVersion": "7.1.0",
+      "pluginVersion": "7.3.7",
       "targets": [
         {
           "groupBy": [
@@ -98,8 +98,8 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 12,
+        "h": 6,
+        "w": 6,
         "x": 0,
         "y": 2
       },
@@ -121,7 +121,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.2",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -219,73 +219,281 @@
       }
     },
     {
-      "aliasColors": {
-        "Assertion Fail": "dark-red"
-      },
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
+          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-green",
                 "value": null
               },
               {
-                "color": "red",
-                "value": 80
+                "color": "light-green",
+                "value": 1
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 120
+              },
+              {
+                "color": "dark-green",
+                "value": 200
               }
             ]
           }
         },
         "overrides": []
       },
-      "fill": 0,
-      "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
+        "h": 6,
+        "w": 9,
+        "x": 6,
         "y": 2
       },
-      "hiddenSeries": false,
-      "id": 8,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 3,
-      "nullPointMode": "null",
+      "id": 21,
       "options": {
-        "alertThreshold": true
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
       },
-      "percentage": false,
-      "pluginVersion": "7.2.2",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "7.3.7",
       "targets": [
         {
-          "alias": "Assertion Fail",
+          "alias": "Uploaded_Files",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "J",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/Upload_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            }
+          ]
+        },
+        {
+          "alias": "Downloaded_Files",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "K",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/Download_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            }
+          ]
+        },
+        {
+          "alias": "Total_Files",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT \"count\" FROM \"jmetersharepoint\" WHERE (\"transaction\" =~ /Download_File/ AND \"statut\" = 'ok' AND \"transaction\" =~ /Upload_File/) AND $timeFilter",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            },
+            {
+              "condition": "AND",
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Success Total Files Uploaded & Downloaded",
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 120
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 200
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 9,
+        "x": 15,
+        "y": 2
+      },
+      "id": 22,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "7.3.7",
+      "targets": [
+        {
+          "alias": "Uploaded_Files",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "J",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/Upload_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "Downloaded_Files",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "K",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/Download_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "Total_Files",
           "groupBy": [],
           "measurement": "jmetersharepoint",
           "orderByTime": "ASC",
@@ -299,128 +507,28 @@
                   "count"
                 ],
                 "type": "field"
-              },
-              {
-                "params": [
-                  "/5"
-                ],
-                "type": "math"
               }
             ]
           ],
           "tags": [
             {
-              "key": "responseCode",
-              "operator": "=",
-              "value": "Assertion failed"
-            }
-          ]
-        },
-        {
-          "alias": "Error 500",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  " / 5"
-                ],
-                "type": "math"
-              }
-            ]
-          ],
-          "tags": [
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/_File/"
+            },
             {
-              "key": "responseCode",
+              "condition": "AND",
+              "key": "statut",
               "operator": "=",
-              "value": "500"
-            }
-          ]
-        },
-        {
-          "alias": "Error 503",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [
-                  " / 5"
-                ],
-                "type": "math"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "responseCode",
-              "operator": "=",
-              "value": "503"
+              "value": "ko"
             }
           ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Error Types",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "Fail Total Files Uploaded & Downloaded",
+      "type": "gauge"
     },
     {
       "datasource": null,
@@ -456,7 +564,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 8
       },
       "id": 10,
       "options": {
@@ -470,7 +578,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "7.2.2",
+      "pluginVersion": "7.3.7",
       "targets": [
         {
           "alias": "csv_Upload_File",
@@ -864,7 +972,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 8
       },
       "id": 14,
       "options": {
@@ -878,7 +986,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": true
       },
-      "pluginVersion": "7.2.2",
+      "pluginVersion": "7.3.7",
       "targets": [
         {
           "alias": "csv_Download_File",
@@ -1239,822 +1347,6 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "light-yellow",
-                "value": 1
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 20
-              },
-              {
-                "color": "dark-red",
-                "value": 50
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 18
-      },
-      "id": 17,
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "7.2.2",
-      "targets": [
-        {
-          "alias": "csv_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "csv_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "doc_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "doc_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "docx_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "docx_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "gif_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "gif_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "html_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "html_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "jpg_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "F",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "jpg_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "pdf_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "G",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "pdf_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "png_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "H",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "png_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "ppt_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "I",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "ppt_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "pptx_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "J",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "pptx_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "xls_Upload_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "K",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "xls_Upload_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Fail File Upload Total per Type",
-      "type": "gauge"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-red",
-                "value": null
-              },
-              {
-                "color": "light-yellow",
-                "value": 1
-              },
-              {
-                "color": "light-red",
-                "value": 20
-              },
-              {
-                "color": "dark-red",
-                "value": 50
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 18
-      },
-      "id": 18,
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "7.2.2",
-      "targets": [
-        {
-          "alias": "csv_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "csv_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "doc_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "doc_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "docx_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "C",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "docx_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "gif_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "D",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "gif_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "html_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "E",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "html_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "jpg_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "F",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "jpg_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "pdf_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "G",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "pdf_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "png_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "H",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "png_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "ppt_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "I",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "ppt_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "pptx_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "J",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "pptx_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        },
-        {
-          "alias": "xls_Download_File",
-          "groupBy": [],
-          "measurement": "jmetersharepoint",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "K",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "count"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "transaction",
-              "operator": "=",
-              "value": "xls_Download_File"
-            },
-            {
-              "condition": "AND",
-              "key": "statut",
-              "operator": "=",
-              "value": "ko"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Fail File Download Total per Type",
-      "type": "gauge"
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -2072,7 +1364,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 25
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 4,
@@ -2092,7 +1384,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.2",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2535,7 +1827,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 25
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 16,
@@ -2555,7 +1847,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.2.2",
+      "pluginVersion": "7.3.7",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2957,6 +2249,1355 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "light-yellow",
+                "value": 1
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 20
+              },
+              {
+                "color": "dark-red",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 23
+      },
+      "id": 17,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "7.3.7",
+      "targets": [
+        {
+          "alias": "csv_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "csv_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "doc_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "doc_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "docx_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "docx_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "gif_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "gif_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "html_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "html_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "jpg_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "jpg_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "pdf_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "pdf_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "png_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "png_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "ppt_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "I",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "ppt_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "pptx_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "J",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "pptx_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "xls_Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "K",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "xls_Upload_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Fail File Upload Total per Type",
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "light-yellow",
+                "value": 1
+              },
+              {
+                "color": "light-red",
+                "value": 20
+              },
+              {
+                "color": "dark-red",
+                "value": 50
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 23
+      },
+      "id": 18,
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "7.3.7",
+      "targets": [
+        {
+          "alias": "csv_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "csv_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "doc_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "doc_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "docx_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "docx_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "gif_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "gif_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "html_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "html_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "jpg_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "jpg_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "pdf_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "pdf_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "png_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "png_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "ppt_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "I",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "ppt_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "pptx_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "J",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "pptx_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        },
+        {
+          "alias": "xls_Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "K",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=",
+              "value": "xls_Download_File"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ko"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Fail File Download Total per Type",
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "legend": {
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.7",
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Upload_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  " / 5"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/Upload_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Success Upload File Throughput(per sec)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Download_File": "blue"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "light-green",
+                "value": 1
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 120
+              },
+              {
+                "color": "dark-green",
+                "value": 200
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "hiddenSeries": false,
+      "id": 20,
+      "legend": {
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.7",
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Download_File",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "K",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  " / 5"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "transaction",
+              "operator": "=~",
+              "value": "/Download_File/"
+            },
+            {
+              "condition": "AND",
+              "key": "statut",
+              "operator": "=",
+              "value": "ok"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Success Download File Throughput (per sec)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Assertion Fail": "dark-red"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 38
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 3,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.7",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Assertion Fail",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  "/5"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "responseCode",
+              "operator": "=",
+              "value": "Assertion failed"
+            }
+          ]
+        },
+        {
+          "alias": "Error 500",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  " / 5"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "responseCode",
+              "operator": "=",
+              "value": "500"
+            }
+          ]
+        },
+        {
+          "alias": "Error 503",
+          "groupBy": [],
+          "measurement": "jmetersharepoint",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [
+                  " / 5"
+                ],
+                "type": "math"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "responseCode",
+              "operator": "=",
+              "value": "503"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Error Types",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "Loki",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 38
+      },
+      "id": 24,
+      "options": {
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "7.3.7",
+      "targets": [
+        {
+          "expr": "{job=\"jmeter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Logs",
+      "type": "logs"
     }
   ],
   "refresh": "5s",
@@ -2967,12 +3608,12 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Demo-Dashboard SharePoint",
-  "uid": "QNBDd1oMz",
-  "version": 16
+  "uid": "62c9MnLGk",
+  "version": 9
 }

@@ -1,18 +1,19 @@
 import dotenv
 from create_stack import Config
-import boto3
 import subprocess
 
 CONFIG_ENV_PATH = './config.env'
 
 
 def update_config_env(setup_json):
-
+    result = 0
     found = dotenv.find_dotenv(CONFIG_ENV_PATH)
     if not found:
         print("Please create config.env file similar to config.env.sample")
     else:
         adjust_eof_newline()
+        dotenv.set_key(CONFIG_ENV_PATH, "REGION", setup_json['region'], "never")
+        Config.region = setup_json['region']
         dotenv.set_key(CONFIG_ENV_PATH, "SCRIPT_BUCKET", setup_json['script_bucket'], "never")
         Config.script_bucket = setup_json['script_bucket']
         dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_BUCKET", setup_json['test_data_bucket'], "never")
@@ -30,11 +31,13 @@ def update_config_env(setup_json):
             Config.client_secret = setup_json['client_secret']
 
     if setup_json['upload_test_data']:
-        upload_test_data_to_s3(Config)
+        result = upload_test_data_to_s3(Config)
+    return result
 
 
 def retrieve_config_fields():
     params = {
+        "region": "" if Config.region in ["", None] else Config.region,
         "script_bucket": "" if Config.script_bucket in ["", None] else Config.script_bucket,
         "test_data_bucket": "" if Config.test_data_bucket in ["", None] else Config.test_data_bucket,
         "test_data_access_secret": "" if Config.test_data_access_secret in ["", None] else Config.test_data_access_secret,
@@ -61,5 +64,10 @@ def adjust_eof_newline():
 def upload_test_data_to_s3(config):
     root_dir = '/opt/data/'
     bucket_path = "s3://{}".format(config.test_data_bucket)
+    output = 1
+    try:
+        output = subprocess.call(['aws', 's3', 'cp', root_dir, bucket_path, '--recursive'])
+    except Exception as e:
+        print("Error uploading to S3: {}".format(e))
 
-    subprocess.call(['aws', 's3', 'sync', root_dir, bucket_path])
+    return output

@@ -52,30 +52,20 @@ In order to have that access we need to create an IAM role for the LoadGenerator
 There is cloudformation in place to automatically create the IAM role.
 The cloudformation script is located in your local clone of git repo under jmeter-icap/cloudformation/aws-secret-manager-with_iam_role.json or direct url from the repo is: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
 
-One change needs to be done to local copy of this cloudformation script before running it, Find "Resource" as shown below:
-
-```bash
-                        "Resource": [
-                                        "arn:aws:s3:::*/*",
-                                        "arn:aws:s3:::aws-testengine-s3"
-                                    ]
-```
-and replace **aws-testengine-s3** name with your own bucket name created above.
-
-Save changes.
 There are 2 ways to run CloudFormation script in aws:
+
 1. Using Console
    - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
    - Click on Create Stack
    - Select Upload Template
    - Click Next
    - Give stack name
-   - Enter Secrets manager Secret ARN created in step 4 above for AWS keys.
-   - Click next until it says create and then click create.
+   - Click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
+
 2. Using AWS CLI
 
 ```bash
-aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json --parameters SecretManagerArn=<The ARN of the secret manager>
+aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json
 
 ```
 
@@ -94,11 +84,13 @@ The newly created IAM role will be automatically attached the EC2 instances of t
    - Click next until it says "Create Stack".
    - Confirm that the script can create IAM resources and click "Create Stack".
 ![Acknowledge_IAM_resources](jmeter-icap/instructions/img/Acknowledge_IAM_resources.png)
-- After the script completes successfully open the OUTPUT tab and save the newly created Secret Key and Access Key in the Secret Manager
+- After the script completes successfully open the OUTPUT tab and save the newly created Secret Key and Access Key in the Secret Manager. They will be needed in following step:
+
 ![KeysInTheOutput](jmeter-icap/instructions/img/KeysInTheOutput.png)
 
-**Save keys in AWS Secrets Manager**
+# Step 4. Create Secret Manager with your AWS Access and Secret Key
 
+- Open AWS UI Console
 - Goto Services
 - Select Secrets Manager
 - Click on Store New Secret
@@ -118,8 +110,9 @@ The newly created IAM role will be automatically attached the EC2 instances of t
 
 - Open Browser and enter http://[instance public ip]:3000
 - Grafana ui opens and login with username/password: admin/glasswall
+- Verify that Load Generator UI is also visible: http://[instance public ip]
 
-# Step 4. Prepare the Load Generator script
+# Step 5. Prepare the Load Generator script
 
 **Checking & replacing values in the GenerateLoadGenerators.json script**
 
@@ -138,7 +131,7 @@ sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoa
 
 - AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
 
-- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above) security group id
+- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above with cloud formation) security group id
 
 All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
 - VPC and Subnets can be found on the top of this page.
@@ -148,14 +141,17 @@ All these data can be found under EC2 Service > Instances > Click on Your Instan
 
 Note: If you would like to use command line options to trigger load from your local machine then above modifications needs to be done in your local copy of GenerateLoadGenerators.json file. 
 
-# Step 5. Copy Test Data to S3 & Generate load
+# Step 6. UI Setup, Copy Test Data to S3 & Generate load
 
-**Copy Test Data**
+**UI Setup**
 
-- Download gov_uk_files.zip to your local machine [from git repo](https://github.com/k8-proxy/aws-jmeter-test-engine.git), located at jmeter-icap/test-data/
-- unzip the file
-- upload it's contents to s3 bucket created earlier
-- The folder structure of the test files s3 bucket should be ->  filetype->hashfolders->files
+- Open browser and go to http://[instance public ip]
+- Click on Setup link. System loads default configurations.
+- Make necessary changes and also tick "Upload Test Data to S3 Test Data Bucket" option
+
+![KeysInTheOutput](jmeter-icap/instructions/img/ui-set-up.png)
+- Modify other paramaters also accordingly
+- Click Submit configurations.
 
 **How to generate load?**
 
