@@ -1,0 +1,59 @@
+{
+    "variables":
+        {
+            "accesskey": "env `AWS_ACCESS_KEY_ID`",
+            "secretkey": "env `AWS_SECRET_ACCESS_KEY`"
+        },
+    "builders":[
+        {
+           "type": "amazon-ebs",
+            "profile": "lifestyle",
+            "region": "eu-west-1",
+            "ssh_clear_authorized_keys": true,
+            "source_ami": "ami-0aef57767f5404a3c",
+            "instance_type": "m4.large",
+            "ssh_username": "ubuntu",
+            "ami_name": "packer-scaled-demo {{timestamp}}",
+            "tags": {
+              "OS_Version": "Ubuntu",
+              "Release": "Latest"
+	    }
+        }
+    ],
+   "provisioners":[
+    {
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/get_repo.sh"
+    },
+    {
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/loki.sh"
+    },
+    {
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/grafana.sh"
+    },
+    {
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/influx.sh"
+    },
+    {
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/ui.sh"
+    },
+    {
+        "type": "file",
+        "source": "jmeter-icap/deployment/packer/provisioning_scripts/healthcheck.sh",
+        "destination": "/tmp/healthcheck.sh"
+    },
+    {
+        "type": "shell",
+        "inline": "/tmp/healthcheck.sh"
+    }
+    ],
+    "post-processors":[
+        {
+            "type": "manifest"
+        }]
+
+}
