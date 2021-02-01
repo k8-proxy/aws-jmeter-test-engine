@@ -5,11 +5,13 @@ Overall, logical structure looks like this:
 
 ![vm_load_vision](jmeter-icap/instructions/img/ICAPServer-Performance-Analytics-Dashboard_v2.png)
 
-In nutshell, user triggers python script to indicate what kind of load needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
+There are 2 ways to trigger load: via UI interface or via command line python script.
+
+In nutshell, user triggers load via UI or command line python script to indicate what kind of traffic needs to be generated, then automation will take care of creating necessary EC2 instances that will trigger load and also it will create performance analytics dashboard automatically.
 
 There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon and North California regions in order to make use of this performance test framework more easier:
 
- - ICAPServer-Performance-Analytics-Dashboard - this image is used to create Performance Dashboard automatically
+ - ICAPServer Performance Test and Analytics Ubuntu - this image is used to create Performance Dashboard automatically and also has UI interface to trigger load
  - ICAPServer-Performance-Load-Generator - this image is used during Load Generation triggering in EC2 Auto Scale Cloudformation script.
 
 This document will show simple way to get started utilizing this framework step by step.
@@ -40,18 +42,84 @@ The VPC & Subnets cloudformation stack can be created using 2 ways:
 aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets-change-region.json
 
 ```
-**Create 2 security groups**  
 
-1. Security group for Load Generators:  ICAP-Performance-LG-SG
-2. Security group for Dashboard instance: ICAP-Performance-Dashboard-SG
-    - Incoming rule: 
-       - port 3000 - from your local IP
-       - port 3100 - from load generator security group
-       - port 8086 - from load generator security group
+# Step 2. Create AWS IAM Role with Access to AWS Secret Manager and to S3 bucket
+
+LoadGenerator instances will need to access S3 to fetch data and also access Secrets Manager to get AWS & grafana keys. 
+
+In order to have that access we need to create an IAM role for the LoadGenerator Instances.
+
+There is cloudformation in place to automatically create the IAM role.
+The cloudformation script is located in your local clone of git repo under jmeter-icap/cloudformation/aws-secret-manager-with_iam_role.json or direct url from the repo is: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
+
+There are 2 ways to run CloudFormation script in aws:
+
+1. Using Console
+   - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
+   - Click on Create Stack
+   - Select Upload Template
+   - Click Next
+   - Give stack name
+   - Click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
+
+2. Using AWS CLI
+
+```bash
+aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json
+
+```
+
+The newly created IAM role will be automatically attached the EC2 instances of the deployment
+
+# Step 3. Setup Performance Dashboard system, create the S3 bucket, create a user with S3 bucket access
+
+- From your local repo clone run the following cloud formation script: jmeter-icap/cloudformation/AWS-Performance-Dashboard-and-S3-Bucket.yaml using console
+   - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
+   - Click on Create Stack
+   - Select Upload Template
+   - Click Next
+   - Give stack name
+   - Enter the SSH key name (choose from the drop down box), public IP range, S3 bucket name to be created.
+![Dashboard_CF_params](jmeter-icap/instructions/img/Dashboard_CF_params.png)
+   - Click next until it says "Create Stack".
+   - Confirm that the script can create IAM resources and click "Create Stack".
+![Acknowledge_IAM_resources](jmeter-icap/instructions/img/Acknowledge_IAM_resources.png)
+- After the script completes successfully open the OUTPUT tab and save the newly created Secret Key and Access Key in the Secret Manager. They will be needed in following step:
+
+![KeysInTheOutput](jmeter-icap/instructions/img/KeysInTheOutput.png)
+
+# Step 4. Create Secret Manager with your AWS Access and Secret Key
+
+- Open AWS UI Console
+- Goto Services
+- Select Secrets Manager
+- Click on Store New Secret
+- Select Other types of secrets
+- Enter following secret keys and values (best to copy names and remove " from key names)
+    1. Secret Key Name = "AWS_Access_Key"
+       Secret Value = Your access key here created just before
+    2. Click Add row (keep that white space before closing quote ")
+       Secret Key Name = "AWS_Secret_Key "
+       Secret Value = Your AWS secret access key created just before
+- Click next and give Name
+- Click next and select disable automatic rotation
+- Click next and click Store
+- Select secrets name created and save Secret ARN.
+
+**Verify you can access the Performance Dashboard system**
+
+- Open Browser and enter http://[instance public ip]:3000
+- Grafana ui opens and login with username/password: admin/glasswall
+- Verify that Load Generator UI is also visible: http://[instance public ip]
+
+# Step 5. Prepare the Load Generator script
 
 **Checking & replacing values in the GenerateLoadGenerators.json script**
 
-In your local copy of the repo it's worth checking a few things in the cloudformation script: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/GenerateLoadGenerators.json
+Next step is to ssh to this EC2 instance (username: ubuntu) and :
+```bash
+sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoadGenerators.json
+```
 
 **Replace & save the following parameters with your own value**:
 
@@ -61,137 +129,41 @@ In your local copy of the repo it's worth checking a few things in the cloudform
 
 - KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
 
-- AmiImage - this is id (ami-088f46d6d2a758a97) from ICAPServer-Performance-Load-Generator AWS community image
+- AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
 
-- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above) security group id
+- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above with cloud formation) security group id
 
-AMI, Security Group, and Key Pair Name can all be found under the EC2 Service.
-VPC and Subnets can be found under the VPC Service.
+All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
+- VPC and Subnets can be found on the top of this page.
+- AMI and Key Pair Name can be found under the Details tab.
+- Security Group can be found under Security tab.
 
-# Step 2. Setup Performance Dashboard system
 
-Create new EC2 instance using ICAPServer-Performance-Analytics-Dashboard - ami-039215eee67c4041e image from AWS community using the following steps:
+Note: If you would like to use command line options to trigger load from your local machine then above modifications needs to be done in your local copy of GenerateLoadGenerators.json file. 
 
-- Click on Launch Instance
-- Type "icapserver" in search field & click enter
-- Click on "Community AMIs"
-- Select "ICAPServer-Performance-Analytics-Dashboard" AMI
-- Select t3.medium (for average use) instance type
-- Select desired VPC and public subnet (created in step1, or existing own one can be used)
-- Auto Assign Public IP & leave all other options as default
-- Click Add Storage, then Click Add Tags : Create Name tag to identify your instance
-- Next Configure security group: Select ICAP-Performance-Dashboard-SG created in step 1
-- Review & Launch. Select your own keypair or create new one.
-- Open Browser and enter http://[instance public ip]:3000
-- Grafana ui opens and login with username/password: admin/glasswall
+# Step 6. UI Setup, Copy Test Data to S3 & Generate load
 
-If you do not wish to use ready image, rather create everything from scratch then follow these instructions:
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-Install-InfluxDB-Grafana-Loki-on-Amazon-Linux.md
+**UI Setup**
 
-# Step 3. Create S3 bucket
+- Open browser and go to http://[instance public ip]
+- Click on Setup link. System loads default configurations.
+- Make necessary changes and also tick "Upload Test Data to S3 Test Data Bucket" option
 
-Create private s3 bucket in one of the regions (Ireland,North Virginia, Oregon, North California). The s3 bucket is used to store performance test scripts and data. 
+![KeysInTheOutput](jmeter-icap/instructions/img/ui-set-up.png)
+- Modify other paramaters also accordingly
+- Click Submit configurations.
 
-- Goto Services
-- Select S3
-- Click Create Bucket
-- Give unique bucket name and select desired region (ensure that you select same region as the Performance Dashboard instance AWS region)
-- Click on Create Bucket button
+**How to generate load?**
 
-# Step 4. Create IAM User with only programmatic read/write access to S3 and store access keys in AWS Secrets Manager.
+The framework provides 2 options to trigger load:
 
-This key is used to access s3 bucket where test data is.
-Performance test Jmeter script expects that these keys are passed to it. 
+Option 1: UI interface. 
+- Please, follow the following instructions to start the load via UI:
+    - https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/How-to-generate-Scaled-Load-via-UI.md 
 
-**1. Create IAM User**
- - Goto Services 
- - Select IAM
- - Select users
- - Add user
- - Enter username and Select programmatic access
- - Click on Next Permissions
- - Select Attach Existing Policies
- - Search for AmazonS3FullAccess policy
- - Select the policy
- - Click on Next Tags -> Review -> Create User
- - Key AWS keys in safe place
-
-**2. Create Secrets key in AWS Secrets Manager**
-
-- Goto Services
-- Select Secrets Manager
-- Click on Store New Secret
-- Select Other types of secrets
-- Enter following secret keys and values
-    1. Secret Key Name = Access key ID 
-       Secret Value = Your access key here created just before
-    2. Click Add row
-       Secret Key = Secret access key
-       Secret Value = Your AWS secret access key created just before
-- Click next and give Name
-- Click next and select disable automatic rotation
-- Click next and click Store
-- Select secrets name created and save Secret ARN. it will be used in step 5
-
-# Step 5. Create AWS IAM Role with Access to AWS Secret Manager and to S3 bucket
-
-LoadGenerator instances will need to access S3 to fetch data and also access Secrets Manager to get AWS & grafana keys. 
-
-In order to have that access we need to assign IAM role to the LoadGenerator Instances.
-
-There is cloudformation in place to automatically create the IAM role. 
-The cloudformation script is located in your local clone of git repo under jmeter-icap/cloudformation/aws-secret-manager-with_iam_role.json or direct url from the repo is: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json Cloudformation script.
-
-One change needs to be done to local copy of this cloudformation script before running it, Find "Resource" as shown below:
-
-```bash
-"Resource": [
-                                        "arn:aws:s3:::*/*",
-                                        "arn:aws:s3:::aws-testengine-s3"
-                                    ]
-```
-and replace **aws-testengine-s3** name with your own bucket name created above.
-
-Save changes.
-There are 2 ways to run CloudFormation script in aws:
-1. Using Console
-   - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
-   - Click on Create Stack
-   - Select Upload Template
-   - Click Next
-   - Give stack name
-   - Enter Secrets manager Secret ARN created in step 4 above for AWS keys.
-   - Click next until it says create and then click create.
-2. Using AWS CLI
-
-```bash
-aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json --parameters SecretManagerArn=enter secret ARN created in step 4
-
-```
-
-# Step 6. Create Grafana API key and store them in AWS Secrets Manager
-
-Follow Prerequisites from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_dashboards-script.md this link to create Grafana API key.
-
-Store keys in AWS Secrets Manager using same steps as step 4.
-
-Secret Key = Grafana_Api_Key
-Secret Value = Your grafana api key value here
-
-# Step 7. Copy Test Data to S3 & Run python script to trigger load
-
-**Copy Test Data**
-
-- Download gov_uk_files.zip to your local machine from jmeter-icap/test-data/
-- unzip the file
-- upload it's contents to s3 bucket created earlier
-- The folder structure of the test files s3 bucket should be ->  filetype->hashfolders->files
-
-**Run python script to trigger load**
-
-Next step, please, follow the following instructions to start the load:
-
-https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_stack_dash.md
+Option 2: Via command line.
+- Please, follow the following instructions to start the load via command line:
+    - https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_stack_dash.md
 
 
 

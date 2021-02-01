@@ -11,8 +11,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { CookieService } from 'ngx-cookie-service';
 import { TestsTableComponent } from './tests-table/tests-table.component';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { ResultsTableComponent } from './results-table/results-table.component';
+import { SetupFormComponent } from './setup-form/setup-form.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { RouterModule } from '@angular/router'
+import { LoadPipe } from './common/Pipes/load.pipe';
 
 @NgModule({
   declarations: [
@@ -20,6 +24,9 @@ import { ResultsTableComponent } from './results-table/results-table.component';
     ConfigFormComponent,
     TestsTableComponent,
     ResultsTableComponent,
+    SetupFormComponent,
+    NavbarComponent,
+    LoadPipe
   ],
   imports: [
     BrowserModule,
@@ -31,7 +38,11 @@ import { ResultsTableComponent } from './results-table/results-table.component';
     MatTableModule,
     ConfirmationPopoverModule.forRoot({
       confirmButtonType: 'warning'
-    })
+    }),
+    RouterModule.forRoot([
+      { path: '', component: ConfigFormComponent},
+      { path: 'setup', component: SetupFormComponent}
+    ], {useHash: true})
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [FormBuilder, CookieService],

@@ -4,6 +4,7 @@ import json
 from waitress import serve
 from create_stack_dash import create_stack_from_ui, delete_stack_from_ui, Config
 from database_ops import retrieve_test_results
+from ui_setup import update_config_env, retrieve_config_fields
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -33,11 +34,23 @@ def parse_request():
         elif button_pressed == 'stop_individual_test':
             delete_stack_from_ui(stack_name)
             return make_response(jsonify("Test {0} terminated".format(stack_name)), 201)
+        elif button_pressed == 'setup_config':
+            data = json.loads(request.form.get('form'))
+            print('Setup Data sent from UI: {0}'.format(data))
+            result = update_config_env(data)
+            if result == 0:
+                return make_response(jsonify(response="OK"), 200)
+            else:
+                return make_response(jsonify(response="UPLOADFAILED"), 200)
 
     if request.method == 'GET':
-        test_results = retrieve_test_results(NUMBER_OF_ROWS_TO_RETRIEVE)
-        grafana_url = Config.grafana_url
-        return make_response(jsonify(test_results, grafana_url), 201)
+        if request.args['request_type'] == 'test_results':
+            test_results = retrieve_test_results(NUMBER_OF_ROWS_TO_RETRIEVE)
+            grafana_url = Config.grafana_url
+            return make_response(jsonify(test_results, grafana_url), 201)
+        elif request.args['request_type'] == 'config_fields':
+            config_fields = retrieve_config_fields()
+            return make_response(jsonify(config_fields), 201)
 
 
 CORS(app)

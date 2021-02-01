@@ -12,10 +12,20 @@
             <th *matHeaderCellDef> Start Time </th>
             <td *matCellDef="let element"> {{element.startTime | date:'medium'}} </td>
         </ng-container>
+
+        <ng-container matColumnDef="endTime">
+            <th *matHeaderCellDef> End Time </th>
+            <td *matCellDef="let element"> {{element.endTime | date:'medium'}} </td>
+        </ng-container>
         
         <ng-container matColumnDef="duration">
             <th *matHeaderCellDef> Duration </th>
             <td *matCellDef="let element"> {{element.duration}} Seconds </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalUsers">
+            <th *matHeaderCellDef> Total Users </th>
+            <td *matCellDef="let element"> {{element.totalUsers}} </td>
         </ng-container>
 
         <ng-container matColumnDef="totalRequests">

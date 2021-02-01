@@ -1,7 +1,7 @@
 /*
     This service is responsible for querying the database and storing retrieved data for use in other componenets
 */
-import { AppSettings } from './../app settings/AppSettings';
+import { AppSettings, LoadTypes } from './../app settings/AppSettings';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
@@ -21,6 +21,8 @@ export interface TestRowElement {
 export interface ResultsRowElement {
     testName: string;
     startTime: Date;
+    endTime:Date;
+    totalUsers: number;
     runId: string;
     duration: string;
     rampUp: string;
@@ -62,7 +64,7 @@ export class SharedService {
     }
 
     getTestsFromDatabase() {
-        this.http.get(AppSettings.serverIp).subscribe(response => this.processRetrievedTestData(response), (err) => { this.onError(err) });
+        this.http.get(AppSettings.serverIp, { params: { request_type: 'test_results'}}).subscribe(response => this.processRetrievedTestData(response), (err) => { this.onError(err) });
     }
 
     processRetrievedTestData(response) {
@@ -77,6 +79,8 @@ export class SharedService {
     buildResultsDataRow(dataRow, columnArray): ResultsRowElement {
         let _testName = this.buildTestName(dataRow[this.getDataItemIndex('Prefix', columnArray)], dataRow[this.getDataItemIndex('LoadType', columnArray)]);
         let _startTime = new Date(dataRow[this.getDataItemIndex('time', columnArray)]);
+        let _endTime = new Date(dataRow[this.getDataItemIndex('time', columnArray)]);
+        let _totalUsers = dataRow[this.getDataItemIndex('TotalUsers', columnArray)];
         let _runId = dataRow[this.getDataItemIndex('RunId', columnArray)];
         let _duration = dataRow[this.getDataItemIndex('Duration', columnArray)];
         let _rampUp = dataRow[this.getDataItemIndex('RampUp', columnArray)];
@@ -93,6 +97,8 @@ export class SharedService {
         let row: ResultsRowElement = {
             testName: _testName,
             startTime: _startTime,
+            endTime: _endTime,
+            totalUsers: _totalUsers,
             runId: _runId,
             duration: _duration,
             rampUp: _rampUp,
@@ -169,11 +175,18 @@ export class SharedService {
 
     public buildTestName(prefix: string, loadType: string): string {
         let name = prefix;
-        if (loadType === "Direct") {
-            name += " ICAP Live Performance Dashboard"
-        } else if (loadType === "Proxy") {
-            name += " Proxy Site Live Performance Dashboard"
+        if (loadType === AppSettings.loadTypeNames[LoadTypes.Direct]) {
+            name += " " + AppSettings.testNames[LoadTypes.Direct];
+        } 
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+            name += " " + AppSettings.testNames[LoadTypes.ProxySharePoint];
         }
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
+            name += " " + AppSettings.testNames[LoadTypes.DirectSharePoint];
+        }
+        else if (loadType === "Proxy Offline") {
+            name += " " + "Proxy Site Live Performance Dashboard";
+        } 
         return name;
     }
 
@@ -181,12 +194,22 @@ export class SharedService {
         let start = startTime.getTime(); //gets time in epoch, for use when setting grafana time window
         let end = start + (runTime * 1000);
         let name = prefix;
-        if (loadType === "Direct") {
-            name += "-icap-live-performance-dashboard"
-        } else if (loadType === "Proxy") {
-            name += "-proxy-site-live-performance-dashboard"
+        if (loadType === AppSettings.loadTypeNames[LoadTypes.Direct]) {
+            name += AppSettings.dashboardNames[LoadTypes.Direct];
+        } 
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
+            name += AppSettings.dashboardNames[LoadTypes.ProxySharePoint];
+        } else if (loadType === AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
+            name += AppSettings.dashboardNames[LoadTypes.DirectSharePoint];
         }
 
+
+        if (!this.grafanaUrl.endsWith('/')) {
+            this.grafanaUrl += '/';
+        }
+        if (!this.grafanaUrl.startsWith('http')) {
+            this.grafanaUrl = 'http://' + this.grafanaUrl;
+        }
         let link = this.grafanaUrl + 'd/' + grafanaUid + '/' + name + "?&from=" + start + "&to=" + end;
         return link;
     }

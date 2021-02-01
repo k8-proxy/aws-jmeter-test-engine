@@ -5,7 +5,7 @@
   * [Introduction](#introduction)
   * [Prerequisites](#prerequisites)
   * [Using config.env to pass parameters to create_stack_dash.py](#using-configenv-to-pass-parameters-to-create-stack-dashpy)
-  * [Options available for the create_stack_dash.py script](#options-available-for-the-create-stack-dashpy-script)
+  * [Options/Parameters available for the create_stack_dash.py script](#options-available-for-the-create-stack-dashpy-script)
   * [How create_stack_dash.py works](#how-create-stack-dashpy-works)
   * [Running the create_stack_dash.py script](#running-the-create-stack-dashpy-script)
   * [Troubleshooting](#troubleshooting)
@@ -94,9 +94,15 @@ EXCLUDE_DASHBOARD=0
 PRESERVE_STACK=0
 GRAFANA_SERVER_TAG=GrafanaServer
 GRAFANA_SECRET=GrafanaSecret
+USE_IAM_ROLE=no
 STORE_RESULTS=1
 MIN_AGE=0
 LOAD_TYPE=Direct
+SHAREPOINT_IP=
+SHAREPOINT_HOST_NAMES=
+TENANT_ID=
+CLIENT_ID=
+CLIENT_SECRET=
 ```
 
 These parameters have corresponding options that can be used during script execution, they do not have to be set in config.env. Many of the parameters above are also optional, they can be omitted. Any options input manually via the command line will override options within the config.env file. For example, if the config.env file is set to allow dashboard creation:
@@ -236,7 +242,43 @@ This takes no arguments if used in args, 0/1 values if used in config.env. If se
 <tr>
 <td>--load_type, -lt</td><td> LOAD_TYPE </td>
 <td>
-The type of load to be generated (Direct or Proxy)
+The type of load to be generated (Direct, Proxy, or SharePoint)
+</td>
+</tr>
+<tr>
+<td>--use_iam_role, -lt</td><td>USE_IAM_ROLE</td>
+<td>
+Whether or not Load Generators will utilise an IAM role (takes "yes" or "no" as arguments)
+</td>
+</tr>
+<tr>
+<td> --sharepoint_ip, -spip </td> <td>SHAREPOINT_IP</td>
+<td>
+Sharepoint IP address that will be written to /etc/hosts in load generators
+</td>
+</tr>
+<tr>
+<td> --sharepoint_host_names, -sphosts </td> <td>SHAREPOINT_HOST_NAMES</td>
+<td>
+SharePoint Hostnames that will be written to /etc/hosts in load generators
+</td>
+</tr>
+<tr>
+<td>--tenant_id, -tid</td><td>TENANT_ID</td>
+<td>
+Tenant ID value (for use with SharePoint)
+</td>
+</tr>
+<tr>
+<td>--client_id, -cid</td><td>CLIENT_ID</td>
+<td>
+Client ID value (for use with SharePoint)
+</td>
+</tr>
+<tr>
+<td>--client_secret, -cs</td><td>CLIENT_SECRET</td>
+<td>
+Client Secret value (for use with SharePoint)
 </td>
 </tr>
 </table>

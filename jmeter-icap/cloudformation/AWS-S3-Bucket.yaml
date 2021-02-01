@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: 'AWS CloudFormation Template:
+  Creates S3 bucket and a user to access it programmatically.'
+Parameters:
+  BucketName:
+    Type: String
+    Description: 'The name of the S3 Bucket to create, make this unique'
+Resources:
+  S3BUCKET:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref BucketName
+    DeletionPolicy: Delete
+  S3User:
+    Type: AWS::IAM::User
+  S3UserGroup:
+    Type: AWS::IAM::Group
+  Users:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref 'S3UserGroup'
+      Users: [!Ref 'S3User']
+  S3UserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3Access
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: ['s3:*']
+          Resource: '*'
+      Groups: [!Ref 'S3UserGroup']
+  S3UserKeys:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref 'S3User'
+Outputs:
+  Bucket:
+    Description: S3 Bucket Name
+    Value: !Ref S3BUCKET
+  AccessKey:
+    Value: !Ref 'S3UserKeys'
+    Description: AWSAccessKeyId of new user
+  SecretKey:
+    Value: !GetAtt [S3UserKeys, SecretAccessKey]
+    Description: AWSSecretAccessKey of new user
