@@ -43,7 +43,7 @@
     },
     {
         "type": "shell",
-        "script": "jmeter-icap/deployment/packer/provisioning_scripts/ui.sh"
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/ui_scaled.sh"
     },
     {
         "type": "file",
