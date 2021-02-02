@@ -77,7 +77,7 @@ export class ConfigFormComponent implements OnInit {
       load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotStartWithHttp]),
       sharepoint_hosts: new FormControl(''),
-      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotContainDuplicatePrefix, Validators.required, Validators.pattern(/^([A-Za-z])[0-9a-zA-Z]*$/)]),
+      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, Validators.required, Validators.pattern(/^([A-Za-z])[0-9a-zA-Z]*$/)]),
       enable_tls: true,
       tls_ignore_error: true,
       port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
@@ -213,7 +213,6 @@ export class ConfigFormComponent implements OnInit {
 
   lockForm() {
     this.GenerateLoadButtonText = "Generating Load..."
-    this.prefix.reset();
     this.configForm.disable();
   }
 
