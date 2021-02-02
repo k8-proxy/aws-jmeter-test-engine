@@ -41,4 +41,5 @@ sudo systemctl status flask_scaled
 sleep 10
 sudo netstat  -ntlp
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
-sudo ./changeIP.sh
+sudo bash -c "chmod +x changeIP.sh"
+sudo bash changeIP.sh
