@@ -5,7 +5,8 @@
 Install Node.js
 
 ```bash
-sudo apt install nodejs -y
+curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+sudo apt-get install -y nodejs
 sudo apt install npm -y
 sudo npm install -g @angular/cli
 sudo npm install -g http-server
