@@ -28,7 +28,7 @@ This document will explain those needed configuration details and UI interface f
  - REGION - default region is eu-west-1. If you are working on other region, please, provide that region info here.
  -  Upload Test Data to S3 Test Data Bucket - tick this checkbox if you have not already done it during initial setup. It will upload test data files to s3 bucket.
 
-![UISetup](jmeter-icap/instructions/img/ui-set-up.png)
+![setup-ui](img/ui-set-up.png)
 
 In case of Proxy Sharepoint load type, the following additional parameters needs to be modified :
 - TENANT_ID : This is tenant id

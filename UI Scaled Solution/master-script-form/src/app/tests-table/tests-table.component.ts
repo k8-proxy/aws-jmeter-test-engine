@@ -46,7 +46,7 @@ export class TestsTableComponent implements OnInit {
 
     let currentTime = new Date();
     let expireTime = new Date(currentTime.getTime() + formAsJson['duration'] * 1000);
-    let prefix = formAsJson['prefix'];
+    // let prefix = formAsJson['prefix'];
 
     //convert the form to JSON to store as cookie. Add desired data to JSON (dashboard URL, expire time)
     formAsJson['dashboardUrl'] = dashboardUrl;
@@ -54,7 +54,7 @@ export class TestsTableComponent implements OnInit {
     formAsJson['endTime'] = expireTime;
     formAsJson['stackName'] = stackName;
 
-    this.cookieService.set(prefix, JSON.stringify(formAsJson), expireTime);
+    this.cookieService.set(stackName, JSON.stringify(formAsJson), expireTime);
     this.generateDatasourceArray();
     this.table.renderRows();
     AppSettings.addingPrefix = false;
@@ -99,15 +99,13 @@ export class TestsTableComponent implements OnInit {
     return row;
   }
 
-  stopTestButton(prefix: string) {
-    let cookieJson = JSON.parse(this.cookieService.get(prefix));
-    let stackToDelete = cookieJson.stackName;
-    this.cookieService.delete(prefix);
-    this.postStopSingleTestToServer(stackToDelete);
+  stopTestButton(stackName: string) {
+    this.cookieService.delete(stackName);
+    this.postStopSingleTestToServer(stackName);
     this.generateDatasourceArray();
     this.table.renderRows();
     this.updateCookiesExistAndPrefixSet();
-    this.sharedService.sendStopSingleEvent(prefix);
+    this.sharedService.sendStopSingleEvent(stackName);
   }
 
   postStopSingleTestToServer(stackName: string) {
@@ -119,7 +117,7 @@ export class TestsTableComponent implements OnInit {
 
   updateCookiesExistAndPrefixSet() {
     AppSettings.cookiesExist = !(Object.keys(this.cookieService.getAll()).length === 0 && this.cookieService.getAll().constructor === Object);
-    this.checkForObsoletePrefixes();
+    // this.checkForObsoletePrefixes();
   }
 
   getTestPrefixList() {
