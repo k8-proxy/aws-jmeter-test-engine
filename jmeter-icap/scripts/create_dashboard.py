@@ -44,7 +44,7 @@ def __add_prefix_to_grafana_loki_source_job(grafana_json, prefix):
         for i in grafana_json["dashboard"]['panels']:
             if i['datasource'] == 'Loki':
                 for j in i['targets']:
-                    j['expr'] = '{job="' + prefix + '_' + 'jmeter"}'
+                    j['expr'] = '{job="' + prefix + '_' + 'jmeter"} |~ "$search_logs"'
 
 
 # add instances_required field to Grafana JSON under Number of Users

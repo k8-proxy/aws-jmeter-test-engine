@@ -3074,7 +3074,7 @@
 				"pluginVersion": "7.3.2",
 				"targets": [
 					{
-						"expr": "{job=\"jmeter\"}",
+						"expr": "{job=\"jmeter\"} |~ \"$search_logs\"",
 						"legendFormat": "",
 						"refId": "B"
 					}
@@ -3090,7 +3090,29 @@
 		"style": "dark",
 		"tags": [],
 		"templating": {
-			"list": []
+            "list": [
+              {
+                "current": {
+                  "selected": false,
+                  "text": "",
+                  "value": ""
+                },
+                "error": null,
+                "hide": 0,
+                "label": "Search logs",
+                "name": "search_logs",
+                "options": [
+                  {
+                    "selected": false,
+                    "text": "",
+                    "value": ""
+                  }
+                ],
+                "query": "",
+                "skipUrlSync": false,
+                "type": "textbox"
+              }
+            ]
 		},
 		"time": {
 			"from": "now-1h",
