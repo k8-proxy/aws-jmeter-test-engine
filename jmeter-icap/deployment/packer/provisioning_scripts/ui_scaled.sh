@@ -18,7 +18,7 @@ cd /opt/git/aws-jmeter-test-engine/UI/master-script-form/
 sudo ng build --prod
 sudo cp -a /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form/. /var/www/html/
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/
-sudo chmod +x exec.sh
+sudo chmod +x exec_scaled.sh
 sudo bash -c 'cat << EOF >> /etc/systemd/system/flask_scaled.service
 [Unit]
 Description=WSGI App for ICAP Testing UI Front End
