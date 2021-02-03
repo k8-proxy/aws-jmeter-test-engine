@@ -77,7 +77,7 @@ Now the UI should be accessible via the virtual machine's IP (i.e. http://virtua
 A file named "config.env" must be created in the scripts folder before starting the Flask server. A sample "config.env.sample" is provided in the repository's scripts folder, it should be copied with the following values modified as shown below:
 
 ```
-INFLUX_HOST=localhost
+INFLUX_HOST=127.0.0.1
 GRAFANA_URL=localhost:3000
 GRAFANA_KEY=<your Grafana API key goes here>
 USE_IAM_ROLE=yes
