@@ -180,6 +180,11 @@ Resources:
         DeviceIndex: 0
         GroupSet:
         - !GetAtt ICAPPerformanceDashboardSG.GroupId
+      Tags:
+      - Key : "Name"
+        Value : "AWS-TestEngine-UI_Dashboard"
+      - Key : "Description"
+        Value : "AWS TestEngine UI Dashboard"
   ICAPPerformanceLGSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
