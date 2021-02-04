@@ -57,12 +57,12 @@ def __add_users_req_to_grafana_json(grafana_json, instances_required):
                         k["select"][0][1]["params"][0] = "*" + str(instances_required)
 
 
-def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url):
+def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url, port):
     if "options" in grafana_json["dashboard"]['panels'][0]:
         if "content" in grafana_json["dashboard"]['panels'][0]["options"]:
             grafana_json["dashboard"]['panels'][0]["options"][
-                "content"] = "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \n%s. Total users are %s. Duration of test is %s seconds  </p>    " \
-                             % (endpoint_url, total_users, duration)
+                "content"] = "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \n%s. Port: %s. Total users are %s. Duration of test is %s seconds  </p>    " \
+                             % (endpoint_url, port, total_users, duration)
 
 
 # responsible for posting the dashboard to Grafana and returning the URL to it
@@ -76,6 +76,7 @@ def __post_grafana_dash(config, from_ui=False):
     duration = config.duration
     endpoint_url = config.icap_endpoint_url
     load_type = config.load_type
+    port = config.icap_server_port
 
     if not grafana_url.startswith("http"):
         grafana_url = "http://" + grafana_url
@@ -96,7 +97,7 @@ def __post_grafana_dash(config, from_ui=False):
         __add_users_req_to_grafana_json(grafana_json, instances_required)
         set_title_by_load_type(load_type, grafana_json, prefix)
         __add_prefix_to_grafana_json(grafana_json, prefix)
-        __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url)
+        __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url, port)
         __add_prefix_to_grafana_loki_source_job(grafana_json, prefix)
 
     resp = requests.post(grafana_api_url, json=grafana_json, headers=headers)
