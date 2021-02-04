@@ -134,7 +134,7 @@ Mappings:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     eu-west-1:
-      HVM64: NOT_SUPPORTED
+      HVM64: ami-0f6aa4d49168a0b47
       PV64: NOT_SUPPORTED
     eu-west-2:
       HVM64: NOT_SUPPORTED
@@ -180,6 +180,11 @@ Resources:
         DeviceIndex: 0
         GroupSet:
         - !GetAtt ICAPPerformanceDashboardSG.GroupId
+      Tags:
+      - Key : "Name"
+        Value : "AWS-TestEngine-UI_Dashboard"
+      - Key : "Description"
+        Value : "AWS TestEngine UI Dashboard"
   ICAPPerformanceLGSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
