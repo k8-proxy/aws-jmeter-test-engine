@@ -226,7 +226,7 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
     first_point = second_point = start_time
 
     while datetime.now() < final_time:
-        sleep(1)
+        time.sleep(1)
         first_point = second_point
         second_point = datetime.now()
         InfluxDBMetrics.save_statistics(config.load_type, config.prefix, str(first_point), str(second_point))
