@@ -57,12 +57,16 @@ def __add_users_req_to_grafana_json(grafana_json, instances_required):
                         k["select"][0][1]["params"][0] = "*" + str(instances_required)
 
 
-def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url, port):
+def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url, port, load_type):
+    port_string = '';
+    if load_type == LoadType.direct.value:
+        port_string = "Port: {}. ".format(port)
+
     if "options" in grafana_json["dashboard"]['panels'][0]:
         if "content" in grafana_json["dashboard"]['panels'][0]["options"]:
             grafana_json["dashboard"]['panels'][0]["options"][
-                "content"] = "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: \n%s. Port: %s. Total users are %s. Duration of test is %s seconds  </p>    " \
-                             % (endpoint_url, port, total_users, duration)
+                "content"] = "<p style=\"background-color:green;\" style=\"text-align:left;\">The endpoint for this run is: %s. %sTotal users are %s. Duration of test is %s seconds  </p>" \
+                             % (endpoint_url, port_string, total_users, duration)
 
 
 # responsible for posting the dashboard to Grafana and returning the URL to it
@@ -97,7 +101,7 @@ def __post_grafana_dash(config, from_ui=False):
         __add_users_req_to_grafana_json(grafana_json, instances_required)
         set_title_by_load_type(load_type, grafana_json, prefix)
         __add_prefix_to_grafana_json(grafana_json, prefix)
-        __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url, port)
+        __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url, port, load_type)
         __add_prefix_to_grafana_loki_source_job(grafana_json, prefix)
 
     resp = requests.post(grafana_api_url, json=grafana_json, headers=headers)
