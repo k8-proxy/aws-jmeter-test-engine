@@ -38,6 +38,13 @@ def determine_load_type(config, ova=False):
         config.grafana_file = 'Sharepoint-Demo-Dashboard.json'
         config.test_data_file = 'sharepoint_files.csv'
 
+    elif config.load_type == LoadType.rest_api.value:
+        print("in ui_tasks, hit")
+        config.test_directory = 'REST-API'
+        config.jmx_script_name = 'REST-API-Load.jmx'
+        config.grafana_file = ''
+        config.test_data_file = 'gov_uk_files.csv'
+
 
 def set_config_from_ui(config, json_params, ova=False):
     # Set Config values gotten from front end
@@ -110,3 +117,4 @@ class LoadType(str, Enum):
     proxy = "Proxy Offline"
     proxy_sharepoint = "Proxy SharePoint"
     direct_sharepoint = "Direct Sharepoint"
+    rest_api = "REST API"

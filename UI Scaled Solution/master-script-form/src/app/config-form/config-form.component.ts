@@ -102,6 +102,10 @@ export class ConfigFormComponent implements OnInit {
     else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
       this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.DirectSharePoint];
       this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.DirectSharePoint];
+    } 
+    else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.RestApi]) {
+      this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.RestApi];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.RestApi];
     }
     this.enableCheckboxes = this.enablePortField = this.loadType.value == AppSettings.loadTypeNames[LoadTypes.Direct];
     this.enableSharePointHostsField = this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint];
