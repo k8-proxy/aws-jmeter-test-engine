@@ -153,7 +153,7 @@ def main(config):
 
     # create ASG with instances to run jmeter tests
     now = datetime.now()
-    date_suffix = now.strftime("%Y-%m-%d-%H-%M")
+    date_suffix = now.strftime("%Y-%m-%d-%H-%M-%S")
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     asg_name = prefix + "LoadTest-" + date_suffix
