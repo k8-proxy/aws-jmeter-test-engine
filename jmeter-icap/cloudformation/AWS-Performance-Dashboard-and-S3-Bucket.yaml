@@ -278,8 +278,8 @@ Resources:
       Name: "LoadGeneratorIamUserCredentials"
       SecretString:
         !Sub
-        - '{"AWS_Access_Key":"${AccessKey}","AWS_Secret_Key ":"${SecretAccessKey}"}'
-        - { AccessKey: !Ref 'S3UserKeys', SecretAccessKey: !GetAtt [ S3UserKeys, SecretAccessKey ] }
+        - '{"AWS_Access_Key": "${AccessKey}","AWS_Secret_Key ": "${SecretAccessKey}"}'
+        - {AccessKey: !Ref 'S3UserKeys', SecretAccessKey: !GetAtt [S3UserKeys, SecretAccessKey]}
 
 Outputs:
   InstanceId:
