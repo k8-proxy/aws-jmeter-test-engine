@@ -271,6 +271,16 @@ Resources:
     Type: AWS::IAM::AccessKey
     Properties:
       UserName: !Ref 'S3User'
+  SecretsManagerAccessKeys:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Description: "Secret containing Load Generator IAM user access credentials"
+      Name: "LoadGeneratorIamUserCredentials"
+      SecretString:
+        !Sub
+        - '{"AWS_Access_Key":"${AccessKey}","AWS_Secret_Key ":"${SecretAccessKey}"}'
+        - { AccessKey: !Ref 'S3UserKeys', SecretAccessKey: !GetAtt [ S3UserKeys, SecretAccessKey ] }
+
 Outputs:
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
