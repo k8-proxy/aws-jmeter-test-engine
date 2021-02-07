@@ -163,6 +163,15 @@ class InfluxDBMetrics():
         return InfluxDBMetrics.mean_query(prefix + '_jmetersharepoint', start, finish, 'pct95.0', ' transaction =~ /load_File/ AND statut =~ /o/')
 
     @staticmethod
+    def save_statistics(load_type, prefix, start_time, final_time):
+        if load_type == "Direct":
+            InfluxDBMetrics.jmeter_db_client.write_points([{"measurement": prefix + "_statistics", "fields": {
+                "TotalRequests": InfluxDBMetrics.total_reguests(prefix, start_time, final_time),
+                "SuccessfulRequests": InfluxDBMetrics.successful_reguests(prefix, start_time, final_time),
+                "FailedRequests": InfluxDBMetrics.failed_reguests(prefix, start_time, final_time),
+            }}])
+
+    @staticmethod
     def main(argv):
 
         help_string = 'python3 metrics.py -n <host name> -p <host port>'
