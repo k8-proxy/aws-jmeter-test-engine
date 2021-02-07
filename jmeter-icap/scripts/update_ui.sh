@@ -4,8 +4,9 @@ cd /opt/git/aws-jmeter-test-engine/ || { echo "Please make sure the project is c
 sudo git fetch --all
 sudo git stash
 sudo git reset --hard origin/master
-cd /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form || { echo "UI scripts folder does not exist in specified path"; exit 1; }
 echo "Installing Angular UI component"
+cd /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form || { echo "UI scripts folder does not exist in specified path"; exit 1; }
+sudo npm install --save-dev @angular/cli@latest
 sudo npm install
 sudo ng build --prod
 sudo cp -a /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form/dist/master-script-form/. /var/www/html/
