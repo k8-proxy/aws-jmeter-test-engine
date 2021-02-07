@@ -10,32 +10,13 @@ This file explains how to update an existing installation of the project. The st
 
 2. SSH access to the ICAPServer-Performance-Analytics-Dashboard EC2 machine will be needed
 
-## Step 1: Pulling latest version of project from repository
+## Running the update_ui.sh Bash Script
 
-To download the latest project files, SSH into the EC2 machine containing the project and use the following commands:
-```
-cd /opt/git/aws-jmeter-test-engine/
-sudo git pull origin master
-```
+The project comes bundled with a script that will update the current respository to the latest version. To run this script, SSH into the ICAPServer-Performance-Analytics-Dashboard EC2 instance and run the following two commands:
 
-## Step 2: Install latest Angular Project Files and Deploy to Web Server
 ```
-cd /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form
-sudo npm install
-sudo ng build --prod
-sudo cp -a /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form/dist/master-script-form/. /var/www/html/
+sudo chmod +x /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/update_ui.sh
+/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/update_ui.sh
 ```
 
-## Step 3: Run the ChangeIP Script
-```
-cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
-sudo ./changeIP.sh
-```
-
-## Step 4: Restart Services
-```
-sudo systemctl stop apache2.service
-sudo systemctl start apache2.service
-sudo systemctl stop flask_scaled.service
-sudo systemctl start flask_scaled.service
-```
+After running these commands, wait for the process to complete. Once finished, the project will be up to date and ready to use.
