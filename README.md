@@ -17,9 +17,10 @@ There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon 
 This document will show simple way to get started utilizing this framework step by step.
 
 **Before starting**
-- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine. 
+- Make sure to your have latest source in your your local machine. 
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
 - Install AWS CLI in your local machine: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+- Ensure that there is one AWS KeyPair available so that it can be attached to EC2 instances being created. It can be created in AWS console->EC2->Key Pairs->Create Key pair.
 - Ensure that all resources are created (using instructions below) in a single AWS       supported region, not in multi-regions. Mixing them between different regions might    break the automation or also slow it down due to network latency.
 
 
@@ -31,12 +32,14 @@ This document will show simple way to get started utilizing this framework step 
 **Create VPC and Subnets if non existent**
 
 If there are no existing VPC and Subnets available then there are separate Cloudformation scripts are available to create VPC & Subnets for each of supported regions mentioned above. 
-Scripts are located in jmeter-icap/cloudformation/ repo folder or direct link https://github.com/k8-proxy/aws-jmeter-test-engine/tree/master/jmeter-icap/cloudformation 
+Scripts are located in jmeter-icap/cloudformation/ source folder 
 
 Ensure that correct region VPC & Subnets cloudformation is used during the stack creation.
 
 The VPC & Subnets cloudformation stack can be created using 2 ways:
 - Using AWS Console -> Goto Services -> CloudFormation->Create Stack (new resources) and follow steps there
+
+[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=VPCSubnetsStack&templateURL=https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets-eu-west-1.json)
 - Using AWS CLI command (this is template command, repo path and CF name needs to be changed)
 ```bash
 aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets-change-region.json
@@ -68,12 +71,12 @@ There are 2 ways to run CloudFormation script in aws:
 aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json
 
 ```
+After IAM role is created, goto AWS console -> IAM->Roles, select created IAM role and assign EC2 FullAccess and CloudFormationFull Access policies to the IAM role.
 
 The newly created IAM role will be automatically attached the EC2 instances of the deployment
 
 # Step 3. Setup Performance Dashboard system, create the S3 bucket, create a user with S3 bucket access
 
-1. With AWS Console
 - From your local repo clone run the following cloud formation script: jmeter-icap/cloudformation/AWS-Performance-Dashboard-and-S3-Bucket.yaml using console
    - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
    - Click on Create Stack
@@ -89,68 +92,6 @@ The newly created IAM role will be automatically attached the EC2 instances of t
 
 ![KeysInTheOutput](jmeter-icap/instructions/img/KeysInTheOutput.png)
 
-2. With AWS CLI
-
-- To find out the a valid VPC ID to be utilized in CF run the following CLI command
-```
-   aws ec2 describe-vpcs
-```
-- Copy and save the value of "VpcId" field
-```
-   {
-      "Vpcs": [
-         {
-               ....
-               "VpcId": "your-valid-vpc-id",
-               ....
-         }
-      ]
-   }
-```
-- To find out a valid Subnet ID run the following:
-```
-   aws ec2 describe-subnets
-```
-- Copy and save the value of "SubnetId" field
-```
-   {
-      "Subnets": [
-         {
-               ....
-               "SubnetId": "your-valid-subnet-id",
-               ....
-         }
-      ]
-   }
-```
-- To find out a valid KeyPair Name run the following:
-```
-   aws ec2 describe-key-pairs
-```
-- Copy and save the value of "KeyName" field
-```
-   {
-      "KeyPairs": [
-         {
-               ....
-               "KeyName": "your-valid-keypair-name",
-               ....
-         }
-      ]
-   }
-```
-- In you internet browser go to https://whatismyipaddress.com/ and copy your IPv4 from the opened web page. This is your-external-ip-address to be utilized by the CF script.
-- In the terminal navigate to ```pathtorepo/aws-jmeter-test-engine/jmeter-icap/cloudformation```
-- Run the following CLI command
-```
-aws cloudformation create-stack --stack-name your-stack-name --template-body file://AWS-Performance-Dashboard-and-S3-Bucket.yaml --parameters  ParameterKey=KeyName,ParameterValue=your-valid-keypair-name ParameterKey=BucketName,ParameterValue=your-bucket-name ParameterKey=VPCID,ParameterValue=your-valid-vpc-id ParameterKey=SUBNETID,ParameterValue=your-valid-subnet-id ParameterKey=PublicIPRange,ParameterValue=your-external-ip-address/32 --capabilities CAPABILITY_IAM
-```
-- If all the parameters are valid the output of the command above will look as following
-```
-{
-    "StackId": "arn:aws:cloudformation:your-region:accound-it:stack/stack-name/stack-UUID"
-}
-```
 # Step 4. Create Secret Manager with your AWS Access and Secret Key
 
 - Open AWS UI Console
