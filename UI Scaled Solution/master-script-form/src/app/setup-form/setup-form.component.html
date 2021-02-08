@@ -64,7 +64,11 @@
         <small class="form-text text-muted">Client Secret value (for use with SharePoint)</small>
     </div>
 
-    <button id="submit" type="submit" class="btn btn-primary" [disabled]="!isValid"> {{ submitButtonText }} </button>
+    <button id="submit" type="button" class="btn btn-primary" [disabled]="!isValid" mwlConfirmationPopover 
+    [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right"
+    (confirm)="onSubmit()">
+         {{ submitButtonText }} 
+    </button>
 
     <div [@animationState]="animState" class="alert {{alertClass}}" role="alert" style="opacity: 0; display:inline-block;"
         type="text">
