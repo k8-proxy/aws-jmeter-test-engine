@@ -39,7 +39,7 @@ Ensure that correct region VPC & Subnets cloudformation is used during the stack
 The VPC & Subnets cloudformation stack can be created using 2 ways:
 - Using AWS Console -> Goto Services -> CloudFormation->Create Stack (new resources) and follow steps there
 
-[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=VPCSubnetsStack&templateURL=https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets-eu-west-1.json)
+[<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=VPCSubnetsStack&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-CloudFormation-VPC-6-Subnets-eu-west-1.json)
 - Using AWS CLI command (this is template command, repo path and CF name needs to be changed)
 ```bash
 aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets-change-region.json
