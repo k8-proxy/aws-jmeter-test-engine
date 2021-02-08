@@ -76,7 +76,7 @@ export class ConfigFormComponent implements OnInit {
       load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotStartWithHttp]),
       sharepoint_hosts: new FormControl(''),
-      prefix: new FormControl('', [ConfigFormValidators.cannotContainSpaces, Validators.required, Validators.pattern(/^([A-Za-z])[0-9a-zA-Z]*$/)]),
+      prefix: new FormControl('', [Validators.required, Validators.pattern(/^([A-Za-z\s])[0-9a-zA-Z_-\s]*$/)]),
       enable_tls: true,
       tls_ignore_error: true,
       port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
@@ -193,6 +193,7 @@ export class ConfigFormComponent implements OnInit {
     this.setFormDefaults();
     this.hideSubmitMessages = false;
     if (this.configForm.valid) {
+      this.formatPrefix();
       AppSettings.addingPrefix = true;
       AppSettings.testPrefixSet.add(this.prefix.value);
       this.trimEndPointField();
@@ -204,6 +205,20 @@ export class ConfigFormComponent implements OnInit {
       this.submitted = true;
       this.lockForm();
     }
+  }
+
+  formatPrefix() {
+    let result = this.prefix.value.trim() as string;
+    let arr = result.split(/[\s_-]+/);
+    for(let i = 1; i < arr.length; i++) {
+      if(arr[i] && isNaN(+arr[i].charAt(0))) {
+        arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
+      }
+    }
+
+    result = arr.join("");
+    console.log(result);
+    this.prefix.setValue(result);
   }
 
   trimEndPointField() {
