@@ -17,7 +17,7 @@ There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon 
 This document will show simple way to get started utilizing this framework step by step.
 
 **Before starting**
-- Make sure to your have latest source in your your local machine. 
+- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
 - Install AWS CLI in your local machine: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
 - Ensure that there is one AWS KeyPair available so that it can be attached to EC2 instances being created. It can be created in AWS console->EC2->Key Pairs->Create Key pair.
