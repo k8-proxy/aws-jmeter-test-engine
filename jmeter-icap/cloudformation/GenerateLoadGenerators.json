@@ -2,15 +2,9 @@
    "AWSTemplateFormatVersion" : "2010-09-09",
    "Description" : "This script creates EC2 instances from set AMI image. Change parameters accordingly",
    "Parameters" : {
-    "VpcId": {
+    "VPCStack": {
       "Type": "String",
-      "Description" : "VPC ID",
-      "Default" : "vpc-02db6ac5915e8de9b"
-    },
-    "SubnetIds":  {
-      "Type": "CommaDelimitedList",
-      "Description" : "Subnet IDs",
-      "Default" : "subnet-02e0fb935c900d08e"
+      "Default" : "Enter VPC Stack Name"
     },
       "AsgName" : {
          "Description" : "Autoscaling group name",
@@ -47,7 +41,7 @@
        "Default": 1
      },
      "UserData": {
-       "Type": "String"
+       "Type": "String",
      }
    },
   "Resources" : {
@@ -75,7 +69,7 @@
         "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
         "MinSize" : { "Ref" : "MinInstances" },
         "MaxSize" : { "Ref" : "MaxInstances" },
-        "VPCZoneIdentifier" : { "Ref" : "SubnetIds" },
+        "VPCZoneIdentifier" : {"Fn::ImportValue" : {"Fn::Sub" : "${VPCStack}-SubnetPubA"}},
         "Tags" : [ 
           {
             "Key": "Description",
