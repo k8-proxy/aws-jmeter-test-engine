@@ -1,6 +1,5 @@
-import { AppSettings } from './../common/app settings/AppSettings';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormDataPackage, SharedService, ResultsRowElement } from './../common/services/shared.service';
+import { SharedService, ResultsRowElement } from './../common/services/shared.service';
 import { Subscription } from 'rxjs';
 import { MatTable } from '@angular/material/table';
 

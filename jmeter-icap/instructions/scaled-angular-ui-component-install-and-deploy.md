@@ -5,7 +5,8 @@
 Install Node.js
 
 ```bash
-sudo apt install nodejs -y
+curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+sudo apt-get install -y nodejs
 sudo apt install npm -y
 sudo npm install -g @angular/cli
 sudo npm install -g http-server
@@ -71,6 +72,19 @@ sudo systemctl start apache2.service
 ```
 
 Now the UI should be accessible via the virtual machine's IP (i.e. http://virtual-macine-ip)
+
+## Setting Up Environment Variables in Config.env
+
+A file named "config.env" must be created in the scripts folder before starting the Flask server. A sample "config.env.sample" is provided in the repository's scripts folder, it should be copied with the following values modified as shown below:
+
+```
+INFLUX_HOST=127.0.0.1
+GRAFANA_URL=localhost:3000
+GRAFANA_KEY=<your Grafana API key goes here>
+USE_IAM_ROLE=yes
+```
+
+To obtain a Grafana API key, [see prerequisites section of these instructions](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_dashboards-script.md).
 
 ## Setting Up Backend Server as a Service
 

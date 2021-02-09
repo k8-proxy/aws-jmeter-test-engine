@@ -33,6 +33,8 @@ export class SetupFormComponent implements OnInit {
   alertClass = "";
   alertText = "";
   submitButtonText = "Submit Configurations";
+  public popoverTitle: string = "Please Confirm";
+  public popoverMessage: string = "The configurations input above will overwrite previous configurations.";
   
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) { }
 

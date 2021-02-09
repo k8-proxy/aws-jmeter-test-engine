@@ -11,6 +11,8 @@ from aws_secrets import get_secret_value
 from ui_tasks import set_config_from_ui, LoadType
 from threading import Thread
 from database_ops import database_insert_test
+from metrics import InfluxDBMetrics
+
 import uuid
 
 # Stacks are deleted duration + offset seconds after creation; should be set to 900.
@@ -213,13 +215,27 @@ def create_stack_from_ui(json_params, ova=False):
 
 
 def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
-    start_time = str(datetime.now())
-    time.sleep(additional_delay + int(config.duration))
+
+    InfluxDBMetrics.hostname = config.influx_host
+    InfluxDBMetrics.hostport = config.influx_port
+    InfluxDBMetrics.init()
+
+    total_wait_time = additional_delay + int(config.duration)
+    start_time = datetime.now()
+    final_time = start_time + timedelta(seconds=total_wait_time)
+    first_point = second_point = start_time
+
+    while datetime.now() < final_time:
+        time.sleep(1)
+        first_point = second_point
+        second_point = datetime.now()
+        InfluxDBMetrics.save_statistics(config.load_type, config.prefix, str(first_point), str(second_point))
+
     run_id = uuid.uuid4()
-    final_time = str(datetime.now())
+
     if config.stack_name in running_tests:
         print("test completed, storing results to the database")
-        database_insert_test(config, run_id, grafana_uid, start_time, final_time)
+        database_insert_test(config, run_id, grafana_uid, str(start_time), str(final_time))
         running_tests.remove(config.stack_name)
 
 

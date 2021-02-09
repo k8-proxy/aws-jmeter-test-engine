@@ -29,6 +29,12 @@ Parameters:
     Default: 1.1.1.1/32
     AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+  VPCID:
+    Type: AWS::EC2::VPC::Id
+    Description: "VPC ID for the security groups to be created"
+  SUBNETID:
+    Type: AWS::EC2::Subnet::Id
+    Description: "Subnet ID for the EC2 instance to be created"
 Mappings:
   AWSInstanceType2Arch:
     t2.nano:
@@ -128,7 +134,7 @@ Mappings:
       HVM64: NOT_SUPPORTED
       PV64: NOT_SUPPORTED
     eu-west-1:
-      HVM64: NOT_SUPPORTED
+      HVM64: ami-0f6aa4d49168a0b47
       PV64: NOT_SUPPORTED
     eu-west-2:
       HVM64: NOT_SUPPORTED
@@ -165,23 +171,38 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref 'InstanceType'
-      SecurityGroups: [!Ref 'ICAPPerformanceDashboardSG']
       KeyName: !Ref 'KeyName'
       ImageId: !FindInMap [AWSRegionArch2AMI, !Ref 'AWS::Region', !FindInMap [AWSInstanceType2Arch, !Ref InstanceType, Arch]]
       IamInstanceProfile: "AWS-TestEngine-IAMRole"
+      NetworkInterfaces:
+      - AssociatePublicIpAddress: true
+        SubnetId: !Ref 'SUBNETID'
+        DeviceIndex: 0
+        GroupSet:
+        - !GetAtt ICAPPerformanceDashboardSG.GroupId
+      Tags:
+      - Key : "Name"
+        Value : "AWS-TestEngine-UI_Dashboard"
+      - Key : "Description"
+        Value : "AWS TestEngine UI Dashboard"
   ICAPPerformanceLGSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable SSH access to the load generators
+      VpcId: !Ref 'VPCID'
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
         ToPort: 22
         CidrIp: !Ref 'PublicIPRange'
+      Tags:
+      - Key : "Name"
+        Value : "ICAP-Performance-LG-SG"
   ICAPPerformanceDashboardSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable access to the cluster ports
+      VpcId: !Ref 'VPCID'
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
@@ -207,6 +228,9 @@ Resources:
         FromPort: 8086
         ToPort: 8086
         SourceSecurityGroupId: !GetAtt ICAPPerformanceLGSG.GroupId
+      Tags:
+      - Key : "Name"
+        Value : "ICAP-Performance-Dashboard-SG"
   ICAPPerformanceDashboardSGFromSelf:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:

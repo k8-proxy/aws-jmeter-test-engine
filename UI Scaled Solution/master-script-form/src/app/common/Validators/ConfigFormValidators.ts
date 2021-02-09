@@ -11,7 +11,7 @@ export class ConfigFormValidators {
     }
 
     static cannotStartWithHttp(control: AbstractControl) : ValidationErrors | null {
-        if((control.value as string).startsWith('http')) {
+        if(control.value && (control.value as string).startsWith('http')) {
             return {cannotStartWithHttp: true};
         }
         return null;
