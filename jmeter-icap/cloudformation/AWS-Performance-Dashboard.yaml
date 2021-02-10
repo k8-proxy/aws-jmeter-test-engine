@@ -36,9 +36,6 @@ Parameters:
     Default: 1.1.1.1/32
     AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
-  SUBNETID:
-    Type: AWS::EC2::Subnet::Id
-    Description: "Subnet ID for the EC2 instance to be created"
 Mappings:
   AWSInstanceType2Arch:
     t2.nano:
@@ -180,7 +177,8 @@ Resources:
       IamInstanceProfile: "AWS-TestEngine-IAMRole"
       NetworkInterfaces:
       - AssociatePublicIpAddress: true
-        SubnetId: !Ref 'SUBNETID'
+        SubnetId:
+          Fn::ImportValue: !Sub '${NetworkStackName}-SubnetPubA'
         DeviceIndex: 0
         GroupSet:
         - !GetAtt ICAPPerformanceDashboardSG.GroupId
