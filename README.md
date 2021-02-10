@@ -91,7 +91,7 @@ The newly created IAM role will be automatically attached the EC2 instances of t
 
 # Step 3. Setup Performance Dashboard system, create the S3 bucket, create a user with S3 bucket access
 
-
+1. With AWS Console
    - Start Cloud Formation script with the corresponds region button below:
 
 | Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
@@ -111,6 +111,36 @@ The newly created IAM role will be automatically attached the EC2 instances of t
 
 ![KeysInTheOutput](jmeter-icap/instructions/img/KeysInTheOutput.png)
 
+2. With AWS CLI
+
+- To find out a valid KeyPair Name run the following:
+```
+   aws ec2 describe-key-pairs
+```
+- Copy and save the value of "KeyName" field
+```
+   {
+      "KeyPairs": [
+         {
+               ....
+               "KeyName": "your-valid-keypair-name",
+               ....
+         }
+      ]
+   }
+```
+- In you internet browser go to https://whatismyipaddress.com/ and copy your IPv4 from the opened web page. This is your-external-ip-address to be utilized by the CF script.
+- In the terminal navigate to ```pathtorepo/aws-jmeter-test-engine/jmeter-icap/cloudformation```
+- Run the following CLI command
+```
+aws cloudformation create-stack --stack-name AWS-Performance-Dashboard --template-body file://AWS-Performance-Dashboard-and-S3-Bucket.yaml --parameters  ParameterKey=KeyName,ParameterValue=your-valid-keypair-name ParameterKey=PublicIPRange,ParameterValue=your-external-ip-address/32 --capabilities CAPABILITY_IAM
+```
+- If all the parameters are valid the output of the command above will look as following
+```
+{
+    "StackId": "arn:aws:cloudformation:your-region:accound-it:stack/stack-name/stack-UUID"
+}
+```
 # Step 4. Create Secret Manager with your AWS Access and Secret Key
 
 - Open AWS UI Console
