@@ -65,9 +65,15 @@
     </div>
 
     <button id="submit" type="button" class="btn btn-primary" [disabled]="!isValid" mwlConfirmationPopover 
-    [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right"
+    [popoverTitle]="submitPopoverTitle" [popoverMessage]="submitPopoverMessage" placement="right"
     (confirm)="onSubmit()">
          {{ submitButtonText }} 
+    </button>
+
+    <button id="update" type="button" class="btn btn-warning" mwlConfirmationPopover 
+    [popoverTitle]="submitPopoverTitle" [popoverMessage]="updatePopoverMessage" placement="right"
+    (confirm)="onUpdatePressed()">
+         {{ updateButtonText }} 
     </button>
 
     <div [@animationState]="animState" class="alert {{alertClass}}" role="alert" style="opacity: 0; display:inline-block;"

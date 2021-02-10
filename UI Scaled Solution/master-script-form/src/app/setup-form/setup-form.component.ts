@@ -9,8 +9,8 @@ import { Title } from '@angular/platform-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 
-enum returnStatus { Success, Failure, PartialSuccess }
-
+enum ReturnStatus { Success, Failure, PartialSuccess , UpdateSuccessful, UpdateFailure }
+enum LockType { Submit, Update }
 @Component({
   selector: 'setup-form',
   templateUrl: './setup-form.component.html',
@@ -33,8 +33,10 @@ export class SetupFormComponent implements OnInit {
   alertClass = "";
   alertText = "";
   submitButtonText = "Submit Configurations";
-  public popoverTitle: string = "Please Confirm";
-  public popoverMessage: string = "The configurations input above will overwrite previous configurations.";
+  updateButtonText = "Update"
+  public submitPopoverTitle: string = "Please Confirm";
+  public submitPopoverMessage: string = "The configurations input above will overwrite previous configurations.";
+  public updatePopoverMessage: string = "This will update this project, please do not run tests during update. Server may be interrupted for a short period.";
   
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) { }
 
@@ -97,7 +99,7 @@ export class SetupFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.setupForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
-      this.lockForm();
+      this.lockForm(LockType.Submit);
     }
   }
 
@@ -105,16 +107,14 @@ export class SetupFormComponent implements OnInit {
     this.http.post(AppSettings.serverIp, formData).subscribe(response => this.processPostResponse(response), (err) => { this.onErrorSubmitting(err) });
   }
 
-
   processPostResponse(response: object) {
     if(response['response'] == "UPLOADFAILED") {
-      this.toggleAlert(returnStatus.PartialSuccess);
+      this.toggleAlert(ReturnStatus.PartialSuccess);
     } else {
-      this.toggleAlert(returnStatus.Success);
+      this.toggleAlert(ReturnStatus.Success);
     }
     this.submitted = true;
-    this.unlockForm();
-    setTimeout(() => this.toggleAlert(), 3000);
+    this.unlockForm(LockType.Submit);
   }
 
   getExistingConfigFromServer() {
@@ -140,39 +140,56 @@ export class SetupFormComponent implements OnInit {
 
   onErrorSubmitting(error) {
     console.log(error);
-    this.toggleAlert(returnStatus.Failure);
+    this.toggleAlert(ReturnStatus.Failure);
     this.submitted = false;
-    this.unlockForm();
-    setTimeout(() => this.toggleAlert(), 3000);
+    this.unlockForm(LockType.Submit);
   }
 
   onErrorRetrievingData(error) {
     console.log("Setup Form Component: Error retrieving current config field values from server. Is the server running?");
   }
 
-  toggleAlert(status?: returnStatus) {
+  toggleAlert(status?: ReturnStatus) {
 
-    if (status == returnStatus.Success) {
+    if (status == ReturnStatus.Success) {
       this.alertClass = "alert-success";
       this.alertText = "Success! Configuration updated"
-    } else if (status == returnStatus.Failure) {
+    } else if (status == ReturnStatus.Failure) {
       this.alertClass = "alert-danger";
       this.alertText = "Error submitting to server"
-    } else if (status == returnStatus.PartialSuccess) {
+    } else if (status == ReturnStatus.PartialSuccess) {
       this.alertClass = "alert-warning";
       this.alertText = "Config file successfully updated, but upload to S3 failed."
+    } else if (status == ReturnStatus.UpdateSuccessful) {
+      this.alertClass = "alert-success";
+      this.alertText = "Success! Project Updated"
+    } else if (status == ReturnStatus.UpdateFailure) {
+      this.alertClass = "alert-danger";
+      this.alertText = "Error updating project"
     }
     this.showAlert = !this.showAlert;
+    setTimeout(() => (this.showAlert = !this.showAlert), 3000);
+
   }
 
-  lockForm() {
-    this.submitButtonText = "Submitting Configuration..."
+  lockForm(lockType: LockType) {
     this.setupForm.disable();
+
+    if(lockType == LockType.Submit) {
+      this.submitButtonText = "Submitting Configuration..."
+    } else if (lockType == LockType.Update) {
+      this.updateButtonText = "Updating..."
+    }
   }
 
-  unlockForm() {
-    this.submitButtonText = "Submit Configurations"
+  unlockForm(lockType: LockType) {
     this.setupForm.enable();
+
+    if(lockType == LockType.Submit) {
+      this.submitButtonText = "Submit Configurations"
+    } else if (lockType == LockType.Update) {
+      this.updateButtonText = "Update"
+    }
   }
 
   trimInput() {
@@ -181,5 +198,27 @@ export class SetupFormComponent implements OnInit {
         this.setupForm.get(key).setValue(this.setupForm.get(key).value.trim().replace(/\s+/g, ' '));
       }
     });
+  }
+
+  onUpdatePressed() {
+    this.lockForm(LockType.Update);
+    this.postUpdateRequest();
+  }
+
+  postUpdateRequest() {
+    const formData = new FormData();
+    formData.append("button", "update");
+    this.http.post(AppSettings.serverIp, formData).subscribe(response => this.onSuccessUpdating(response), (err) => { this.onErrorUpdating(err) });
+  }
+
+  onSuccessUpdating(response) {
+    this.unlockForm(LockType.Update);
+    this.toggleAlert(ReturnStatus.UpdateSuccessful);
+  }
+
+  onErrorUpdating(error) {
+    console.log(error);
+    this.unlockForm(LockType.Update);
+    this.toggleAlert(ReturnStatus.UpdateFailure);
   }
 }
