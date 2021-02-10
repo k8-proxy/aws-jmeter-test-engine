@@ -39,6 +39,7 @@ Parameters:
   BucketName:
     Type: String
     Description: 'The name of the S3 Bucket to create, make this unique'
+    Default: aws-s3-test-files-bucket
 Mappings:
   AWSInstanceType2Arch:
     t2.nano:
