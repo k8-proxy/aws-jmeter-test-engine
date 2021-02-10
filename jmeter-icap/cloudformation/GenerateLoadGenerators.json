@@ -4,7 +4,7 @@
    "Parameters" : {
     "VPCStack": {
       "Type": "String",
-      "Default" : "Enter VPC Stack Name"
+      "Default" : "VPCSubnetsStack"
     },
       "AsgName" : {
          "Description" : "Autoscaling group name",

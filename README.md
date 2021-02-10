@@ -141,9 +141,14 @@ sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoa
 
 **Replace & save the following parameters with your own value**:
 
-- VpcId - vpc id created above
+| Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Ireland          | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=LoadGenerator&templateURL=s3://aws-test-engine-cf-templates/GenerateLoadGenerators.json) |
+| North Virginia   | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=LoadGenerator&templateURL=s3://aws-test-engine-cf-templates/GenerateLoadGenerators.json) |
+| Oregon           | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=LoadGenerator&templateURL=s3://aws-test-engine-cf-templates/GenerateLoadGenerators.json) |
+| North California | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=LoadGenerator&templateURL=s3://aws-test-engine-cf-templates/GenerateLoadGenerators.json) |
 
-- SubnetIds - public subnets ids list created above
+
 
 - KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
 
