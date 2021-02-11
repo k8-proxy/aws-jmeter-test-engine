@@ -89,6 +89,9 @@ export class SetupFormComponent implements OnInit {
   get regions() {
     return AppSettings.regions;
   }
+  get updating() {
+    return this.sharedService.updating;
+  }
 
   onSubmit(): void {
 
@@ -176,9 +179,10 @@ export class SetupFormComponent implements OnInit {
     this.setupForm.disable();
 
     if(lockType == LockType.Submit) {
-      this.submitButtonText = "Submitting Configuration..."
+      this.submitButtonText = "Submitting Configuration...";
     } else if (lockType == LockType.Update) {
-      this.updateButtonText = "Updating..."
+      this.updateButtonText = "Updating, this may take a few minutes...";
+      this.sharedService.updating = true;
     }
   }
 
@@ -186,9 +190,10 @@ export class SetupFormComponent implements OnInit {
     this.setupForm.enable();
 
     if(lockType == LockType.Submit) {
-      this.submitButtonText = "Submit Configurations"
+      this.submitButtonText = "Submit Configurations";
     } else if (lockType == LockType.Update) {
-      this.updateButtonText = "Update"
+      this.updateButtonText = "Update";
+      this.sharedService.updating = false;
     }
   }
 

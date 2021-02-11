@@ -70,7 +70,7 @@
          {{ submitButtonText }} 
     </button>
 
-    <button id="update" type="button" class="btn btn-warning" mwlConfirmationPopover 
+    <button id="update" type="button" class="btn btn-warning" [disabled]="updating" mwlConfirmationPopover 
     [popoverTitle]="submitPopoverTitle" [popoverMessage]="updatePopoverMessage" placement="right"
     (confirm)="onUpdatePressed()">
          {{ updateButtonText }} 
