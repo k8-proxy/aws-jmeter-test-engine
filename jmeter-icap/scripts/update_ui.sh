@@ -17,7 +17,7 @@ sudo chmod +x exec_scaled.sh
 sudo chmod +x stopTests.sh
 sudo chmod +x changeIP.sh
 echo "Running ChangeIP script"
-./changeIP.sh
+sudo ./changeIP.sh
 echo "Restarting services"
 sudo systemctl stop apache2.service
 sudo systemctl start apache2.service
