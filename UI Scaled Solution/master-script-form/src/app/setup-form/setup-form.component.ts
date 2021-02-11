@@ -1,16 +1,12 @@
-import { Subscription } from 'rxjs';
-import { AppSettings } from './../common/app settings/AppSettings';
-import { SharedService, FormDataPackage } from './../common/services/shared.service';
+import { AppSettings, ReturnStatus } from './../common/app settings/AppSettings';
+import { SharedService } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
 
-enum ReturnStatus { Success, Failure, PartialSuccess , UpdateSuccessful, UpdateFailure }
-enum LockType { Submit, Update }
 @Component({
   selector: 'setup-form',
   templateUrl: './setup-form.component.html',
@@ -33,10 +29,8 @@ export class SetupFormComponent implements OnInit {
   alertClass = "";
   alertText = "";
   submitButtonText = "Submit Configurations";
-  updateButtonText = "Update"
-  public submitPopoverTitle: string = "Please Confirm";
-  public submitPopoverMessage: string = "The configurations input above will overwrite previous configurations.";
-  public updatePopoverMessage: string = "This will update this project, please do not run tests during update. Service may be interrupted for a short period.";
+  public popoverTitle: string = "Please Confirm";
+  public popoverMessage: string = "The configurations input above will overwrite previous configurations.";
   
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) { }
 
@@ -89,9 +83,6 @@ export class SetupFormComponent implements OnInit {
   get regions() {
     return AppSettings.regions;
   }
-  get formEnabled() {
-    return this.setupForm.enabled;
-  }
 
   onSubmit(): void {
 
@@ -102,13 +93,14 @@ export class SetupFormComponent implements OnInit {
       formData.append('form', JSON.stringify(this.setupForm.getRawValue()));
       this.postFormToServer(formData);
       this.submitted = true;
-      this.lockForm(LockType.Submit);
+      this.lockForm();
     }
   }
 
   postFormToServer(formData: FormData) {
     this.http.post(AppSettings.serverIp, formData).subscribe(response => this.processPostResponse(response), (err) => { this.onErrorSubmitting(err) });
   }
+
 
   processPostResponse(response: object) {
     if(response['response'] == "UPLOADFAILED") {
@@ -117,7 +109,8 @@ export class SetupFormComponent implements OnInit {
       this.toggleAlert(ReturnStatus.Success);
     }
     this.submitted = true;
-    this.unlockForm(LockType.Submit);
+    this.unlockForm();
+    setTimeout(() => this.toggleAlert(), 3000);
   }
 
   getExistingConfigFromServer() {
@@ -145,7 +138,8 @@ export class SetupFormComponent implements OnInit {
     console.log(error);
     this.toggleAlert(ReturnStatus.Failure);
     this.submitted = false;
-    this.unlockForm(LockType.Submit);
+    this.unlockForm();
+    setTimeout(() => this.toggleAlert(), 3000);
   }
 
   onErrorRetrievingData(error) {
@@ -163,38 +157,18 @@ export class SetupFormComponent implements OnInit {
     } else if (status == ReturnStatus.PartialSuccess) {
       this.alertClass = "alert-warning";
       this.alertText = "Config file successfully updated, but upload to S3 failed."
-    } else if (status == ReturnStatus.UpdateSuccessful) {
-      this.alertClass = "alert-success";
-      this.alertText = "Success! Project Updated"
-    } else if (status == ReturnStatus.UpdateFailure) {
-      this.alertClass = "alert-danger";
-      this.alertText = "Error updating project"
     }
     this.showAlert = !this.showAlert;
-    setTimeout(() => (this.showAlert = !this.showAlert), 3000);
-
   }
 
-  lockForm(lockType: LockType) {
+  lockForm() {
+    this.submitButtonText = "Submitting Configuration..."
     this.setupForm.disable();
-
-    if(lockType == LockType.Submit) {
-      this.submitButtonText = "Submitting Configuration...";
-    } else if (lockType == LockType.Update) {
-      this.updateButtonText = "Updating, this may take a few minutes...";
-      this.sharedService.updating = true;
-    }
   }
 
-  unlockForm(lockType: LockType) {
+  unlockForm() {
+    this.submitButtonText = "Submit Configurations"
     this.setupForm.enable();
-
-    if(lockType == LockType.Submit) {
-      this.submitButtonText = "Submit Configurations";
-    } else if (lockType == LockType.Update) {
-      this.updateButtonText = "Update";
-      this.sharedService.updating = false;
-    }
   }
 
   trimInput() {
@@ -203,27 +177,5 @@ export class SetupFormComponent implements OnInit {
         this.setupForm.get(key).setValue(this.setupForm.get(key).value.trim().replace(/\s+/g, ' '));
       }
     });
-  }
-
-  onUpdatePressed() {
-    this.lockForm(LockType.Update);
-    this.postUpdateRequest();
-  }
-
-  postUpdateRequest() {
-    const formData = new FormData();
-    formData.append("button", "update");
-    this.http.post(AppSettings.serverIp, formData).subscribe(response => this.onSuccessUpdating(response), (err) => { this.onErrorUpdating(err) });
-  }
-
-  onSuccessUpdating(response) {
-    this.unlockForm(LockType.Update);
-    this.toggleAlert(ReturnStatus.UpdateSuccessful);
-  }
-
-  onErrorUpdating(error) {
-    console.log(error);
-    this.unlockForm(LockType.Update);
-    this.toggleAlert(ReturnStatus.UpdateFailure);
   }
 }
