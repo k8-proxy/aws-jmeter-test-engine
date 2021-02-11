@@ -13,8 +13,8 @@ class InfluxDBMetrics():
     hostname = ''
     hostport = ''
     jmeter_db_client = InfluxDBClient()
-    icapserver_db_client = InfluxDBClient()
-    proxysite_db_client = InfluxDBClient()
+    #icapserver_db_client = InfluxDBClient()
+    #proxysite_db_client = InfluxDBClient()
 
     @staticmethod
     def verify_database(db):
@@ -33,11 +33,11 @@ class InfluxDBMetrics():
         InfluxDBMetrics.jmeter_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='jmeter')
         InfluxDBMetrics.verify_database(InfluxDBMetrics.jmeter_db_client)
 
-        InfluxDBMetrics.icapserver_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='icapserver')
-        InfluxDBMetrics.verify_database(InfluxDBMetrics.icapserver_db_client)
+        #InfluxDBMetrics.icapserver_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='icapserver')
+        #InfluxDBMetrics.verify_database(InfluxDBMetrics.icapserver_db_client)
 
-        InfluxDBMetrics.proxysite_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='proxysite')
-        InfluxDBMetrics.verify_database(InfluxDBMetrics.proxysite_db_client)
+        #InfluxDBMetrics.proxysite_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='proxysite')
+        #InfluxDBMetrics.verify_database(InfluxDBMetrics.proxysite_db_client)
 
         print('Metrics module initialization PASSED')
 
