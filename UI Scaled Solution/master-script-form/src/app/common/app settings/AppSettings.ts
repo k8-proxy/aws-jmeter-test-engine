@@ -12,3 +12,4 @@ export class AppSettings {
     public static serverIp: string = "http://127.0.0.1:5000/";
 }
 export enum LoadTypes { Direct = 0, ProxySharePoint, DirectSharePoint, ProxyOffline }
+export enum ReturnStatus { Success, Failure, PartialSuccess , UpdateSuccess, UpdateFailure }
