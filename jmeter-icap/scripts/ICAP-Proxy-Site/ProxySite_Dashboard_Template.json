@@ -74,7 +74,7 @@
 			"bars": false,
 			"dashLength": 10,
 			"dashes": false,
-			"datasource": null,
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
@@ -87,7 +87,7 @@
 			"fillGradient": 0,
 			"gridPos": {
 				"h": 9,
-				"w": 12,
+				"w": 10,
 				"x": 0,
 				"y": 2
 			},
@@ -195,7 +195,7 @@
 			"bars": false,
 			"dashLength": 10,
 			"dashes": false,
-			"datasource": null,
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
@@ -221,8 +221,8 @@
 			"fillGradient": 0,
 			"gridPos": {
 				"h": 9,
-				"w": 12,
-				"x": 12,
+				"w": 10,
+				"x": 10,
 				"y": 2
 			},
 			"hiddenSeries": false,
@@ -357,7 +357,104 @@
 			}
 		},
 		{
-			"datasource": null,
+			"datasource": "InfluxDB",
+			"fieldConfig": {
+			  "defaults": {
+				"custom": {
+				  "align": null,
+				  "filterable": false
+				},
+				"mappings": [],
+				"thresholds": {
+				  "mode": "absolute",
+				  "steps": [
+					{
+					  "color": "green",
+					  "value": null
+					},
+					{
+					  "color": "#EAB839",
+					  "value": 10
+					},
+					{
+					  "color": "#6ED0E0",
+					  "value": 20
+					},
+					{
+					  "color": "#EF843C",
+					  "value": 30
+					},
+					{
+					  "color": "#E24D42",
+					  "value": 40
+					}
+				  ]
+				},
+				"unit": "percent"
+			  },
+			  "overrides": []
+			},
+			"gridPos": {
+			  "h": 9,
+			  "w": 4,
+			  "x": 20,
+			  "y": 2
+			},
+			"id": 20,
+			"options": {
+			  "orientation": "auto",
+			  "reduceOptions": {
+				"calcs": [
+				  "last"
+				],
+				"fields": "",
+				"values": false
+			  },
+			  "showThresholdLabels": false,
+			  "showThresholdMarkers": true
+			},
+			"pluginVersion": "7.2.2",
+			"targets": [
+			  {
+				"alias": "Error Rate",
+				"groupBy": [],
+				"measurement": "proxy_statistics",
+				"orderByTime": "ASC",
+				"policy": "default",
+				"query": "SELECT sum(FailedRequests) * 100 / sum(TotalRequests) FROM \"proxy_statistics\" WHERE $timeFilter",
+				"rawQuery": false,
+				"refId": "A",
+				"resultFormat": "time_series",
+				"select": [
+				  [
+					{
+					  "params": [
+						"FailedRequests"
+					  ],
+					  "type": "field"
+					},
+					{
+					  "params": [],
+					  "type": "sum"
+					},
+					{
+					  "params": [
+						" * 100 /  sum(\"TotalRequests\")"
+					  ],
+					  "type": "math"
+					}
+				  ]
+				],
+				"tags": []
+			  }
+			],
+			"timeFrom": null,
+			"timeShift": null,
+			"title": "Error Rate",
+			"type": "gauge"
+		},
+		{
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
@@ -529,7 +626,7 @@
 			"type": "gauge"
 		},
 		{
-			"datasource": null,
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
@@ -687,7 +784,7 @@
 			"bars": false,
 			"dashLength": 10,
 			"dashes": false,
-			"datasource": null,
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
@@ -896,7 +993,7 @@
 			"bars": false,
 			"dashLength": 10,
 			"dashes": false,
-			"datasource": null,
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
@@ -1081,7 +1178,7 @@
 			"bars": false,
 			"dashLength": 10,
 			"dashes": false,
-			"datasource": null,
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
@@ -1290,7 +1387,7 @@
 			"bars": false,
 			"dashLength": 10,
 			"dashes": false,
-			"datasource": null,
+			"datasource": "InfluxDB",
 			"fieldConfig": {
 				"defaults": {
 					"custom": {
