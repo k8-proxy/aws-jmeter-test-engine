@@ -89,8 +89,8 @@ export class SetupFormComponent implements OnInit {
   get regions() {
     return AppSettings.regions;
   }
-  get updating() {
-    return this.sharedService.updating;
+  get formEnabled() {
+    return this.setupForm.enabled;
   }
 
   onSubmit(): void {
