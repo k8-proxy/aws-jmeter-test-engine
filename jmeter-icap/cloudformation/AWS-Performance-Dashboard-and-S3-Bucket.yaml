@@ -308,3 +308,7 @@ Outputs:
   SecretKey:
     Value: !GetAtt [S3UserKeys, SecretAccessKey]
     Description: AWSSecretAccessKey of new user
+  PerformanceDashboardSG:
+    Value: !Ref 'ICAPPerformanceDashboardSG'
+  PerformanceLGSG:
+    Value: !Ref 'ICAPPerformanceLGSG'
