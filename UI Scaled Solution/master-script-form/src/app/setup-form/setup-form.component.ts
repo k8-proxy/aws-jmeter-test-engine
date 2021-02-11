@@ -36,7 +36,7 @@ export class SetupFormComponent implements OnInit {
   updateButtonText = "Update"
   public submitPopoverTitle: string = "Please Confirm";
   public submitPopoverMessage: string = "The configurations input above will overwrite previous configurations.";
-  public updatePopoverMessage: string = "This will update this project, please do not run tests during update. Server may be interrupted for a short period.";
+  public updatePopoverMessage: string = "This will update this project, please do not run tests during update. Service may be interrupted for a short period.";
   
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) { }
 
