@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SharedService } from '../common/services/shared.service';
 
 @Component({
   selector: 'navbar',
@@ -8,13 +7,9 @@ import { SharedService } from '../common/services/shared.service';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(private sharedService: SharedService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    
   }
 
-  get updating() {
-    return this.sharedService.updating;
-  }
 }
