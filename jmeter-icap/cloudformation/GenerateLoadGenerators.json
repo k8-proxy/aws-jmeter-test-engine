@@ -2,10 +2,14 @@
    "AWSTemplateFormatVersion" : "2010-09-09",
    "Description" : "This script creates EC2 instances from set AMI image. Change parameters accordingly",
    "Parameters" : {
-    "VPCStack": {
-      "Type": "String",
-      "Default" : "VPCSubnetsStack"
-    },
+      "VPCStack": {
+        "Type": "String",
+        "Default" : "VPCSubnetsStack"
+      },
+      "DashboardStack": {
+        "Type": "String",
+        "Default" : "AWS-Performance-Dashboard"
+      },
       "AsgName" : {
          "Description" : "Autoscaling group name",
          "Type" : "String",
@@ -53,7 +57,10 @@
       "UserData": { "Ref" : "UserData" },
       "SecurityGroups" :   [
           {
-            "Ref":"InstanceSecurityGroup"
+            "Ref": {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceDashboardSG"}}
+          },
+          {
+            "Ref": {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceLGSG"}}
           }
         ],
       "IamInstanceProfile": "AWS-TestEngine-IAMRole",
