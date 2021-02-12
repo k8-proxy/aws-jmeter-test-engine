@@ -174,22 +174,11 @@ Next step is to ssh to this EC2 instance (username: ubuntu) and :
 sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 ```
 
-**Replace & save the following parameters with your own value**:
-
-| Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
-|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Ireland          | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=LoadGenerator&templateURL=https://aws-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/GenerateLoadGenerators.json) |
-| North Virginia   | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=LoadGenerator&templateURL=https://aws-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/GenerateLoadGenerators.json) |
-| Oregon           | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=LoadGenerator&templateURL=https://aws-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/GenerateLoadGenerators.json) |
-| North California | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=LoadGenerator&templateURL=https://aws-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/GenerateLoadGenerators.json) |
-
-
 
 - KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
 
 - AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
 
-- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above with cloud formation) security group id
 
 All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
 - VPC and Subnets can be found on the top of this page.
