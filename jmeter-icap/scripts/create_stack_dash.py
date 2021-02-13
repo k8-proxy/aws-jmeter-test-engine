@@ -127,6 +127,9 @@ def __get_commandline_args():
     parser.add_argument('--client_secret', '-cs', default=Config.client_secret,
                         help='Sharepoint Client Secret')
 
+    parser.add_argument('--influx_public_ip', '-ipip', default=Config.influx_public_ip,
+                        help='Public IP of influxDB instance, used with functions that store/read test results')
+
     return parser.parse_args()
 
 
@@ -216,7 +219,7 @@ def create_stack_from_ui(json_params, ova=False):
 
 def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
 
-    InfluxDBMetrics.hostname = config.influx_host
+    InfluxDBMetrics.hostname = config.influx_public_ip
     InfluxDBMetrics.hostport = config.influx_port
     InfluxDBMetrics.init()
 
@@ -317,6 +320,7 @@ if __name__ == "__main__":
     Config.duration = args.duration
     Config.icap_endpoint_url = args.icap_endpoint_url
     Config.influx_host = args.influx_host
+    Config.influx_public_ip = args.influx_public_ip
     Config.prefix = args.prefix
     Config.test_data_file = args.test_data_file
     Config.jmx_script_name = args.jmx_script_name

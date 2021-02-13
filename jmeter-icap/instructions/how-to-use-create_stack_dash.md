@@ -84,7 +84,8 @@ RAMP_UP_TIME=300
 DURATION=900
 ICAP_ENDPOINT_URL=icap-client.uksouth.cloudapp.azure.com
 INFLUX_HOST=64.159.132.71
-PREFIX=aj-test
+INFLUX_PUBLIC_IP=51.72.135.16
+PREFIX=testPrefix
 INSTANCES_REQUIRED=1
 JMX_SCRIPT_NAME=ICAP_Direct_FileProcessing_v1.jmx
 GRAFANA_URL=64.159.132.71:3000
@@ -182,7 +183,7 @@ Name/path of JSON file that will be used as a template to create Grafana Dashboa
 <tr>
 <td>--prefix, -p </td><td> PREFIX </td>
 <td>
-The prefix used in both the Cloudformation stack name and the name of the Dashboard and measurements created.
+The prefix used in both the Cloudformation stack name and the name of the Dashboard and measurements created. It should start with a letter and can contain only letters and numbers. It should not contain any other character types (hyphens, underscores, spaces, etc), as these may cause database and stack creation errors.
 </td>
 </tr>
 <tr>
@@ -279,6 +280,12 @@ Client ID value (for use with SharePoint)
 <td>--client_secret, -cs</td><td>CLIENT_SECRET</td>
 <td>
 Client Secret value (for use with SharePoint)
+</td>
+</tr>
+<tr>
+<td>--influx_public_ip, -ipip</td><td>INFLUX_PUBLIC_IP</td>
+<td>
+Public IP of influxDB instance, used with functions that store/read test results
 </td>
 </tr>
 </table>
