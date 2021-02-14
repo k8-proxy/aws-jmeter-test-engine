@@ -285,7 +285,7 @@ Client Secret value (for use with SharePoint)
 <tr>
 <td>--influx_public_ip, -ipip</td><td>INFLUX_PUBLIC_IP</td>
 <td>
-Public IP of influxDB instance, used with functions that store/read test results. This is required for database operations.
+Public IP of influxDB instance, used with functions that store/read test results.
 </td>
 </tr>
 </table>
