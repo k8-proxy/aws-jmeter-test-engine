@@ -174,17 +174,11 @@ Next step is to ssh to this EC2 instance (username: ubuntu) and :
 sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 ```
 
-**Replace & save the following parameters with your own value**:
-
-- VpcId - vpc id created above
-
-- SubnetIds - public subnets ids list created above
 
 - KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
 
 - AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
 
-- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above with cloud formation) security group id
 
 All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
 - VPC and Subnets can be found on the top of this page.
