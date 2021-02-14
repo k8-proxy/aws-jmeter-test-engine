@@ -159,7 +159,7 @@ The ICAP server URL
 <tr>
 <td> --influx_host, -i </td><td> INFLUX_HOST </td>
 <td>
-IP address or hostname of the Influx Database
+Private IP address or hostname of the Influx Database
 </td>
 </tr>
 <tr>
@@ -285,7 +285,7 @@ Client Secret value (for use with SharePoint)
 <tr>
 <td>--influx_public_ip, -ipip</td><td>INFLUX_PUBLIC_IP</td>
 <td>
-Public IP of influxDB instance, used with functions that store/read test results
+Public IP of influxDB instance, used with functions that store/read test results. This is required for database operations.
 </td>
 </tr>
 </table>
