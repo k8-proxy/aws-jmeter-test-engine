@@ -71,3 +71,8 @@ def upload_test_data_to_s3(config):
         print("Error uploading to S3: {}".format(e))
 
     return output
+
+
+def run_project_update():
+    output = subprocess.call(['sh', './update_ui.sh'])
+    return output

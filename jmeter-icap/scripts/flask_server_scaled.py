@@ -4,7 +4,7 @@ import json
 from waitress import serve
 from create_stack_dash import create_stack_from_ui, delete_stack_from_ui, Config
 from database_ops import retrieve_test_results
-from ui_setup import update_config_env, retrieve_config_fields
+from ui_setup import update_config_env, retrieve_config_fields, run_project_update
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -31,9 +31,11 @@ def parse_request():
                 return make_response(jsonify(url=returned_url, stack_name=stack_name), 201)
             else:
                 return make_response("Error", 500)
+
         elif button_pressed == 'stop_individual_test':
             delete_stack_from_ui(stack_name)
             return make_response(jsonify("Test {0} terminated".format(stack_name)), 201)
+
         elif button_pressed == 'setup_config':
             data = json.loads(request.form.get('form'))
             print('Setup Data sent from UI: {0}'.format(data))
@@ -41,7 +43,11 @@ def parse_request():
             if result == 0:
                 return make_response(jsonify(response="OK"), 200)
             else:
-                return make_response(jsonify(response="UPLOADFAILED"), 200)
+                return make_response(jsonify(response="UPLOADFAILED"), 400)
+
+        elif button_pressed == 'update':
+            result = run_project_update()
+            return make_response(jsonify(response="OK"), 200)
 
     if request.method == 'GET':
         if request.args['request_type'] == 'test_results':
