@@ -177,7 +177,7 @@ def __start_delete_stack(additional_delay, config):
 
 
 def __get_stack_name(config):
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     prefix = config.prefix
     date_suffix = now.strftime("%Y-%m-%d-%H-%M")
     if config.stack_name:
@@ -221,15 +221,15 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
     InfluxDBMetrics.init()
 
     total_wait_time = additional_delay + int(config.duration)
-    start_time = datetime.now()
+    start_time = datetime.now(timezone.utc)
     final_time = start_time + timedelta(seconds=total_wait_time)
     first_point = second_point = start_time
 
-    while datetime.now() < final_time:
+    while datetime.now(timezone.utc) < final_time:
         time.sleep(1)
         first_point = second_point
-        second_point = datetime.now()
-        InfluxDBMetrics.save_statistics(config.load_type, config.prefix, str(first_point), str(second_point))
+        second_point = datetime.now(timezone.utc)
+        InfluxDBMetrics.save_statistics(config.load_type, config.prefix, first_point.strftime("%Y-%m-%d %H:%M:%S"), second_point.strftime("%Y-%m-%d %H:%M:%S"))
 
     run_id = uuid.uuid4()
 
