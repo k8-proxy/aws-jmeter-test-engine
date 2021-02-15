@@ -50,7 +50,6 @@ export class ConfigFormComponent implements OnInit {
       this.hideSubmitMessages = true;
     });
     setInterval(() => { this.getCookies(); }, 1000); //used to refresh list and remove expired tests.
-    
   }
 
   setTitle(newTitle: string) {
