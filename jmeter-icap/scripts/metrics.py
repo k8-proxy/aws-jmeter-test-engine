@@ -35,8 +35,8 @@ class InfluxDBMetrics():
         InfluxDBMetrics.icapserver_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='icapserver')
         InfluxDBMetrics.verify_database(InfluxDBMetrics.icapserver_db_client)
 
-        InfluxDBMetrics.proxysite_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='proxysite')
-        InfluxDBMetrics.verify_database(InfluxDBMetrics.proxysite_db_client)
+        #InfluxDBMetrics.proxysite_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='proxysite')
+        #InfluxDBMetrics.verify_database(InfluxDBMetrics.proxysite_db_client)
 
         print('Metrics module initialization PASSED')
 
@@ -164,12 +164,15 @@ class InfluxDBMetrics():
 
     @staticmethod
     def save_statistics(load_type, prefix, start_time, final_time):
-        if load_type == "Direct":
-            InfluxDBMetrics.jmeter_db_client.write_points([{"measurement": prefix + "_statistics", "fields": {
-                "TotalRequests": InfluxDBMetrics.total_reguests(prefix, start_time, final_time),
-                "SuccessfulRequests": InfluxDBMetrics.successful_reguests(prefix, start_time, final_time),
-                "FailedRequests": InfluxDBMetrics.failed_reguests(prefix, start_time, final_time),
-            }}])
+        try:
+            if load_type == "Direct":
+                InfluxDBMetrics.jmeter_db_client.write_points([{"measurement": prefix + "_statistics", "fields": {
+                    "TotalRequests": InfluxDBMetrics.total_reguests(prefix, start_time, final_time),
+                    "SuccessfulRequests": InfluxDBMetrics.successful_reguests(prefix, start_time, final_time),
+                    "FailedRequests": InfluxDBMetrics.failed_reguests(prefix, start_time, final_time),
+                }}])
+        except Exception as e:
+            print("ERROR: metrics.mean_query: {}".format(e))
 
     @staticmethod
     def main(argv):
