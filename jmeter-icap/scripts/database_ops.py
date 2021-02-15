@@ -5,7 +5,8 @@ from ui_tasks import LoadType
 
 # Connect to influx database, check if tests database exists. If it does not, create it.
 def connect_to_influxdb():
-    client = InfluxDBClient(host=Config.influx_host, port=Config.influx_port)
+
+    client = InfluxDBClient(host=Config.influx_public_ip if Config.influx_public_ip not in ["", None] else Config.influx_host, port=Config.influx_port)
     client.create_database("ResultsDB")
     client.switch_database("ResultsDB")
     return client
@@ -14,8 +15,8 @@ def connect_to_influxdb():
 def database_insert_test(config, run_id, grafana_uid, start_time, final_time):
     run_id = str(run_id)
     client = connect_to_influxdb()
-    InfluxDBMetrics.hostname = Config.influx_host
-    InfluxDBMetrics.hostport = Config.influx_port
+    InfluxDBMetrics.hostname = config.influx_public_ip if config.influx_public_ip not in ["", None] else config.influx_host
+    InfluxDBMetrics.hostport = config.influx_port
     InfluxDBMetrics.init()
     if config.load_type == LoadType.direct.value:
         client.write_points([{"measurement": "TestResults", "fields": {

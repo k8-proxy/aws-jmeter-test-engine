@@ -2,16 +2,14 @@
    "AWSTemplateFormatVersion" : "2010-09-09",
    "Description" : "This script creates EC2 instances from set AMI image. Change parameters accordingly",
    "Parameters" : {
-    "VpcId": {
-      "Type": "String",
-      "Description" : "VPC ID",
-      "Default" : "vpc-02db6ac5915e8de9b"
-    },
-    "SubnetIds":  {
-      "Type": "CommaDelimitedList",
-      "Description" : "Subnet IDs",
-      "Default" : "subnet-02e0fb935c900d08e"
-    },
+      "VPCStack": {
+        "Type": "String",
+        "Default" : "VPCSubnetsStack"
+      },
+      "DashboardStack": {
+        "Type": "String",
+        "Default" : "AWS-Performance-Dashboard"
+      },
       "AsgName" : {
          "Description" : "Autoscaling group name",
          "Type" : "String",
@@ -47,7 +45,7 @@
        "Default": 1
      },
      "UserData": {
-       "Type": "String"
+       "Type": "String",
      }
    },
   "Resources" : {
@@ -59,7 +57,10 @@
       "UserData": { "Ref" : "UserData" },
       "SecurityGroups" :   [
           {
-            "Ref":"InstanceSecurityGroup"
+            "Ref": {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceDashboardSG"}}
+          },
+          {
+            "Ref": {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceLGSG"}}
           }
         ],
       "IamInstanceProfile": "AWS-TestEngine-IAMRole",
@@ -75,7 +76,7 @@
         "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
         "MinSize" : { "Ref" : "MinInstances" },
         "MaxSize" : { "Ref" : "MaxInstances" },
-        "VPCZoneIdentifier" : { "Ref" : "SubnetIds" },
+        "VPCZoneIdentifier" : {"Fn::ImportValue" : {"Fn::Sub" : "${VPCStack}-SubnetPubA"}},
         "Tags" : [ 
           {
             "Key": "Description",

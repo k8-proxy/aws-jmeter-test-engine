@@ -17,6 +17,7 @@ import { SetupFormComponent } from './setup-form/setup-form.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router'
 import { LoadPipe } from './common/Pipes/load.pipe';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { LoadPipe } from './common/Pipes/load.pipe';
     ResultsTableComponent,
     SetupFormComponent,
     NavbarComponent,
-    LoadPipe
+    LoadPipe,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +43,8 @@ import { LoadPipe } from './common/Pipes/load.pipe';
     }),
     RouterModule.forRoot([
       { path: '', component: ConfigFormComponent},
-      { path: 'setup', component: SetupFormComponent}
+      { path: 'setup', component: SetupFormComponent},
+      { path: 'admin', component: AdminComponent}
     ], {useHash: true})
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

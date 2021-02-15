@@ -3,6 +3,13 @@ Metadata:
   License: Apache-2.0
 Description: 'Performance Dashboard for AWS JMeter Load Generator along with the security group.'
 Parameters:
+  NetworkStackName:
+    Description: Name of an active CloudFormation stack that contains the networking resources, such as the subnet and security group, that will be used in this stack.
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+    AllowedPattern: ^[a-zA-Z][-a-zA-Z0-9]*$
+    Default : VPCSubnetsStack
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: AWS::EC2::KeyPair::KeyName
@@ -32,12 +39,7 @@ Parameters:
   BucketName:
     Type: String
     Description: 'The name of the S3 Bucket to create, make this unique'
-  VPCID:
-    Type: AWS::EC2::VPC::Id
-    Description: "VPC ID for the security groups to be created"
-  SUBNETID:
-    Type: AWS::EC2::Subnet::Id
-    Description: "Subnet ID for the EC2 instance to be created"
+    Default: aws-s3-test-files-bucket
 Mappings:
   AWSInstanceType2Arch:
     t2.nano:
@@ -179,7 +181,8 @@ Resources:
       IamInstanceProfile: "AWS-TestEngine-IAMRole"
       NetworkInterfaces:
       - AssociatePublicIpAddress: true
-        SubnetId: !Ref 'SUBNETID'
+        SubnetId:
+          Fn::ImportValue: !Sub '${NetworkStackName}-SubnetPubA'
         DeviceIndex: 0
         GroupSet:
         - !GetAtt ICAPPerformanceDashboardSG.GroupId
@@ -192,7 +195,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable SSH access to the load generators
-      VpcId: !Ref 'VPCID'
+      VpcId:
+        Fn::ImportValue: !Sub '${NetworkStackName}-VPCId'
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
@@ -205,7 +209,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable access to the cluster ports
-      VpcId: !Ref 'VPCID'
+      VpcId:
+        Fn::ImportValue: !Sub '${NetworkStackName}-VPCId'
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
@@ -303,3 +308,7 @@ Outputs:
   SecretKey:
     Value: !GetAtt [S3UserKeys, SecretAccessKey]
     Description: AWSSecretAccessKey of new user
+  PerformanceDashboardSG:
+    Value: !Ref 'ICAPPerformanceDashboardSG'
+  PerformanceLGSG:
+    Value: !Ref 'ICAPPerformanceLGSG'

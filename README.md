@@ -17,9 +17,10 @@ There are 2 AWS community images created in AWS Ireland, North Virginia, Oregon 
 This document will show simple way to get started utilizing this framework step by step.
 
 **Before starting**
-- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine. 
+- Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
 - Install AWS CLI in your local machine: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+- Ensure that there is one AWS KeyPair available so that it can be attached to EC2 instances being created. It can be created in AWS console->EC2->Key Pairs->Create Key pair.
 - Ensure that all resources are created (using instructions below) in a single AWS       supported region, not in multi-regions. Mixing them between different regions might    break the automation or also slow it down due to network latency.
 
 
@@ -31,12 +32,21 @@ This document will show simple way to get started utilizing this framework step 
 **Create VPC and Subnets if non existent**
 
 If there are no existing VPC and Subnets available then there are separate Cloudformation scripts are available to create VPC & Subnets for each of supported regions mentioned above. 
-Scripts are located in jmeter-icap/cloudformation/ repo folder or direct link https://github.com/k8-proxy/aws-jmeter-test-engine/tree/master/jmeter-icap/cloudformation 
+Scripts are located in jmeter-icap/cloudformation/ source folder 
 
 Ensure that correct region VPC & Subnets cloudformation is used during the stack creation.
 
 The VPC & Subnets cloudformation stack can be created using 2 ways:
 - Using AWS Console -> Goto Services -> CloudFormation->Create Stack (new resources) and follow steps there
+
+| Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Ireland          | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=VPCSubnetsStack&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-CloudFormation-VPC-6-Subnets-eu-west-1.json) |
+| North Virginia   | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=VPCSubnetsStack&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-CloudFormation-VPC-6-Subnets-us-east-1.json) |
+| Oregon           | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=VPCSubnetsStack&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-CloudFormation-VPC-6-Subnets-us-west-2.json) |
+| North California | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=VPCSubnetsStack&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-CloudFormation-VPC-6-Subnets-us-west-1.json) |
+
+
 - Using AWS CLI command (this is template command, repo path and CF name needs to be changed)
 ```bash
 aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/AWS-CloudFormation-VPC-6-Subnets-change-region.json
@@ -62,24 +72,37 @@ There are 2 ways to run CloudFormation script in aws:
    - Give stack name
    - Click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
 
+| Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Ireland          | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=AWS-Test-Engine-IAM-Role&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/aws-secret-manager_with_-iam-role.json) |
+| North Virginia   | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=AWS-Test-Engine-IAM-Role&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/aws-secret-manager_with_-iam-role.json) |
+| Oregon           | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=AWS-Test-Engine-IAM-Role&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/aws-secret-manager_with_-iam-role.json) |
+| North California | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=AWS-Test-Engine-IAM-Role&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/aws-secret-manager_with_-iam-role.json) |
+
 2. Using AWS CLI
 
 ```bash
-aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json
+aws cloudformation create-stack --stack-name myteststack --template-body file:///pathtorepo/jmeter-icap/cloudformation/aws-secret-manager_with_-iam-role.json --capabilities CAPABILITY_NAMED_IAM
 
 ```
+After IAM role is created, goto AWS console -> IAM->Roles, select created IAM role and assign EC2 FullAccess and CloudFormationFull Access policies to the IAM role.
 
 The newly created IAM role will be automatically attached the EC2 instances of the deployment
 
 # Step 3. Setup Performance Dashboard system, create the S3 bucket, create a user with S3 bucket access
 
-- From your local repo clone run the following cloud formation script: jmeter-icap/cloudformation/AWS-Performance-Dashboard-and-S3-Bucket.yaml using console
-   - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
-   - Click on Create Stack
-   - Select Upload Template
+1. With AWS Console
+   - Start Cloud Formation script with the corresponds region button below:
+
+| Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Ireland          | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=AWS-Performance-Dashboard&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-Performance-Dashboard-and-S3-Bucket.yaml) |
+| North Virginia   | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=AWS-Performance-Dashboard&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-Performance-Dashboard-and-S3-Bucket.yaml) |
+| Oregon           | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=AWS-Performance-Dashboard&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-Performance-Dashboard-and-S3-Bucket.yaml) |
+| North California | [<img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png">](https://console.aws.amazon.com/cloudformation/home?region=us-west-1#/stacks/new?stackName=AWS-Performance-Dashboard&templateURL=https://aws-icap-test-engine-cf-templates.s3-eu-west-1.amazonaws.com/AWS-Performance-Dashboard-and-S3-Bucket.yaml) |
+
    - Click Next
-   - Give stack name
-   - Enter the SSH key name (choose from the drop down box), public IP range, S3 bucket name to be created.
+   - Enter the SSH key name (choose from the drop down box) and the public IP range you will be using for accessing the resources.
 ![Dashboard_CF_params](jmeter-icap/instructions/img/Dashboard_CF_params.png)
    - Click next until it says "Create Stack".
    - Confirm that the script can create IAM resources and click "Create Stack".
@@ -88,6 +111,36 @@ The newly created IAM role will be automatically attached the EC2 instances of t
 
 ![KeysInTheOutput](jmeter-icap/instructions/img/KeysInTheOutput.png)
 
+2. With AWS CLI
+
+- To find out a valid KeyPair Name run the following:
+```
+   aws ec2 describe-key-pairs
+```
+- Copy and save the value of "KeyName" field
+```
+   {
+      "KeyPairs": [
+         {
+               ....
+               "KeyName": "your-valid-keypair-name",
+               ....
+         }
+      ]
+   }
+```
+- In you internet browser go to https://whatismyipaddress.com/ and copy your IPv4 from the opened web page. This is your-external-ip-address to be utilized by the CF script.
+- In the terminal navigate to ```pathtorepo/aws-jmeter-test-engine/jmeter-icap/cloudformation```
+- Run the following CLI command
+```
+aws cloudformation create-stack --stack-name AWS-Performance-Dashboard --template-body file://AWS-Performance-Dashboard-and-S3-Bucket.yaml --parameters  ParameterKey=KeyName,ParameterValue=your-valid-keypair-name ParameterKey=PublicIPRange,ParameterValue=your-external-ip-address/32 --capabilities CAPABILITY_IAM
+```
+- If all the parameters are valid the output of the command above will look as following
+```
+{
+    "StackId": "arn:aws:cloudformation:your-region:accound-it:stack/stack-name/stack-UUID"
+}
+```
 # Step 4. Create Secret Manager with your AWS Access and Secret Key
 
 - Open AWS UI Console
@@ -121,17 +174,11 @@ Next step is to ssh to this EC2 instance (username: ubuntu) and :
 sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoadGenerators.json
 ```
 
-**Replace & save the following parameters with your own value**:
-
-- VpcId - vpc id created above
-
-- SubnetIds - public subnets ids list created above
 
 - KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
 
 - AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
 
-- InstanceSecurityGroup - ICAP-Performance-LG-SG (created above with cloud formation) security group id
 
 All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
 - VPC and Subnets can be found on the top of this page.

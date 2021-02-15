@@ -1,6 +1,7 @@
 /*
     This service is responsible for querying the database and storing retrieved data for use in other componenets
 */
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { AppSettings, LoadTypes } from './../app settings/AppSettings';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -53,13 +54,21 @@ export class SharedService {
     private resultsDataSourceReadySubject = new Subject<any>();
     public resultsDataSource: ResultsRowElement[] = [];
     public grafanaUrl: string = "";
+    public updating: boolean = false;
 
-    constructor(private readonly http: HttpClient) {
+    constructor(private readonly http: HttpClient, private router: Router) {
         this.init();
+        
     }
 
     init(): void {
-        this.getTestsFromDatabase();
+        this.router.events.subscribe((event: Event) => {
+            if (event instanceof NavigationEnd) {
+                if(this.router.url === "/") {
+                    this.getTestsFromDatabase();
+                }
+            }
+        });
         setInterval(() => { this.getTestsFromDatabase(); }, 60000); //used to refresh list and remove expired tests.
     }
 
