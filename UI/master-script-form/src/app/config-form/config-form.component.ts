@@ -136,6 +136,10 @@ export class ConfigFormComponent implements OnInit {
     return this.showStoppedAlert ? 'show' : 'hide';
   }
 
+  get loadType() {
+    return this.configForm.get('load_type');
+  }
+
   onFileChange(files: FileList) {
     this.fileToUpload = files.item(0);
   }
@@ -151,7 +155,14 @@ export class ConfigFormComponent implements OnInit {
   storeTestAsCookie(dashboardUrl) {
     let currentTime = new Date();
     let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000);
-    let testTitle = this.endPointFieldName === this.endPointFieldNames[0] ? "ICAP Live Performance Dashboard" : "Proxy Site Live Performance Dashboard";
+    let testTitle: string;
+    if(this.loadType.value == this.loadTypes[0]) {
+      testTitle = "ICAP Live Performance Dashboard";
+    } else if (this.loadType.value == this.loadTypes[1]) {
+      testTitle = "Proxy Site Live Performance Dashboard";
+    } else if (this.loadType.value == this.loadTypes[2]) {
+      testTitle = "REST API Live Performance Dashboard";
+    }
     let key = this.prefix.value === null ? testTitle : this.prefix.value + " " + testTitle;
     this.cookieService.set(key, dashboardUrl, expireTime);
   }
