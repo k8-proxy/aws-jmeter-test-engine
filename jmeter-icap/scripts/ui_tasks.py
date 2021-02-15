@@ -41,7 +41,7 @@ def determine_load_type(config, ova=False):
     elif config.load_type == LoadType.rest_api.value:
         config.test_directory = 'REST-API'
         config.jmx_script_name = 'REST-API-Load.jmx'
-        config.grafana_file = ''
+        config.grafana_file = 'rest-api-dashboard.json'
         config.test_data_file = 'gov_uk_files.csv'
 
 
