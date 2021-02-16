@@ -191,6 +191,14 @@ Resources:
         Value : "AWS-TestEngine-UI_Dashboard"
       - Key : "Description"
         Value : "AWS TestEngine UI Dashboard"
+      - Key : "Owner"
+        Value : "Quality Assuarence"
+      - Key : "Team"
+        Value : "Quality Assuarence Team"
+      - Key : "Scope"
+        Value : "Quality Assuarence Tests"
+      - Key : "Delete"
+        Value : "Only delete along with the stack"
   ICAPPerformanceLGSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -227,6 +235,10 @@ Resources:
       - IpProtocol: tcp
         FromPort: 3000
         ToPort: 3000
+        CidrIp: !Ref 'PublicIPRange'
+      - IpProtocol: tcp
+        FromPort: 8086
+        ToPort: 8086
         CidrIp: !Ref 'PublicIPRange'
       - IpProtocol: tcp
         FromPort: 3100
@@ -310,5 +322,11 @@ Outputs:
     Description: AWSSecretAccessKey of new user
   PerformanceDashboardSG:
     Value: !Ref 'ICAPPerformanceDashboardSG'
+    Export:
+       Name:
+        Fn::Sub: "${AWS::StackName}-PerformanceDashboardSG"
   PerformanceLGSG:
     Value: !Ref 'ICAPPerformanceLGSG'
+    Export:
+       Name:
+        Fn::Sub: "${AWS::StackName}-PerformanceLGSG"
