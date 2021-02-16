@@ -322,5 +322,11 @@ Outputs:
     Description: AWSSecretAccessKey of new user
   PerformanceDashboardSG:
     Value: !Ref 'ICAPPerformanceDashboardSG'
+    Export:
+       Name:
+        Fn::Sub: "${AWS::StackName}-PerformanceDashboardSG"
   PerformanceLGSG:
     Value: !Ref 'ICAPPerformanceLGSG'
+    Export:
+       Name:
+        Fn::Sub: "${AWS::StackName}-PerformanceLGSG"
