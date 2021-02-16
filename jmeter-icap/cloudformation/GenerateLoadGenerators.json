@@ -32,10 +32,6 @@
         "AllowedValues" : [ "m4.large", "m4.xlarge","m1.small","t1.micro","t2.micro","t2.small","t3.medium","m3.medium","m3.large","m3.xlarge","m3.2xlarge","m4.2xlarge","c4.2xlarge","c3.xlarge","c4.xlarge","c3.4xlarge","c3.8xlarge","g2.2xlarge","r3.large","r3.xlarge","r3.2xlarge","r3.4xlarge","r3.8xlarge","i2.xlarge","i2.2xlarge","i2.4xlarge","i2.8xlarge","hs1.8xlarge"],
         "ConstraintDescription" : "must be a valid EC2 instance type."
       },
-      "InstanceSecurityGroup":{
-        "Type":"String",
-        "Default" : "sg-0c82ddcb24373c694"
-      },
      "MinInstances": {
        "Type": "Number",
        "Default": 1
@@ -45,7 +41,7 @@
        "Default": 1
      },
      "UserData": {
-       "Type": "String",
+       "Type": "String"
      }
    },
   "Resources" : {
@@ -56,12 +52,7 @@
       "ImageId" : { "Ref" : "AmiImage" },
       "UserData": { "Ref" : "UserData" },
       "SecurityGroups" :   [
-          {
-            "Ref": {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceDashboardSG"}}
-          },
-          {
-            "Ref": {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceLGSG"}}
-          }
+          {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceLGSG"}}
         ],
       "IamInstanceProfile": "AWS-TestEngine-IAMRole",
       "InstanceType" : { "Ref" : "InstanceType" },
@@ -76,7 +67,7 @@
         "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
         "MinSize" : { "Ref" : "MinInstances" },
         "MaxSize" : { "Ref" : "MaxInstances" },
-        "VPCZoneIdentifier" : {"Fn::ImportValue" : {"Fn::Sub" : "${VPCStack}-SubnetPubA"}},
+        "VPCZoneIdentifier" : [{"Fn::ImportValue" : {"Fn::Sub" : "${VPCStack}-SubnetPubA"}}],
         "Tags" : [ 
           {
             "Key": "Description",
