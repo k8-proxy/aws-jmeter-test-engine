@@ -12,11 +12,13 @@ sudo systemctl status apache2
 sudo systemctl enable apache2
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/
 sudo pip3 install -r requirements.txt
-cd /opt/git/aws-jmeter-test-engine/UI/master-script-form/
+cd /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form
 sudo npm install
-cd /opt/git/aws-jmeter-test-engine/UI/master-script-form/
+cd /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form
 sudo ng build --prod
-sudo cp -a /opt/git/aws-jmeter-test-engine/UI/master-script-form/dist/master-script-form/. /var/www/html/
+sudo cp -a /opt/git/aws-jmeter-test-engine/UI\ Scaled\ Solution/master-script-form/dist/master-script-form/. /var/www/html/
+sudo systemctl stop apache2.service
+sudo systemctl start apache2.service
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/
 sudo chmod +x exec_scaled.sh
 sudo bash -c 'cat << EOF >> /etc/systemd/system/flask_scaled.service
@@ -42,4 +44,5 @@ sleep 10
 sudo netstat  -ntlp
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo bash -c "chmod +x changeIP.sh"
-sudo bash changeIP.sh
+sudo cp changeIP.sh /etc/init.d/changeIP.sh
+sudo ln -s /etc/init.d/changeIP.sh /etc/rc.d/
