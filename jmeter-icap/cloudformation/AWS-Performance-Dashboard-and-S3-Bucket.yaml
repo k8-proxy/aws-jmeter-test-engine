@@ -237,6 +237,10 @@ Resources:
         ToPort: 3000
         CidrIp: !Ref 'PublicIPRange'
       - IpProtocol: tcp
+        FromPort: 8086
+        ToPort: 8086
+        CidrIp: !Ref 'PublicIPRange'
+      - IpProtocol: tcp
         FromPort: 3100
         ToPort: 3100
         SourceSecurityGroupId: !GetAtt ICAPPerformanceLGSG.GroupId
