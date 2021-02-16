@@ -191,6 +191,14 @@ Resources:
         Value : "AWS-TestEngine-UI_Dashboard"
       - Key : "Description"
         Value : "AWS TestEngine UI Dashboard"
+      - Key : "Owner"
+        Value : "Quality Assuarence"
+      - Key : "Team"
+        Value : "Quality Assuarence Team"
+      - Key : "Scope"
+        Value : "Quality Assuarence Tests"
+      - Key : "Delete"
+        Value : "Only delete along with the stack"
   ICAPPerformanceLGSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
