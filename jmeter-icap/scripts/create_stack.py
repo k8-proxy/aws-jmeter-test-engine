@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import argparse
 import base64
 from ui_tasks import LoadType
+from datetime import timedelta, datetime, timezone
 
 class Config(object):
     # Load configuration
@@ -153,7 +154,7 @@ def main(config):
         asg_template_body = f.read()
 
     # create ASG with instances to run jmeter tests
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     date_suffix = now.strftime("%Y-%m-%d-%H-%M-%S")
     prefix = config.prefix + "-" if config.prefix not in ["", None] else config.prefix
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
