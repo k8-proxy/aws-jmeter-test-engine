@@ -24,19 +24,22 @@ def determine_load_type(config, ova=False):
         config.test_directory = 'ICAP-Direct-File-Processing'
         config.jmx_script_name = 'ICAP_Direct_FileProcessing_Local_v4.jmx' if ova else 'ICAP_Direct_FileProcessing_v3.jmx'
         config.grafana_file = 'aws-test-engine-dashboard.json'
-        config.test_data_file = 'gov_uk_files.csv'
+        if ova:
+            config.test_data_file = 'gov_uk_files.csv'
 
     elif config.load_type == LoadType.proxy.value:
         config.test_directory = 'ICAP-Proxy-Site'
         config.jmx_script_name = 'ProxySite_Processing_v1.jmx'
         config.grafana_file = 'ProxySite_Dashboard_Template.json'
-        config.test_data_file = 'proxysitefiles.csv'
+        if ova:
+            config.test_data_file = 'proxysitefiles.csv'
 
     elif config.load_type == LoadType.proxy_sharepoint.value or config.load_type == LoadType.direct_sharepoint.value:
         config.test_directory = 'ICAP-Sharepoint-Site'
         config.jmx_script_name = 'ICAP-Sharepoint-Upload-Download-v1.jmx'
         config.grafana_file = 'Sharepoint-Demo-Dashboard.json'
-        config.test_data_file = 'sharepoint_files.csv'
+        if ova:
+            config.test_data_file = 'sharepoint_files.csv'
 
 
 def set_config_from_ui(config, json_params, ova=False):

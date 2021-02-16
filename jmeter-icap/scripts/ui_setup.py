@@ -85,6 +85,8 @@ def save_csv_file(file, target_directories, allowed_extensions):
     if not file.filename.lower().endswith(tuple(allowed_extensions)):
         return
 
+    dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_FILE", file.filename)
     for directory in target_directories:
         if os.path.exists(directory):
             file.save(os.path.join(directory, file.filename))
+
