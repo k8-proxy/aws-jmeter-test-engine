@@ -1,6 +1,8 @@
 import dotenv
 from create_stack import Config
 import subprocess
+import os
+
 
 CONFIG_ENV_PATH = './config.env'
 
@@ -76,3 +78,13 @@ def upload_test_data_to_s3(config):
 def run_project_update():
     output = subprocess.call(['sh', './update_ui.sh'])
     return output
+
+
+def save_csv_file(file, target_directories, allowed_extensions):
+
+    if not file.filename.lower().endswith(tuple(allowed_extensions)):
+        return
+
+    for directory in target_directories:
+        if os.path.exists(directory):
+            file.save(os.path.join(directory, file.filename))
