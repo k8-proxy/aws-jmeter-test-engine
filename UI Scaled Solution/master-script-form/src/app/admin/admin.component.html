@@ -1,0 +1,31 @@
+<br>
+<h3>Administration</h3>
+<br>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Description</th>
+            <th scope="col">Controls</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="width: 70%;">This will download the latest version of this framework and perform the necessary setup operations for UI and server components.</td>
+            <td style="width: 30%;">
+                <div>
+                    <button id="update" type="button" class="btn btn-primary" [disabled]="updating"
+                        mwlConfirmationPopover [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage"
+                        placement="left" (confirm)="onUpdateButtonPressed()">
+                        {{ updateButtonText }}
+                    </button>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div [@animationState]="animState" class="alert {{alertClass}}" role="alert" style="opacity: 0; display:inline-block;"
+    type="text">
+    {{alertText}}
+</div>

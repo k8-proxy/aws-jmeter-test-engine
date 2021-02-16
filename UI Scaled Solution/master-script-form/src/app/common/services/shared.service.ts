@@ -54,6 +54,7 @@ export class SharedService {
     private resultsDataSourceReadySubject = new Subject<any>();
     public resultsDataSource: ResultsRowElement[] = [];
     public grafanaUrl: string = "";
+    public updating: boolean = false;
 
     constructor(private readonly http: HttpClient, private router: Router) {
         this.init();
