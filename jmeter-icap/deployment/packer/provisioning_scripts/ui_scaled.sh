@@ -42,4 +42,5 @@ sleep 10
 sudo netstat  -ntlp
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo bash -c "chmod +x changeIP.sh"
-sudo bash changeIP.sh
+sudo cp changeIP.sh /etc/init.d/changeIP.sh
+sudo ln -s /etc/init.d/changeIP.sh /etc/rc.d/
