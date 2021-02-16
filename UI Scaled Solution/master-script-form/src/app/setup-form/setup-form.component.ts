@@ -1,15 +1,11 @@
-import { Subscription } from 'rxjs';
-import { AppSettings } from './../common/app settings/AppSettings';
-import { SharedService, FormDataPackage } from './../common/services/shared.service';
+import { AppSettings, ReturnStatus } from './../common/app settings/AppSettings';
+import { SharedService } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ConfigFormValidators } from '../common/Validators/ConfigFormValidators';
-
-enum returnStatus { Success, Failure, PartialSuccess }
 
 @Component({
   selector: 'setup-form',
@@ -108,9 +104,9 @@ export class SetupFormComponent implements OnInit {
 
   processPostResponse(response: object) {
     if(response['response'] == "UPLOADFAILED") {
-      this.toggleAlert(returnStatus.PartialSuccess);
+      this.toggleAlert(ReturnStatus.PartialSuccess);
     } else {
-      this.toggleAlert(returnStatus.Success);
+      this.toggleAlert(ReturnStatus.Success);
     }
     this.submitted = true;
     this.unlockForm();
@@ -140,7 +136,7 @@ export class SetupFormComponent implements OnInit {
 
   onErrorSubmitting(error) {
     console.log(error);
-    this.toggleAlert(returnStatus.Failure);
+    this.toggleAlert(ReturnStatus.Failure);
     this.submitted = false;
     this.unlockForm();
     setTimeout(() => this.toggleAlert(), 3000);
@@ -150,15 +146,15 @@ export class SetupFormComponent implements OnInit {
     console.log("Setup Form Component: Error retrieving current config field values from server. Is the server running?");
   }
 
-  toggleAlert(status?: returnStatus) {
+  toggleAlert(status?: ReturnStatus) {
 
-    if (status == returnStatus.Success) {
+    if (status == ReturnStatus.Success) {
       this.alertClass = "alert-success";
       this.alertText = "Success! Configuration updated"
-    } else if (status == returnStatus.Failure) {
+    } else if (status == ReturnStatus.Failure) {
       this.alertClass = "alert-danger";
       this.alertText = "Error submitting to server"
-    } else if (status == returnStatus.PartialSuccess) {
+    } else if (status == ReturnStatus.PartialSuccess) {
       this.alertClass = "alert-warning";
       this.alertText = "Config file successfully updated, but upload to S3 failed."
     }

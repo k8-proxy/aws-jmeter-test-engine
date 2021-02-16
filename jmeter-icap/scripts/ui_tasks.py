@@ -107,6 +107,6 @@ def determine_tls_and_port_params(config, input_enable_tls, input_tls_ignore_ver
 
 class LoadType(str, Enum):
     direct = "Direct"
-    proxy = "Proxy Offline"
+    proxy = "Proxy"
     proxy_sharepoint = "Proxy SharePoint"
     direct_sharepoint = "Direct Sharepoint"
