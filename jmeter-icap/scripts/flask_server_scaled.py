@@ -43,7 +43,7 @@ def parse_request():
             print('Setup Data sent from UI: {0}'.format(data))
             result = update_config_env(data)
 
-            if request.files['file']:
+            if 'file' in request.files:
                 file = request.files['file']
                 save_csv_file(file, UPLOAD_FOLDERS, ALLOWED_EXTENSIONS)
 
