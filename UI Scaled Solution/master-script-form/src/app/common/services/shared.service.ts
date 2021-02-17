@@ -193,6 +193,9 @@ export class SharedService {
         else if (loadType === AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
             name += " " + AppSettings.testNames[LoadTypes.DirectSharePoint];
         }
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.RestApi]) {
+            name += " " + AppSettings.testNames[LoadTypes.RestApi];
+        }
         else if (loadType === "Proxy Offline") {
             name += " " + "Proxy Site Live Performance Dashboard";
         } 
@@ -210,6 +213,9 @@ export class SharedService {
             name += AppSettings.dashboardNames[LoadTypes.ProxySharePoint];
         } else if (loadType === AppSettings.loadTypeNames[LoadTypes.DirectSharePoint]) {
             name += AppSettings.dashboardNames[LoadTypes.DirectSharePoint];
+        } 
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.RestApi]) {
+            name += AppSettings.dashboardNames[LoadTypes.RestApi];
         }
 
 

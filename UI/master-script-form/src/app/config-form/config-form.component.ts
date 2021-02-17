@@ -21,9 +21,9 @@ import { CookieService } from 'ngx-cookie-service';
   ]
 })
 export class ConfigFormComponent implements OnInit {
-  regions: string[] = ['eu-west-1', 'eu-east-1', 'us-west-1', 'eu-west-2'];
-  loadTypes: string[] = ['Direct', 'Proxy'];
-  urlChoices: string[] = ["ICAP Server Endpoint URL*", "Proxy IP Address*"];
+  regions: string[] = ['eu-west-1', 'us-east-1', 'us-west-1', 'us-west-2'];
+  loadTypes: string[] = ['Direct', 'Proxy', 'REST API'];
+  endPointFieldNames: string[] = ["ICAP Server Endpoint URL*", "Proxy IP Address*", "REST API Endpoint*"];
   configForm: FormGroup;
   fileToUpload: File = null;
   submitted = false;
@@ -32,7 +32,7 @@ export class ConfigFormComponent implements OnInit {
   portDefault = '443';
   enableCheckboxes = true;
   enableIgnoreErrorCheckbox = true;
-  IcapOrProxy = this.urlChoices[0];
+  endPointFieldName = this.endPointFieldNames[0];
   showStoppedAlert = false;
   hideSubmitMessages = false;
   public popoverTitle: string = "Please Confirm";
@@ -50,7 +50,6 @@ export class ConfigFormComponent implements OnInit {
       this.hideSubmitMessages = true;
     });
     setInterval(() => { this.getCookies(); }, 1000); //used to refresh list and remove expired tests.
-    
   }
 
   setTitle(newTitle: string) {
@@ -72,13 +71,16 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onLoadTypeChange() {
-    //if direct, else proxy
+    //direct, proxy, rest api
     if (this.configForm.get('load_type').value == this.loadTypes[0]) {
       this.enableCheckboxes = true;
-      this.IcapOrProxy = this.urlChoices[0];
+      this.endPointFieldName = this.endPointFieldNames[0];
     } else if (this.configForm.get('load_type').value == this.loadTypes[1]) {
       this.enableCheckboxes = false;
-      this.IcapOrProxy = this.urlChoices[1];
+      this.endPointFieldName = this.endPointFieldNames[1];
+    } else if (this.configForm.get('load_type').value == this.loadTypes[2]) {
+      this.enableCheckboxes = false;
+      this.endPointFieldName = this.endPointFieldNames[2];
     }
   }
 
@@ -133,6 +135,10 @@ export class ConfigFormComponent implements OnInit {
     return this.showStoppedAlert ? 'show' : 'hide';
   }
 
+  get loadType() {
+    return this.configForm.get('load_type');
+  }
+
   onFileChange(files: FileList) {
     this.fileToUpload = files.item(0);
   }
@@ -148,7 +154,14 @@ export class ConfigFormComponent implements OnInit {
   storeTestAsCookie(dashboardUrl) {
     let currentTime = new Date();
     let expireTime = new Date(currentTime.getTime() + this.duration.value * 1000);
-    let testTitle = this.IcapOrProxy === this.urlChoices[0] ? "ICAP Live Performance Dashboard" : "Proxy Site Live Performance Dashboard";
+    let testTitle: string;
+    if(this.loadType.value == this.loadTypes[0]) {
+      testTitle = "ICAP Live Performance Dashboard";
+    } else if (this.loadType.value == this.loadTypes[1]) {
+      testTitle = "Proxy Site Live Performance Dashboard";
+    } else if (this.loadType.value == this.loadTypes[2]) {
+      testTitle = "REST API Live Performance Dashboard";
+    }
     let key = this.prefix.value === null ? testTitle : this.prefix.value + " " + testTitle;
     this.cookieService.set(key, dashboardUrl, expireTime);
   }
