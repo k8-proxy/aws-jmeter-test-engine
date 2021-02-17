@@ -8,3 +8,4 @@ config.env
 RunStartExecution.sh
 /venv
 *.env
+*.csv
