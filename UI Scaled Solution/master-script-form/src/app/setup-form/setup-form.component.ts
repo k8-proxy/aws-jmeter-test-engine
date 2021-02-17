@@ -32,7 +32,7 @@ export class SetupFormComponent implements OnInit {
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "The configurations input above will overwrite previous configurations.";
   fileToUpload: File = null;
-  
+  showUploadFileTypeWarning: boolean = false;
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) { }
 
   ngOnInit(): void {
@@ -89,6 +89,15 @@ export class SetupFormComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
+    if(this.fileToUpload != null) {
+      if(this.fileToUpload.name.endsWith(".csv")) {
+        this.showUploadFileTypeWarning = false;
+      } else {
+        this.fileToUpload = null;
+        this.showUploadFileTypeWarning = true;
+      }
+    }
+    
   }
 
   onSubmit(): void {
