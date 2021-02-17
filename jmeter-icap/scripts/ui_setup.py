@@ -86,6 +86,7 @@ def save_csv_file(file, target_directories, allowed_extensions):
         return
 
     dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_FILE", file.filename)
+    Config.test_data_file = file.filename
 
     # first save file to the first directory in the list
     file_to_copy = os.path.join(target_directories[0], file.filename)
