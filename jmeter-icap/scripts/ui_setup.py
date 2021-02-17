@@ -2,7 +2,7 @@ import dotenv
 from create_stack import Config
 import subprocess
 import os
-
+import shutil
 
 CONFIG_ENV_PATH = './config.env'
 
@@ -86,7 +86,14 @@ def save_csv_file(file, target_directories, allowed_extensions):
         return
 
     dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_FILE", file.filename)
-    for directory in target_directories:
+
+    # first save file to the first directory in the list
+    file_to_copy = os.path.join(target_directories[0], file.filename)
+    file.save(file_to_copy)
+
+    # copy the save file from first directory to all other directories
+    for directory in target_directories[1:]:
+        print(directory)
         if os.path.exists(directory):
-            file.save(os.path.join(directory, file.filename))
+            shutil.copy(file_to_copy, directory)
 
