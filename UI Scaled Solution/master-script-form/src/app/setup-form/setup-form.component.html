@@ -38,6 +38,14 @@
     </div>
 
     <div class="form-group">
+        <label>Choose Test Data File List (only .csv files are accepted):</label>
+        <input type="file" class="form-control-file" accept=".csv" (change)="handleFileInput($event.target.files)">
+    </div>
+    <div *ngIf="showUploadFileTypeWarning">
+        <div class="alert alert-danger">Only .csv files will be uploaded.</div>
+    </div>
+
+    <div class="form-group">
         <label>Test Data Access Secret*</label>
         <input type="text" class="form-control" formControlName="test_data_access_secret" placeholder="">
         <small class="form-text text-muted">The secret stored in AWS Secrets Manager containing the credentials of the IAM user that has S3 read/write permissions for the above buckets *This field is required.</small>

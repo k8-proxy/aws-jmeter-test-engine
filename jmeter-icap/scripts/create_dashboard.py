@@ -58,7 +58,7 @@ def __add_users_req_to_grafana_json(grafana_json, instances_required):
 
 
 def __modify_dashboard_info_bar(grafana_json, total_users, duration, endpoint_url, port, load_type):
-    port_string = '';
+    port_string = ''
     if load_type == LoadType.direct.value:
         port_string = "Port: {}. ".format(port)
 

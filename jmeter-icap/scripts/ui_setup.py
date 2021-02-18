@@ -1,6 +1,8 @@
 import dotenv
 from create_stack import Config
 import subprocess
+import os
+import shutil
 
 CONFIG_ENV_PATH = './config.env'
 
@@ -76,3 +78,22 @@ def upload_test_data_to_s3(config):
 def run_project_update():
     output = subprocess.call(['sh', './update_ui.sh'])
     return output
+
+
+def save_csv_file(file, target_directories, allowed_extensions):
+
+    if not file.filename.lower().endswith(tuple(allowed_extensions)):
+        return
+
+    dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_FILE", file.filename)
+    Config.test_data_file = file.filename
+
+    # first save file to the first directory in the list
+    file_to_copy = os.path.join(target_directories[0], file.filename)
+    file.save(file_to_copy)
+
+    # copy the save file from first directory to all other directories
+    for directory in target_directories[1:]:
+        if os.path.exists(directory):
+            shutil.copy(file_to_copy, directory)
+
