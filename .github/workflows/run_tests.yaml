@@ -46,3 +46,13 @@ jobs:
           PREFIX: "ga" #${{ secrets.PREFIX }}
           TEST_DATA_FILE: "files.csv" # ${{ secrets.TEST_DATA_FILE }}
           GRAFANA_SECRET_ID: ${{ secrets.GRAFANA_SECRET_ID }}
+  
+  slackNotification:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
