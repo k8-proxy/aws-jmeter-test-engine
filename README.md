@@ -66,12 +66,8 @@ The cloudformation script is located in your local clone of git repo under jmete
 There are 2 ways to run CloudFormation script in aws:
 
 1. Using Console
-   - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
-   - Click on Create Stack
-   - Select Upload Template
-   - Click Next
-   - Give stack name
-   - Click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
+   
+   - Click Launch Stack and click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
 
 | Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
 |------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
