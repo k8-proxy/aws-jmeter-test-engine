@@ -1,6 +1,22 @@
 {
    "AWSTemplateFormatVersion" : "2010-09-09",
    "Description" : "This script creates EC2 instances from set AMI image. Change parameters accordingly",
+   "Mappings": {
+     "RegionMap": {
+       "eu-west-1": {
+         "64": "ami-0338f171cb4aa527c"
+       },
+       "us-east-1": {
+         "64": "ami-087e7622d2247635b"
+       },
+       "us-west-2": {
+         "64": "ami-0040fb59234e6299f"
+       },
+       "us-west-1": {
+         "64": "ami-0803e4ae4dc5ac9b6"
+       }
+     }
+   },
    "Parameters" : {
       "VPCStack": {
         "Type": "String",
@@ -19,11 +35,6 @@
          "Description" : "Keypair that will be used to connect to the server",
          "Type" : "String",
          "Default" : "AWS-TestEngine-Key"
-      },
-      "AmiImage" : {
-         "Description" : "Ami image that will be used to launch the server",
-         "Default" : "ami-0338f171cb4aa527c",
-         "Type" : "String"
       },
       "InstanceType" : {
         "Description" : "Instance Type",
@@ -49,7 +60,7 @@
     "LaunchConfig" : {
       "Type" : "AWS::AutoScaling::LaunchConfiguration",
       "Properties" : {
-      "ImageId" : { "Ref" : "AmiImage" },
+      "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "64"]},
       "UserData": { "Ref" : "UserData" },
       "SecurityGroups" :   [
           {"Fn::ImportValue" : {"Fn::Sub" : "${DashboardStack}-PerformanceLGSG"}}
