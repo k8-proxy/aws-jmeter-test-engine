@@ -220,13 +220,13 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
         time.sleep(1)
         first_point = second_point
         second_point = datetime.now(timezone.utc)
-        InfluxDBMetrics.save_statistics(config.load_type, config.prefix, first_point.strftime("%Y-%m-%d %H:%M:%S"), second_point.strftime("%Y-%m-%d %H:%M:%S"))
+        InfluxDBMetrics.save_statistics(config.load_type, config.prefix, first_point, second_point)
 
     run_id = uuid.uuid4()
 
     if config.stack_name in running_tests:
         print("test completed, storing results to the database")
-        database_insert_test(config, run_id, grafana_uid, str(start_time), str(final_time))
+        database_insert_test(config, run_id, grafana_uid, start_time, final_time)
         running_tests.remove(config.stack_name)
 
 
