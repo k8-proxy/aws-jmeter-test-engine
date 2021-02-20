@@ -7,7 +7,7 @@ import shutil
 CONFIG_ENV_PATH = './config.env'
 
 
-def update_config_env(setup_json):
+def update_config_env(setup_json, ova=False):
     result = 0
     found = dotenv.find_dotenv(CONFIG_ENV_PATH)
     if not found:
@@ -32,8 +32,10 @@ def update_config_env(setup_json):
             dotenv.set_key(CONFIG_ENV_PATH, "CLIENT_SECRET", setup_json['client_secret'], "never")
             Config.client_secret = setup_json['client_secret']
 
-    if setup_json['upload_test_data']:
+    if setup_json['upload_test_data'] and not ova:
         result = upload_test_data_to_s3(Config)
+    elif setup_json['upload_test_data'] and ova:
+        result = upload_test_data_to_ova(Config)
     return result
 
 
@@ -97,3 +99,6 @@ def save_csv_file(file, target_directories, allowed_extensions):
         if os.path.exists(directory):
             shutil.copy(file_to_copy, directory)
 
+
+def upload_test_data_to_ova(config):
+    root_dir = '/opt/jmeter/apache-jmeter-5.3/bin/'

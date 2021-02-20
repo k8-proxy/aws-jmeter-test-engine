@@ -5,7 +5,6 @@ from datetime import datetime
 import re
 import os
 import subprocess
-from dotenv import load_dotenv
 import create_dashboard
 from create_stack import Config
 from ui_tasks import set_config_from_ui
@@ -66,7 +65,10 @@ def main(json_params):
         f.write(script_data)
     os.chmod(script_path, 0o771)
     # start execution of tests
-    subprocess.Popen([script_path])
+    subprocess_output = subprocess.Popen([script_path])
+
+    # get the process ID. We need this to be able to target and stop individual tests that are being run
+    pid = subprocess_output.pid
 
     # create dashboard
     Config.grafana_url = "http://127.0.0.1:3000/"
@@ -77,7 +79,7 @@ def main(json_params):
         print("Creating dashboard...")
         dashboard_url, grafana_uid = create_dashboard.main(Config)
 
-    return dashboard_url
+    return dashboard_url, pid
 
 
 if __name__ == "__main__":

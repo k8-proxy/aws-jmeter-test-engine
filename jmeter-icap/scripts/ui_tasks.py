@@ -1,6 +1,7 @@
 import os
 import subprocess
 from enum import Enum
+import psutil
 
 
 # runs a shell script containing command "killall -9 java"
@@ -112,6 +113,13 @@ def determine_tls_and_port_params(config, input_enable_tls, input_tls_ignore_ver
         # If TLS is enabled, get the user preference as to whether or not TLS verification should be used
         if input_enable_tls:
             config.tls_verification_method = "-tls-no-verify" if input_tls_ignore_verification else ""
+
+
+def stop_individual_test_in_ova(pid: int):
+
+    if psutil.pid_exists(pid):
+        p = psutil.Process(pid)
+        p.terminate()
 
 
 class LoadType(str, Enum):
