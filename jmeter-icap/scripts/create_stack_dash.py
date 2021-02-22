@@ -197,7 +197,6 @@ def create_stack_from_ui(json_params, ova=False):
     delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()
 
-
     running_tests.add(stack_name)
     results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(ui_config, grafana_uid))
     results_analysis_thread.start()
@@ -223,7 +222,7 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0, ov
 
     run_id = uuid.uuid4()
 
-    if config.store_results not in ["", None] and bool(int(config.store_results)) and config.stack_name in running_tests:
+    if config.store_results not in ["", None] and bool(int(config.store_results)) and (config.stack_name in running_tests or ova):
         print("test completed, storing results to the database")
         database_insert_test(config, run_id, grafana_uid, start_time, final_time)
         running_tests.remove(config.stack_name)

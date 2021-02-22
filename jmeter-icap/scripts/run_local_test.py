@@ -81,7 +81,7 @@ def main(json_params):
         print("Creating dashboard...")
         dashboard_url, grafana_uid = create_dashboard.main(Config, from_ui=True)
 
-    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid))
+    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid), kwargs={'ova': True})
     results_analysis_thread.start()
 
     return dashboard_url, Config.prefix
