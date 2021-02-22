@@ -225,7 +225,8 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0, ov
     if config.store_results not in ["", None] and bool(int(config.store_results)) and (config.stack_name in running_tests or ova):
         print("test completed, storing results to the database")
         database_insert_test(config, run_id, grafana_uid, start_time, final_time)
-        running_tests.remove(config.stack_name)
+        if not ova:
+            running_tests.remove(config.stack_name)
 
 
 def delete_stack_from_ui(stack_name):
