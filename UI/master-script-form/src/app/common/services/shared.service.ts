@@ -234,5 +234,5 @@ export class SharedService {
 export interface FormDataPackage {
     formAsJsonString: string,
     grafanaUrlResponse: string,
-    stackName: string
+    stackId: string
 }

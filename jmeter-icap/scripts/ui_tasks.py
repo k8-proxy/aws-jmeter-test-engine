@@ -1,7 +1,6 @@
 import os
 import subprocess
 from enum import Enum
-import psutil
 
 
 # runs a shell script containing command "killall -9 java"
@@ -10,6 +9,8 @@ def terminate_java_processes():
     script_path = os.path.join(dir_path, "stopTests.sh")
     os.chmod(script_path, 0o771)
     subprocess.Popen([script_path])
+    from run_local_test import running_tests
+    running_tests.clear()
 
 
 def modify_hosts_file(ip_addr: str, ova=False):

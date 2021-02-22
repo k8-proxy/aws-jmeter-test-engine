@@ -45,7 +45,7 @@ def parse_request():
 
             if 'file' in request.files:
                 file = request.files['file']
-                save_csv_file(file, UPLOAD_FOLDERS, ALLOWED_EXTENSIONS)
+                save_csv_file(file, UPLOAD_FOLDERS, ALLOWED_EXTENSIONS, ova=True)
 
             if result == 0:
                 return make_response(jsonify(response="OK"), 200)

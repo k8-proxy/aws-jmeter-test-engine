@@ -82,7 +82,7 @@ def run_project_update():
     return output
 
 
-def save_csv_file(file, target_directories, allowed_extensions):
+def save_csv_file(file, target_directories, allowed_extensions, ova=False):
 
     if not file.filename.lower().endswith(tuple(allowed_extensions)):
         return
@@ -94,11 +94,8 @@ def save_csv_file(file, target_directories, allowed_extensions):
     file_to_copy = os.path.join(target_directories[0], file.filename)
     file.save(file_to_copy)
 
-    # copy the save file from first directory to all other directories
-    for directory in target_directories[1:]:
-        if os.path.exists(directory):
-            shutil.copy(file_to_copy, directory)
-
-
-def upload_test_data_to_ova(config):
-    root_dir = '/opt/jmeter/apache-jmeter-5.3/bin/'
+    if not ova:
+        # copy the save file from first directory to all other directories
+        for directory in target_directories[1:]:
+            if os.path.exists(directory):
+                shutil.copy(file_to_copy, directory)

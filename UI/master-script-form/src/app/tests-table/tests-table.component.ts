@@ -40,10 +40,10 @@ export class TestsTableComponent implements OnInit {
   }
 
   onFormSubmitted(formDataPack: FormDataPackage) {
-    this.storeTestAsCookie(formDataPack.formAsJsonString, formDataPack.grafanaUrlResponse, formDataPack.stackName);
+    this.storeTestAsCookie(formDataPack.formAsJsonString, formDataPack.grafanaUrlResponse, formDataPack.stackId);
   }
 
-  storeTestAsCookie(formJsonString: string, dashboardUrl: string, stackName: string) {
+  storeTestAsCookie(formJsonString: string, dashboardUrl: string, stackId: string) {
     AppSettings.addingPrefix = true;
     let formAsJson = JSON.parse(formJsonString);
 
@@ -55,9 +55,9 @@ export class TestsTableComponent implements OnInit {
     formAsJson['dashboardUrl'] = dashboardUrl;
     formAsJson['startTime'] = currentTime;
     formAsJson['endTime'] = expireTime;
-    formAsJson['stackName'] = stackName;
+    formAsJson['stackName'] = stackId;
 
-    this.cookieService.set(stackName, JSON.stringify(formAsJson), expireTime);
+    this.cookieService.set(stackId, JSON.stringify(formAsJson), expireTime);
     this.generateDatasourceArray();
     this.table.renderRows();
     AppSettings.addingPrefix = false;

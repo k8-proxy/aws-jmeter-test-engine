@@ -7,9 +7,15 @@ import os
 import subprocess
 import create_dashboard
 from create_stack import Config
+from metrics import InfluxDBMetrics
 from ui_tasks import set_config_from_ui
 from threading import Thread
-from create_stack_dash import store_and_analyze_after_duration
+from datetime import timedelta, datetime, timezone
+import time
+import uuid
+from database_ops import database_insert_test
+
+running_tests = set()
 
 
 def get_jvm_memory(users_per_instance):
@@ -78,10 +84,35 @@ def main(json_params):
         print("Creating dashboard...")
         dashboard_url, grafana_uid = create_dashboard.main(Config, from_ui=True)
 
-    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid), kwargs={'ova': True})
+    run_id = uuid.uuid4()
+    running_tests.add(run_id)
+
+    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid, run_id), kwargs={'ova': True})
     results_analysis_thread.start()
 
-    return dashboard_url, Config.prefix
+    return dashboard_url, run_id
+
+
+def store_and_analyze_after_duration(config, grafana_uid, run_id, additional_delay=0):
+
+    InfluxDBMetrics.hostname = config.influx_public_ip if config.influx_public_ip not in ["", None] else config.influx_host
+    InfluxDBMetrics.hostport = config.influx_port
+    InfluxDBMetrics.init()
+
+    total_wait_time = additional_delay + int(config.duration)
+    start_time = datetime.now(timezone.utc)
+    final_time = start_time + timedelta(seconds=total_wait_time)
+    first_point = second_point = start_time
+
+    while datetime.now(timezone.utc) < final_time:
+        time.sleep(1)
+        first_point = second_point
+        second_point = datetime.now(timezone.utc)
+        InfluxDBMetrics.save_statistics(config.load_type, config.prefix, first_point, second_point)
+
+    if config.ui_config.store_results not in ["", None] and bool(int(config.store_results)) and run_id in running_tests:
+        print("test completed, storing results to the database")
+        database_insert_test(config, run_id, grafana_uid, start_time, final_time)
 
 
 if __name__ == "__main__":
