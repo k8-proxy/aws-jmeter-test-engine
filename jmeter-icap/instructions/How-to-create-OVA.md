@@ -159,6 +159,19 @@ cd gov_uk_files
 sudo cp -R * /opt/jmeter/apache-jmeter-5.3/bin/in/
 ```
 
+Move files jmeter bin folder
+
+```bash
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/ICAP-Direct-File-Processing
+
+sudo cp ICAP_Direct_FileProcessing_Local_v4.jmx /opt/jmeter/apache-jmeter-5.3/bin/
+sudo cp gov_uk_files.csv /opt/jmeter/apache-jmeter-5.3/bin/
+
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/ICAP-Proxy-Site
+sudo cp ProxySite_Processing_v1.jmx /opt/jmeter/apache-jmeter-5.3/bin/
+sudo cp proxysitefiles.csv /opt/jmeter/apache-jmeter-5.3/bin/
+```
+
 ## Setting UP Generate Load ui
 
 Follow Instructions from https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/angular-ui-component-install-and-deploy.md link to setup UI.
