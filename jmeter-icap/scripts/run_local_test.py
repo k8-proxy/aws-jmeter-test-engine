@@ -86,7 +86,7 @@ def main(json_params):
     run_id = uuid.uuid4()
     running_tests.add(run_id)
 
-    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid, run_id), kwargs={'ova': True})
+    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid, run_id))
     results_analysis_thread.start()
 
     return dashboard_url, run_id
