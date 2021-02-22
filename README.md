@@ -19,8 +19,9 @@ This document will show simple way to get started utilizing this framework step 
 **Before starting**
 - Make sure to clone https://github.com/k8-proxy/aws-jmeter-test-engine.git this repo    to your local machine
 - Ensure that you have write access to VPC, Subnets, EC2, Security Group, S3, IAM Role,  CloudFormation and Secrets Manager services in AWS.
+You could give the following IAM policy json file to an administrator and the administrator would create this IAM policy and attach to your AWS user: https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/users/EndUserAccessIAMPolicy.json
 - Install AWS CLI in your local machine: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
-- Ensure that there is one AWS KeyPair available so that it can be attached to EC2 instances being created. It can be created in AWS console->EC2->Key Pairs->Create Key pair.
+- Ensure that there is one AWS KeyPair available so that it can be attached to EC2 instances being created. Key-pair name should be set as **AWS-TestEngine-Key** exactly. It can be created in AWS console->EC2->Key Pairs->Create Key pair.
 - Ensure that all resources are created (using instructions below) in a single AWS       supported region, not in multi-regions. Mixing them between different regions might    break the automation or also slow it down due to network latency.
 
 
@@ -65,12 +66,8 @@ The cloudformation script is located in your local clone of git repo under jmete
 There are 2 ways to run CloudFormation script in aws:
 
 1. Using Console
-   - Find CloudFormation Service in AWS console from Services -> Search for CloudFormation
-   - Click on Create Stack
-   - Select Upload Template
-   - Click Next
-   - Give stack name
-   - Click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
+   
+   - Click Launch Stack and click next until it says create and then click create. (Tick confirm box whenever it asks for confirmation)
 
 | Region           | Stack                                                                                                                                                                                                                                                                                                                                      |
 |------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -141,54 +138,9 @@ aws cloudformation create-stack --stack-name AWS-Performance-Dashboard --templat
     "StackId": "arn:aws:cloudformation:your-region:accound-it:stack/stack-name/stack-UUID"
 }
 ```
-# Step 4. Create Secret Manager with your AWS Access and Secret Key
+ 
 
-- Open AWS UI Console
-- Goto Services
-- Select Secrets Manager
-- Click on Store New Secret
-- Select Other types of secrets
-- Enter following secret keys and values (best to copy names and remove " from key names)
-    1. Secret Key Name = "AWS_Access_Key"
-       Secret Value = Your access key here created just before
-    2. Click Add row (keep that white space before closing quote ")
-       Secret Key Name = "AWS_Secret_Key "
-       Secret Value = Your AWS secret access key created just before
-- Click next and give Name
-- Click next and select disable automatic rotation
-- Click next and click Store
-- Select secrets name created and save Secret ARN.
-
-**Verify you can access the Performance Dashboard system**
-
-- Open Browser and enter http://[instance public ip]:3000
-- Grafana ui opens and login with username/password: admin/glasswall
-- Verify that Load Generator UI is also visible: http://[instance public ip]
-
-# Step 5. Prepare the Load Generator script
-
-**Checking & replacing values in the GenerateLoadGenerators.json script**
-
-Next step is to ssh to this EC2 instance (username: ubuntu) and :
-```bash
-sudo nano /opt/git/aws-jmeter-test-engine/jmeter-icap/cloudformation/GenerateLoadGenerators.json
-```
-
-
-- KeyPairName - your key pair name used to access AWS EC2 instances. If you do not have one, it can be created from AWS console.
-
-- AmiImage - this is id (ami-0338f171cb4aa527c) from ICAPServer-Performance-Load-Generator AWS community image. Note: this id from Ireland AWS Region. If you are on different region, please, check AMI id in that region AWS Community.
-
-
-All these data can be found under EC2 Service > Instances > Click on Your Instance ID.
-- VPC and Subnets can be found on the top of this page.
-- AMI and Key Pair Name can be found under the Details tab.
-- Security Group can be found under Security tab.
-
-
-Note: If you would like to use command line options to trigger load from your local machine then above modifications needs to be done in your local copy of GenerateLoadGenerators.json file. 
-
-# Step 6. UI Setup, Copy Test Data to S3 & Generate load
+# Step 4. UI Setup, Copy Test Data to S3 & Generate load
 
 **UI Setup**
 

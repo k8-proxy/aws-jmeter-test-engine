@@ -1,6 +1,6 @@
 from influxdb import InfluxDBClient
 from create_stack import Config
-from metrics import InfluxDBMetrics
+from metrics import InfluxDBMetrics, format_datetime
 from ui_tasks import LoadType
 
 # Connect to influx database, check if tests database exists. If it does not, create it.
@@ -21,7 +21,7 @@ def database_insert_test(config, run_id, grafana_uid, start_time, final_time):
     if config.load_type == LoadType.direct.value:
         client.write_points([{"measurement": "TestResults", "fields": {
             "RunId": run_id,
-            "StartTime": start_time,
+            "StartTime": format_datetime(start_time),
             "Duration": config.duration,
             "GrafanaUid": grafana_uid,
             "Prefix": config.prefix,
