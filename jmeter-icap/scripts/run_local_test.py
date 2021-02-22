@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from datetime import datetime
+from datetime import timedelta, datetime, timezone
 import re
 import os
 import subprocess
@@ -10,7 +10,6 @@ from create_stack import Config
 from metrics import InfluxDBMetrics
 from ui_tasks import set_config_from_ui
 from threading import Thread
-from datetime import timedelta, datetime, timezone
 import time
 import uuid
 from database_ops import database_insert_test
