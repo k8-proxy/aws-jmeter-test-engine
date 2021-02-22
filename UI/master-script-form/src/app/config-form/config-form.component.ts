@@ -85,7 +85,7 @@ export class ConfigFormComponent implements OnInit {
       load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotStartWithHttp]),
       sharepoint_hosts: new FormControl(''),
-      prefix: new FormControl('', [Validators.required, Validators.pattern(/^([A-Za-z\s])[0-9a-zA-Z_-\s]*$/), ConfigFormValidators.cannotContainDuplicatePrefix]),
+      prefix: new FormControl('', [Validators.required, Validators.pattern(/^([A-Za-z\s])[0-9a-zA-Z_-\s]*$/)]),
       enable_tls: true,
       tls_ignore_error: true,
       port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),

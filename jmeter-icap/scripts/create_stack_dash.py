@@ -197,14 +197,16 @@ def create_stack_from_ui(json_params, ova=False):
     delete_stack_thread = Thread(target=__start_delete_stack, args=(0, ui_config))
     delete_stack_thread.start()
 
-    running_tests.add(stack_name)
-    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(ui_config, grafana_uid))
-    results_analysis_thread.start()
+    if not ova and ui_config.store_results not in ["", None] and bool(int(ui_config.store_results)):
+        running_tests.add(stack_name)
+        results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(ui_config, grafana_uid))
+        results_analysis_thread.start()
 
     return dashboard_url, stack_name
 
 
-def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0, ova=False):
+def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
+
     InfluxDBMetrics.hostname = config.influx_public_ip if config.influx_public_ip not in ["", None] else config.influx_host
     InfluxDBMetrics.hostport = config.influx_port
     InfluxDBMetrics.init()
@@ -222,11 +224,10 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0, ov
 
     run_id = uuid.uuid4()
 
-    if config.store_results not in ["", None] and bool(int(config.store_results)) and (config.stack_name in running_tests or ova):
+    if config.stack_name in running_tests:
         print("test completed, storing results to the database")
         database_insert_test(config, run_id, grafana_uid, start_time, final_time)
-        if not ova:
-            running_tests.remove(config.stack_name)
+        running_tests.remove(config.stack_name)
 
 
 def delete_stack_from_ui(stack_name):
