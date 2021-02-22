@@ -8,7 +8,7 @@ from database_ops import retrieve_test_results
 from ui_setup import update_config_env, retrieve_config_fields, run_project_update, save_csv_file
 import run_local_test
 from waitress import serve
-from ui_tasks import terminate_java_processes, stop_individual_test_in_ova
+from ui_tasks import terminate_java_processes
 
 UPLOAD_FOLDERS = ['/opt/jmeter/apache-jmeter-5.3/bin/']
 ALLOWED_EXTENSIONS = {'csv'}
@@ -25,26 +25,18 @@ def parse_request():
         button_pressed = request.form.get('button')
         print('Request Type: {0}'.format(button_pressed))
 
-        process_id = request.form.get('stack')
-
         if button_pressed == 'generate_load':
             data = json.loads(request.form.get('form'))
             print('Data sent from UI: {0}'.format(data))
-            (returned_url, pid) = run_local_test.main(data)
+            (returned_url, prefix) = run_local_test.main(data)
             if returned_url:
-                print("I'm sending pid: {}".format(pid))
-                return make_response(jsonify(url=returned_url, stack_name=pid), 201)
+                return make_response(jsonify(url=returned_url, stack_name=prefix), 201)
             else:
                 return make_response("Error", 500)
 
         elif button_pressed == 'stop_tests':
             terminate_java_processes()
             return make_response(jsonify("Tests terminated"), 201)
-
-        elif button_pressed == 'stop_individual_test':
-            print("I got a request to stop test with pid: {}".format(process_id))
-            stop_individual_test_in_ova(int(process_id))
-            return make_response(jsonify("Test with pid: {0} has been stopped".format(process_id)), 201)
 
         elif button_pressed == 'setup_config':
             data = json.loads(request.form.get('form'))

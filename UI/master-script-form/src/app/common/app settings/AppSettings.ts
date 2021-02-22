@@ -13,3 +13,4 @@ export class AppSettings {
 }
 export enum LoadTypes { Direct = 0, ProxySharePoint, DirectSharePoint, RestApi, ProxyOffline }
 export enum ReturnStatus { Success, Failure, PartialSuccess , UpdateSuccess, UpdateFailure }
+export enum testTableAlertType { StopAllTests, Error }

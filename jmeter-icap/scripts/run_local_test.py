@@ -8,6 +8,8 @@ import subprocess
 import create_dashboard
 from create_stack import Config
 from ui_tasks import set_config_from_ui
+from threading import Thread
+from create_stack_dash import store_and_analyze_after_duration
 
 
 def get_jvm_memory(users_per_instance):
@@ -73,13 +75,17 @@ def main(json_params):
     # create dashboard
     Config.grafana_url = "http://127.0.0.1:3000/"
     dashboard_url = ""
+    grafana_uid = ""
     if Config.exclude_dashboard:
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
         dashboard_url, grafana_uid = create_dashboard.main(Config)
 
-    return dashboard_url, pid
+    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid))
+    results_analysis_thread.start()
+
+    return dashboard_url, Config.prefix
 
 
 if __name__ == "__main__":

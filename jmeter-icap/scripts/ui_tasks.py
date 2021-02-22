@@ -115,13 +115,6 @@ def determine_tls_and_port_params(config, input_enable_tls, input_tls_ignore_ver
             config.tls_verification_method = "-tls-no-verify" if input_tls_ignore_verification else ""
 
 
-def stop_individual_test_in_ova(pid: int):
-
-    if psutil.pid_exists(pid):
-        p = psutil.Process(pid)
-        p.terminate()
-
-
 class LoadType(str, Enum):
     direct = "Direct"
     proxy = "Proxy"

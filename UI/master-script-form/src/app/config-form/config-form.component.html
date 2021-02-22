@@ -109,10 +109,15 @@
         Clear Form
     </button>
 
+    <button id="stop-tests" [disabled]="!cookiesExist" class="btn btn-danger" mwlConfirmationPopover
+        [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right" (confirm)="onStopTests()"
+        type="button">
+        Stop Load
+    </button>
 
-    <div [@animationState]="animState" class="alert alert-danger" role="alert" style="opacity: 0; display:inline-block;"
+    <div [@animationState]="animState" class="alert {{alertClass}}" role="alert" style="opacity: 0; display:inline-block;"
         type="text">
-        Error generating load
+        {{alertText}}
     </div>
     <br />
     <br />

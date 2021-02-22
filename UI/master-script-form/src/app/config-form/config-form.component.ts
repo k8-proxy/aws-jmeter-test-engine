@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { AppSettings, LoadTypes } from './../common/app settings/AppSettings';
+import { AppSettings, LoadTypes, testTableAlertType } from './../common/app settings/AppSettings';
 import { SharedService, FormDataPackage } from './../common/services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
@@ -24,6 +24,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 export class ConfigFormComponent implements OnInit {
   testsStoppedSubscription: Subscription;
+  alertClass = "";
+  alertText = "";
   configForm: FormGroup;
   submitted = false;
   responseReceived = false;
@@ -34,10 +36,14 @@ export class ConfigFormComponent implements OnInit {
   endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.Direct];
   endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct]
   endPointFieldDescription = "*this field is required, endpoint should not begin with http(s)://"
-  showErrorAlert = false;
+  showAlert = false;
   hideSubmitMessages = false;
   GenerateLoadButtonText = "Generate Load";
   enablePortField = true;
+  public popoverTitle: string = "Please Confirm";
+  public popoverMessage: string = "Are you sure you wish to stop all load?";
+  public confirmClicked: boolean = false;
+  public cancelClicked: boolean = false;
 
   constructor(private fb: FormBuilder, private readonly http: HttpClient, private titleService: Title, private sharedService: SharedService) {
     this.testsStoppedSubscription = this.sharedService.getStopSingleEvent().subscribe((prefix) => this.onTestStopped(prefix));
@@ -76,7 +82,7 @@ export class ConfigFormComponent implements OnInit {
       load_type: AppSettings.loadTypeNames[LoadTypes.Direct],
       icap_endpoint_url: new FormControl('', [Validators.required, ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotStartWithHttp]),
       sharepoint_hosts: new FormControl(''),
-      prefix: new FormControl('', [Validators.required, Validators.pattern(/^([A-Za-z\s])[0-9a-zA-Z_-\s]*$/)]),
+      prefix: new FormControl('', [Validators.required, Validators.pattern(/^([A-Za-z\s])[0-9a-zA-Z_-\s]*$/), ConfigFormValidators.cannotContainDuplicatePrefix]),
       enable_tls: true,
       tls_ignore_error: true,
       port: new FormControl('', [Validators.pattern(/^(?=.*\d)[\d ]+$/), ConfigFormValidators.cannotContainSpaces]),
@@ -152,7 +158,7 @@ export class ConfigFormComponent implements OnInit {
     return this.responseReceived;
   }
   get animState() {
-    return this.showErrorAlert ? 'show' : 'hide';
+    return this.showAlert ? 'show' : 'hide';
   }
   get cookiesExist(): boolean {
     return AppSettings.cookiesExist;
@@ -208,6 +214,7 @@ export class ConfigFormComponent implements OnInit {
       this.postFormToServer(formData);
       this.submitted = true;
       this.lockForm();
+      this.prefix.reset();
     }
   }
 
@@ -263,16 +270,11 @@ export class ConfigFormComponent implements OnInit {
 
   onError(error) {
     console.log(error);
-    this.toggleErrorMessage();
+    this.toggleAlert(testTableAlertType.Error);
     this.submitted = false;
     this.responseReceived = false;
-    setTimeout(() => this.toggleErrorMessage(), 3000);
     this.unlockForm();
     AppSettings.addingPrefix = false;
-  }
-
-  toggleErrorMessage() {
-    this.showErrorAlert = !this.showErrorAlert;
   }
 
   //used to revalidate prefix if a test is stopped. So in instances where a prefix is invalid due to an existing test, it being deleted will make that prefix valid again.
@@ -283,5 +285,28 @@ export class ConfigFormComponent implements OnInit {
       this.prefix.updateValueAndValidity();
       this.configForm.updateValueAndValidity();
     }
+  }
+
+  toggleAlert(status?: testTableAlertType) {
+
+    if (status == testTableAlertType.StopAllTests) {
+      this.alertClass = "alert-info";
+      this.alertText = "Load generation stopped."
+    } else if (status == testTableAlertType.Error) {
+      this.alertClass = "alert-danger";
+      this.alertText = "Error submitting to server"
+    } 
+    this.showAlert = !this.showAlert;
+    setTimeout(() => (this.showAlert = !this.showAlert), 3000);
+  }
+
+  onStopTests() {
+    const formData = new FormData();
+    formData.append("button", "stop_tests");
+    this.postStopRequestToServer(formData);
+    this.sharedService.sendStopAllTestsEvent();
+    this.toggleAlert(testTableAlertType.StopAllTests);
+    this.submitted = false;
+    this.responseReceived = false;
   }
 }

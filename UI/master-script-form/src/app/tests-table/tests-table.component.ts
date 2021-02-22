@@ -17,16 +17,19 @@ export class TestsTableComponent implements OnInit {
   @ViewChild('testTable') table: MatTable<Element>;
   
   formSubmittedSubscription: Subscription;
+  allTestsStoppedSubscription: Subscription;
   
 
   dataSource: TestRowElement[] = [];
-  displayedColumns: string[] = ['testName', 'totalUsers', 'duration', 'startTime', 'endTime', 'stopTestButton']; //add and remove columns here before adding/remove in html
+  displayedColumns: string[] = ['testName', 'totalUsers', 'duration', 'startTime', 'endTime']; //add and remove columns here before adding/remove in html
 
   public popoverTitle: string = "Please Confirm";
   public popoverMessage: string = "Are you sure you wish to stop this test?";
 
   constructor(private readonly http: HttpClient, private sharedService: SharedService, private cookieService: CookieService) {
     this.formSubmittedSubscription = this.sharedService.getSubmitEvent().subscribe((formDataPack) => this.onFormSubmitted(formDataPack));
+    this.allTestsStoppedSubscription = this.sharedService.getStopAllTestsEvent().subscribe(() => this.onStopAllTests())
+
   }
 
   ngOnInit(): void {
@@ -148,5 +151,9 @@ export class TestsTableComponent implements OnInit {
 
   getCookies() {
     return this.cookieService.getAll();
+  }
+
+  onStopAllTests() {
+    this.cookieService.deleteAll();
   }
 }
