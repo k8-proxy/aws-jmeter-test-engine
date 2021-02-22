@@ -1,7 +1,7 @@
 export class AppSettings {
 
     public static regions: string[] = ['eu-west-1', 'us-east-1', 'us-west-1', 'us-west-2'];
-    public static loadTypeNames: string[] = ['Direct', 'Proxy SharePoint', 'Direct Sharepoint', 'REST API'];
+    public static loadTypeNames: string[] = ['Direct', 'Proxy SharePoint', 'Direct Sharepoint', 'REST API', 'Proxy'];
     public static endPointFieldTitles: string[] = ["ICAP Server Endpoint URL*", "SharePoint Endpoint URL*", "SharePoint Endpoint URL*", "REST API Endpoint*", "Proxy IP Address*"];
     public static endPointFieldPlaceholders: string[] = ["Ex: icap-client.region.app.provider.com", "Ex: saas1.sharepoint.com", "Ex: saas1.sharepoint.com", "Ex: http://host.domain/api/"]
     public static testNames: string[] = ["ICAP Live Performance Dashboard", "SharePoint Proxy Live Performance Dashboard", "SharePoint Direct Live Performance Dashboard", "REST API Live Performance Dashboard" ,"Proxy Site Live Performance Dashboard"];

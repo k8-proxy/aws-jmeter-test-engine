@@ -60,11 +60,14 @@ export class ConfigFormComponent implements OnInit {
   }
 
   setValidatorsDependingOnLoadType(loadType) {
+      this.sharepoint_hosts.clearValidators();
+      this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, ConfigFormValidators.cannotStartWithHttp]);
       
       if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
         this.sharepoint_hosts.setValidators([Validators.required]);
+      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+        this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
       } else {
-        this.sharepoint_hosts.clearValidators();
       }
       this.configForm.get('sharepoint_hosts').updateValueAndValidity();
       this.configForm.get('icap_endpoint_url').updateValueAndValidity();
@@ -90,16 +93,19 @@ export class ConfigFormComponent implements OnInit {
   }
 
   onLoadTypeChange() {
+
+  this.endPointFieldDescription = "*this field is required, endpoint should not begin with http(s)://"
+
     //in order: direct, proxy, proxy sharepoint
     if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.Direct]) {
       this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.Direct];
       this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct];
     }
-    // else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-    //   this.LoadTypeFieldTitle = AppSettings.loadTypeFieldTitles[LoadTypes.ProxyOffline];
-    //   this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline];
-    //   this.endPointFieldDescription = AppSettings.endPointFieldDescriptions[LoadTypes.ProxyOffline];
-    // }
+    else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+      this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.ProxyOffline];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline];
+      this.endPointFieldDescription = "*this field is required, please input a valid IP address"
+    }
     else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
       this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.ProxySharePoint];
       this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxySharePoint];
@@ -263,8 +269,8 @@ export class ConfigFormComponent implements OnInit {
     if (this.duration.value === '') {
       this.duration.setValue('900');
     }
-    else if (this.duration.value < 300) {
-      this.duration.setValue('300');
+    else if (this.duration.value < 60) {
+      this.duration.setValue('60');
     }
   }
 
@@ -308,5 +314,6 @@ export class ConfigFormComponent implements OnInit {
     this.toggleAlert(testTableAlertType.StopAllTests);
     this.submitted = false;
     this.responseReceived = false;
+    AppSettings.testPrefixSet.clear();
   }
 }
