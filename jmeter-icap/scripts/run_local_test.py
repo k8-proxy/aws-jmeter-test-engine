@@ -67,10 +67,7 @@ def main(json_params):
         f.write(script_data)
     os.chmod(script_path, 0o771)
     # start execution of tests
-    subprocess_output = subprocess.Popen([script_path])
-
-    # get the process ID. We need this to be able to target and stop individual tests that are being run
-    pid = subprocess_output.pid
+    subprocess.Popen([script_path])
 
     # create dashboard
     dashboard_url = ""
