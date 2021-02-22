@@ -73,14 +73,13 @@ def main(json_params):
     pid = subprocess_output.pid
 
     # create dashboard
-    Config.grafana_url = "http://127.0.0.1:3000/"
     dashboard_url = ""
     grafana_uid = ""
     if Config.exclude_dashboard:
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        dashboard_url, grafana_uid = create_dashboard.main(Config)
+        dashboard_url, grafana_uid = create_dashboard.main(Config, from_ui=True)
 
     results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid))
     results_analysis_thread.start()
