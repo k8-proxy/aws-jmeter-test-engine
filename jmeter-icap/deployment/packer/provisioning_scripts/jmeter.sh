@@ -16,3 +16,9 @@ cd /opt/git/aws-jmeter-test-engine/jmeter-icap/test-data/
 sudo unzip gov_uk_files.zip
 cd gov_uk_files
 sudo cp -R * /opt/jmeter/apache-jmeter-5.3/bin/in/
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/ICAP-Direct-File-Processing
+sudo cp ICAP_Direct_FileProcessing_Local_v4.jmx /opt/jmeter/apache-jmeter-5.3/bin/
+sudo cp gov_uk_files.csv /opt/jmeter/apache-jmeter-5.3/bin/
+cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/ICAP-Proxy-Site
+sudo cp ProxySite_Processing_v1.jmx /opt/jmeter/apache-jmeter-5.3/bin/
+sudo cp proxysitefiles.csv /opt/jmeter/apache-jmeter-5.3/bin/
