@@ -109,7 +109,7 @@ def store_and_analyze_after_duration(config, grafana_uid, run_id, additional_del
         second_point = datetime.now(timezone.utc)
         InfluxDBMetrics.save_statistics(config.load_type, config.prefix, first_point, second_point)
 
-    if config.ui_config.store_results not in ["", None] and bool(int(config.store_results)) and run_id in running_tests:
+    if config.store_results not in ["", None] and bool(int(config.store_results)) and run_id in running_tests:
         print("test completed, storing results to the database")
         database_insert_test(config, run_id, grafana_uid, start_time, final_time)
 
