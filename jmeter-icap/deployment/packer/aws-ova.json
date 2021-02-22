@@ -35,6 +35,10 @@
     },
     {
         "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/promtail.sh"
+    },
+    {
+        "type": "shell",
         "script": "jmeter-icap/deployment/packer/provisioning_scripts/grafana.sh"
     },
     {
