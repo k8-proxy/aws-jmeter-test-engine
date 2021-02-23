@@ -29,7 +29,7 @@ def parse_request():
             data = json.loads(request.form.get('form'))
             print('Data sent from UI: {0}'.format(data))
             (returned_url, stack_name) = run_local_test.main(data)
-            print("I got {} and {}".format(returned_url, stack_name))
+
             if returned_url:
                 return make_response(jsonify(url=returned_url, stack_name=stack_name), 201)
             else:

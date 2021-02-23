@@ -41,7 +41,7 @@ def main(json_params):
     prefix = local_config.prefix + "-" if local_config.prefix not in ["", None] else local_config.prefix
     stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
     local_config.stack_name = stack_name
-    print("I got {} and {} and {}".format(local_config.stack_name, local_config.prefix, local_config.influx_host))
+
     # set jmeter parameters
     with open("LocalStartExecution.sh", "r") as f:
         script_data = f.read()
