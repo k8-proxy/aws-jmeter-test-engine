@@ -225,7 +225,7 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
     run_id = uuid.uuid4()
 
     if config.stack_name in running_tests:
-        print("test completed, storing results to the database")
+        print("{}: test completed, storing results to the database".format(config.stack_name))
         database_insert_test(config, run_id, grafana_uid, start_time, final_time)
         running_tests.remove(config.stack_name)
 
