@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from datetime import datetime
+from datetime import timedelta, datetime, timezone
 import re
 import os
 import subprocess
@@ -10,7 +10,7 @@ import create_dashboard
 from create_stack import Config
 from ui_tasks import set_config_from_ui
 from threading import Thread
-from create_stack_dash import store_and_analyze_after_duration
+from create_stack_dash import store_and_analyze_after_duration, running_tests
 
 
 def get_jvm_memory(users_per_instance):
@@ -35,6 +35,12 @@ def main(json_params):
     set_config_from_ui(Config, json_params, ova=True)
     Config.users_per_instance = Config.total_users
     jvm_memory = get_jvm_memory(Config.users_per_instance)
+
+    now = datetime.now(timezone.utc)
+    date_suffix = now.strftime("%Y-%m-%d-%H-%M-%S")
+    prefix = Config.prefix + "-" if Config.prefix not in ["", None] else Config.prefix
+    stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
+    Config.stack_name = stack_name
 
     # set jmeter parameters
     with open("LocalStartExecution.sh", "r") as f:
@@ -80,7 +86,7 @@ def main(json_params):
         dashboard_url, grafana_uid = create_dashboard.main(Config)
 
         if Config.store_results not in ["", None] and bool(int(Config.store_results)):
-            #running_tests.add(stack_name)
+            running_tests.add(stack_name)
             results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid))
             results_analysis_thread.start()
 
