@@ -206,7 +206,7 @@ def create_stack_from_ui(json_params, ova=False):
 
 
 def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
-    print("thread entered")
+
     InfluxDBMetrics.hostname = config.influx_public_ip if config.influx_public_ip not in ["", None] else config.influx_host
     InfluxDBMetrics.hostport = config.influx_port
     InfluxDBMetrics.init()
@@ -223,9 +223,9 @@ def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
         InfluxDBMetrics.save_statistics(config.load_type, config.prefix, first_point, second_point)
 
     run_id = uuid.uuid4()
-
+    print("checking for stack: {}".format(config.stack_name))
     if config.stack_name in running_tests:
-        print("{}: test completed, storing results to the database".format(config.stack_name))
+        print("Stack found: {} test completed, storing results to the database".format(config.stack_name))
         database_insert_test(config, run_id, grafana_uid, start_time, final_time)
         print("prefix: {}".format(config.prefix))
         running_tests.remove(config.stack_name)

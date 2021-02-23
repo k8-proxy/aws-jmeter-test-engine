@@ -28,9 +28,10 @@ def parse_request():
         if button_pressed == 'generate_load':
             data = json.loads(request.form.get('form'))
             print('Data sent from UI: {0}'.format(data))
-            returned_url = run_local_test.main(data)
+            (returned_url, stack_name) = run_local_test.main(data)
+            print("I got {} and {}".format(returned_url, stack_name))
             if returned_url:
-                return make_response(jsonify(url=returned_url, stack_name=Config.stack_name), 201)
+                return make_response(jsonify(url=returned_url, stack_name=stack_name), 201)
             else:
                 return make_response("Error", 500)
 
