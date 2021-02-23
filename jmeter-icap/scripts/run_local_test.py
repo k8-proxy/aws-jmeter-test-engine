@@ -89,7 +89,7 @@ def main(json_params):
             results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(local_config, grafana_uid))
             results_analysis_thread.start()
 
-    return dashboard_url
+    return dashboard_url, local_config.stack_name
 
 
 if __name__ == "__main__":
