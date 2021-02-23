@@ -181,7 +181,7 @@ export class ConfigFormComponent implements OnInit {
     this.responseReceived = true;
 
     //pack up form data and response URL, fire form submitted event and send to subscribers
-    const dataPackage: FormDataPackage = { formAsJsonString: formAsString.toString(), grafanaUrlResponse: response['url'], stackId: response['stack_name'] }
+    const dataPackage: FormDataPackage = { formAsJsonString: formAsString.toString(), grafanaUrlResponse: response['url'], stackName: response['stack_name'] }
     this.sharedService.sendSubmitEvent(dataPackage);
     this.unlockForm();
     this.submitted = false;

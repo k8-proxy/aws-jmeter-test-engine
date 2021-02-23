@@ -40,7 +40,7 @@ export class TestsTableComponent implements OnInit {
   }
 
   onFormSubmitted(formDataPack: FormDataPackage) {
-    this.storeTestAsCookie(formDataPack.formAsJsonString, formDataPack.grafanaUrlResponse, formDataPack.stackId);
+    this.storeTestAsCookie(formDataPack.formAsJsonString, formDataPack.grafanaUrlResponse, formDataPack.stackName);
   }
 
   storeTestAsCookie(formJsonString: string, dashboardUrl: string, stackId: string) {
