@@ -5,16 +5,12 @@ from datetime import timedelta, datetime, timezone
 import re
 import os
 import subprocess
+from dotenv import load_dotenv
 import create_dashboard
 from create_stack import Config
-from metrics import InfluxDBMetrics
 from ui_tasks import set_config_from_ui
 from threading import Thread
-import time
-import uuid
-from database_ops import database_insert_test
-
-running_tests = set()
+from create_stack_dash import store_and_analyze_after_duration, running_tests
 
 
 def get_jvm_memory(users_per_instance):
@@ -39,6 +35,12 @@ def main(json_params):
     set_config_from_ui(Config, json_params, ova=True)
     Config.users_per_instance = Config.total_users
     jvm_memory = get_jvm_memory(Config.users_per_instance)
+
+    now = datetime.now(timezone.utc)
+    date_suffix = now.strftime("%Y-%m-%d-%H-%M-%S")
+    prefix = Config.prefix + "-" if Config.prefix not in ["", None] else Config.prefix
+    stack_name = prefix + 'aws-jmeter-test-engine-' + date_suffix
+    Config.stack_name = stack_name
 
     # set jmeter parameters
     with open("LocalStartExecution.sh", "r") as f:
@@ -75,43 +77,20 @@ def main(json_params):
     subprocess.Popen([script_path])
 
     # create dashboard
+    Config.grafana_url = "http://127.0.0.1:3000/"
     dashboard_url = ""
-    grafana_uid = ""
     if Config.exclude_dashboard:
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        dashboard_url, grafana_uid = create_dashboard.main(Config, from_ui=True)
+        dashboard_url, grafana_uid = create_dashboard.main(Config)
 
-    run_id = uuid.uuid4()
-    running_tests.add(run_id)
+        if Config.store_results not in ["", None] and bool(int(Config.store_results)):
+            running_tests.add(stack_name)
+            results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid))
+            results_analysis_thread.start()
 
-    results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid, run_id))
-    results_analysis_thread.start()
-
-    return dashboard_url, run_id
-
-
-def store_and_analyze_after_duration(config, grafana_uid, run_id, additional_delay=0):
-
-    InfluxDBMetrics.hostname = config.influx_public_ip if config.influx_public_ip not in ["", None] else config.influx_host
-    InfluxDBMetrics.hostport = config.influx_port
-    InfluxDBMetrics.init()
-
-    total_wait_time = additional_delay + int(config.duration)
-    start_time = datetime.now(timezone.utc)
-    final_time = start_time + timedelta(seconds=total_wait_time)
-    first_point = second_point = start_time
-
-    while datetime.now(timezone.utc) < final_time:
-        time.sleep(1)
-        first_point = second_point
-        second_point = datetime.now(timezone.utc)
-        InfluxDBMetrics.save_statistics(config.load_type, config.prefix, first_point, second_point)
-
-    if config.store_results not in ["", None] and bool(int(config.store_results)) and run_id in running_tests:
-        print("test completed, storing results to the database")
-        database_insert_test(config, run_id, grafana_uid, start_time, final_time)
+    return dashboard_url
 
 
 if __name__ == "__main__":
