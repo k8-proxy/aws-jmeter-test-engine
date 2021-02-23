@@ -206,7 +206,7 @@ def create_stack_from_ui(json_params, ova=False):
 
 
 def store_and_analyze_after_duration(config, grafana_uid, additional_delay=0):
-
+    print("thread entered")
     InfluxDBMetrics.hostname = config.influx_public_ip if config.influx_public_ip not in ["", None] else config.influx_host
     InfluxDBMetrics.hostport = config.influx_port
     InfluxDBMetrics.init()
