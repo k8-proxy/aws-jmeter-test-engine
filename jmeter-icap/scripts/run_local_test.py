@@ -82,7 +82,7 @@ def main(json_params):
         print("Dashboard will not be created")
     else:
         print("Creating dashboard...")
-        dashboard_url, grafana_uid = create_dashboard.main(local_config)
+        dashboard_url, grafana_uid = create_dashboard.main(local_config, from_ui=True)
 
         if local_config.store_results not in ["", None] and bool(int(local_config.store_results)):
             running_tests.add(stack_name)
