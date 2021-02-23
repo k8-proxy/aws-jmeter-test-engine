@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 import create_dashboard
 from create_stack import Config
 from ui_tasks import set_config_from_ui
+from threading import Thread
+from create_stack_dash import store_and_analyze_after_duration
 
 
 def get_jvm_memory(users_per_instance):
@@ -76,6 +78,11 @@ def main(json_params):
     else:
         print("Creating dashboard...")
         dashboard_url, grafana_uid = create_dashboard.main(Config)
+
+        if Config.store_results not in ["", None] and bool(int(Config.store_results)):
+            #running_tests.add(stack_name)
+            results_analysis_thread = Thread(target=store_and_analyze_after_duration, args=(Config, grafana_uid))
+            results_analysis_thread.start()
 
     return dashboard_url
 
