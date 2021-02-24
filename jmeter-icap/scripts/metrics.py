@@ -4,9 +4,18 @@ import sys, getopt
 import json
 from influxdb import InfluxDBClient
 from ui_tasks import LoadType
+from datetime import timedelta, datetime, timezone
 
 logger = logging.getLogger('proxy-sites')
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO').upper()
+
+def format_datetime(datetime_val):
+    formated = "1970-01-01 00:00:00"
+    try:
+        formated = datetime_val.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception as e:
+        print("ERROR: format_datetime: {}".format(e))
+    return formated
 
 class InfluxDBMetrics():
 
@@ -33,12 +42,6 @@ class InfluxDBMetrics():
         InfluxDBMetrics.jmeter_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='jmeter')
         InfluxDBMetrics.verify_database(InfluxDBMetrics.jmeter_db_client)
 
-        #InfluxDBMetrics.icapserver_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='icapserver')
-        #InfluxDBMetrics.verify_database(InfluxDBMetrics.icapserver_db_client)
-
-        #InfluxDBMetrics.proxysite_db_client = InfluxDBClient(InfluxDBMetrics.hostname, InfluxDBMetrics.hostport, database='proxysite')
-        #InfluxDBMetrics.verify_database(InfluxDBMetrics.proxysite_db_client)
-
         print('Metrics module initialization PASSED')
 
     @staticmethod
@@ -49,7 +52,7 @@ class InfluxDBMetrics():
             for item in points:
                 time = item['time']
                 if time:
-                    return time
+                    return datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
             print('Error getting initial time')
             exit(1)
         except Exception as e:
@@ -65,7 +68,7 @@ class InfluxDBMetrics():
             for item in points:
                 time = item['time']
                 if time:
-                    return time
+                    return datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%fZ")
             print('Error getting final time')
             exit(1)
         except Exception as e:
@@ -77,8 +80,8 @@ class InfluxDBMetrics():
         try:
             str_query = 'SELECT SUM("count") FROM '\
                     + database + ' WHERE '\
-                    + ' time >= \'' + start + '\' AND ' \
-                    + ' time <= \'' + finish + '\' AND '\
+                    + ' time >= \'' + format_datetime(start) + '\' AND ' \
+                    + ' time < \'' + format_datetime(finish) + '\' AND '\
                     + condition \
                     + ';'
             #print (str_query)
@@ -111,8 +114,8 @@ class InfluxDBMetrics():
             str_query = 'SELECT MEAN("' + field + '") FROM '\
                     + database + ' WHERE '\
                     + condition + ' AND ' \
-                    + ' time >= \'' + start + '\' AND ' \
-                    + ' time <= \'' + finish + '\';'
+                    + ' time >= \'' + format_datetime(start) + '\' AND ' \
+                    + ' time < \'' + format_datetime(finish) + '\';'
             #print (str_query)
             rs = InfluxDBMetrics.jmeter_db_client.query(str_query)
             points = rs.get_points()
