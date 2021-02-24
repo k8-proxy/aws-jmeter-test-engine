@@ -11,6 +11,6 @@ export class AppSettings {
     public static addingPrefix: boolean = false;
     public static serverIp: string = "http://127.0.0.1:5000/";
 }
-export enum LoadTypes { Direct = 0, ProxySharePoint, DirectSharePoint, RestApi, ProxyOffline }
+export enum LoadTypes { Direct = 0, ProxySharePoint, DirectSharePoint, RestApi, Proxy }
 export enum ReturnStatus { Success, Failure, PartialSuccess , UpdateSuccess, UpdateFailure }
 export enum testTableAlertType { StopAllTests, Error }

@@ -196,8 +196,8 @@ export class SharedService {
         else if (loadType === AppSettings.loadTypeNames[LoadTypes.RestApi]) {
             name += " " + AppSettings.testNames[LoadTypes.RestApi];
         }
-        else if (loadType === "Proxy Offline") {
-            name += " " + "Proxy Site Live Performance Dashboard";
+        else if (loadType === AppSettings.loadTypeNames[LoadTypes.Proxy]) {
+            name += " " + AppSettings.testNames[LoadTypes.Proxy];
         } 
         return name;
     }

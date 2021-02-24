@@ -65,7 +65,7 @@ export class ConfigFormComponent implements OnInit {
       
       if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
         this.sharepoint_hosts.setValidators([Validators.required]);
-      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
+      } else if (loadType == AppSettings.loadTypeNames[LoadTypes.Proxy]) {
         this.icap_endpoint_url.setValidators([Validators.required, ConfigFormValidators.cannotContainSpaces, Validators.pattern(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)]);
       } else {
       }
@@ -101,9 +101,9 @@ export class ConfigFormComponent implements OnInit {
       this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.Direct];
       this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Direct];
     }
-    else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxyOffline]) {
-      this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.ProxyOffline];
-      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.ProxyOffline];
+    else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.Proxy]) {
+      this.endPointFieldTitle = AppSettings.endPointFieldTitles[LoadTypes.Proxy];
+      this.endPointFieldPlaceholder = AppSettings.endPointFieldPlaceholders[LoadTypes.Proxy];
       this.endPointFieldDescription = "*this field is required, please input a valid IP address"
     }
     else if (this.loadType.value == AppSettings.loadTypeNames[LoadTypes.ProxySharePoint]) {
