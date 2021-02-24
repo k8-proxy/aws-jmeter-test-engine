@@ -94,9 +94,9 @@ def main(json_params):
 
 if __name__ == "__main__":
     # test this script
-    json_params = {"total_users": 20,
-                   "ramp_up_time": 20,
-                   "duration": 60,
+    json_params = {"total_users": str(20),
+                   "ramp_up_time": str(20),
+                   "duration": str(300),
                    "icap_endpoint_url": "us.icap.glasswall-icap.com",
                    "prefix": "ga",
                    "load_type": "Direct",
