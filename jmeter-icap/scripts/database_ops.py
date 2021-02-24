@@ -38,7 +38,7 @@ def database_insert_test(config, run_id, grafana_uid, start_time, final_time):
     if config.load_type == LoadType.proxy.value:
         client.write_points([{"measurement": "TestResults", "fields": {
             "RunId": run_id,
-            "StartTime": start_time,
+            "StartTime": format_datetime(start_time),
             "Duration": config.duration,
             "GrafanaUid": grafana_uid,
             "Prefix": config.prefix,
@@ -55,7 +55,7 @@ def database_insert_test(config, run_id, grafana_uid, start_time, final_time):
     if config.load_type == LoadType.proxy_sharepoint.value or config.load_type == LoadType.direct_sharepoint.value:
         client.write_points([{"measurement": "TestResults", "fields": {
             "RunId": run_id,
-            "StartTime": start_time,
+            "StartTime": format_datetime(start_time),
             "Duration": config.duration,
             "GrafanaUid": grafana_uid,
             "Prefix": config.prefix,
