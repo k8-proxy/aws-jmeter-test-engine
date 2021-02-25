@@ -14,14 +14,17 @@ def update_config_env(setup_json, ova=False):
         print("Please create config.env file similar to config.env.sample")
     else:
         adjust_eof_newline()
-        dotenv.set_key(CONFIG_ENV_PATH, "REGION", setup_json['region'], "never")
-        Config.region = setup_json['region']
-        dotenv.set_key(CONFIG_ENV_PATH, "SCRIPT_BUCKET", setup_json['script_bucket'], "never")
-        Config.script_bucket = setup_json['script_bucket']
-        dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_BUCKET", setup_json['test_data_bucket'], "never")
-        Config.test_data_bucket = setup_json['test_data_bucket']
-        dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_ACCESS_SECRET", setup_json['test_data_access_secret'], "never")
-        Config.test_data_access_secret = setup_json['test_data_access_secret']
+
+        if not ova:
+            dotenv.set_key(CONFIG_ENV_PATH, "REGION", setup_json['region'], "never")
+            Config.region = setup_json['region']
+            dotenv.set_key(CONFIG_ENV_PATH, "SCRIPT_BUCKET", setup_json['script_bucket'], "never")
+            Config.script_bucket = setup_json['script_bucket']
+            dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_BUCKET", setup_json['test_data_bucket'], "never")
+            Config.test_data_bucket = setup_json['test_data_bucket']
+            dotenv.set_key(CONFIG_ENV_PATH, "TEST_DATA_ACCESS_SECRET", setup_json['test_data_access_secret'], "never")
+            Config.test_data_access_secret = setup_json['test_data_access_secret']
+
         if setup_json['tenant_id']:
             dotenv.set_key(CONFIG_ENV_PATH, "TENANT_ID", setup_json['tenant_id'], "never")
             Config.tenant_id = setup_json['tenant_id']
@@ -32,10 +35,8 @@ def update_config_env(setup_json, ova=False):
             dotenv.set_key(CONFIG_ENV_PATH, "CLIENT_SECRET", setup_json['client_secret'], "never")
             Config.client_secret = setup_json['client_secret']
 
-    if setup_json['upload_test_data'] and not ova:
+    if not ova and setup_json['upload_test_data']:
         result = upload_test_data_to_s3(Config)
-    elif setup_json['upload_test_data'] and ova:
-        result = upload_test_data_to_ova(Config)
     return result
 
 
@@ -91,11 +92,16 @@ def save_csv_file(file, target_directories, allowed_extensions, ova=False):
     Config.test_data_file = file.filename
 
     # first save file to the first directory in the list
-    file_to_copy = os.path.join(target_directories[0], file.filename)
-    file.save(file_to_copy)
+    try:
+        file_to_copy = os.path.join(target_directories[0], file.filename)
+        file.save(file_to_copy)
+        if not ova:
+            # copy the save file from first directory to all other directories
+            for directory in target_directories[1:]:
+                if os.path.exists(directory):
+                    shutil.copy(file_to_copy, directory)
+    except Exception as e:
+        print(e)
 
-    if not ova:
-        # copy the save file from first directory to all other directories
-        for directory in target_directories[1:]:
-            if os.path.exists(directory):
-                shutil.copy(file_to_copy, directory)
+
+
