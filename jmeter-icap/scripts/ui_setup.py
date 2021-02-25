@@ -34,8 +34,6 @@ def update_config_env(setup_json, ova=False):
 
     if setup_json['upload_test_data'] and not ova:
         result = upload_test_data_to_s3(Config)
-    elif setup_json['upload_test_data'] and ova:
-        result = upload_test_data_to_ova(Config)
     return result
 
 
