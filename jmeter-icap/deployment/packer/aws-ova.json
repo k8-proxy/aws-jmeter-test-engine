@@ -39,6 +39,10 @@
     },
     {
         "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/system-tuning.sh"
+    },
+    {
+        "type": "shell",
         "script": "jmeter-icap/deployment/packer/provisioning_scripts/grafana.sh"
     },
     {

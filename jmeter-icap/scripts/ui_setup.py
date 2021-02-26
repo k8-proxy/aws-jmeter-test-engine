@@ -105,3 +105,8 @@ def save_csv_file(file, target_directories, allowed_extensions, ova=False):
 
 
 
+    if not ova:
+        # copy the save file from first directory to all other directories
+        for directory in target_directories[1:]:
+            if os.path.exists(directory):
+                shutil.copy(file_to_copy, directory)
