@@ -26,7 +26,7 @@
       - [create_dashboard.py](#create-dashboardpy)
       - [create_stack_dash.py](#create-stack-dashpy)
       - [ui_tasks.py](#ui-taskspy)
-      - [ui_tasks.py](#ui-taskspy-1)
+      - [ui_setup.py](#ui-setuppy)
       - [database_ops.py](#database-opspy)
       - [metrics.py](#metricspy)
       - [run_local_test.py](#run-local-testpy)
@@ -179,7 +179,7 @@ To add parameters to this project, you would need to add them the __get_command_
 
 This is a utility class that contains all the methods used for processing input that comes from the UI. This class also assigns the test directory, jmx script, grafana template, and csv test list file depending on the load type. So if changes need to be made to the dashboard/scripts/folders used with the UI, the "determine_load_type" method would be where those modifications can be made.
 
-#### ui_tasks.py
+#### ui_setup.py
 
 #### database_ops.py
 
