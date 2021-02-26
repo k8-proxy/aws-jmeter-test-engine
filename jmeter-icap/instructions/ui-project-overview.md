@@ -167,7 +167,7 @@ A basic Bootstrap navbar component, contains navigation tabs for ICAP Performanc
 
 #### flask_server.py and flask_server_scaled.py
 
-These represent the Flask server back end. They are both very similar in implementations, but "flask_server.py" is used with the OVA, while "flask_server_scaled.py" is used for the scaled solution. The server receives POST and GET requests from the front end and triggers the appropriate scripts/methods.
+These represent the Flask server back end. They are both very similar in implementations, but "flask_server.py" is used with the OVA, while "flask_server_scaled.py" is used for the scaled solution. The server receives POST and GET requests from the front end and triggers the appropriate scripts/methods. They both have configurations to run as services (see [flask.service](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/flask.service) and [flask_scaled.service](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/flask_scaled.service) in the repo).
 
 The forms sent from the UI (packed into FormData objects) are unpacked by the Flask server into a JSON representation, and depending on their contents, this script will call the necessary methods from other scripts. For example, if the request is from the Setup form, and it contains a file, the method for handling file uploads will be called along with the method that updates the config.env file. It also looks for 'button' in the JSON object (which represents what button was pressed in the UI) to determine what the request is. The "button" attribute can contain "generate_load", "stop_individual_test", "setup_config", or "update" for those tasks.
 
@@ -252,7 +252,7 @@ cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo python3 flask_server.py
 ```
 
-Once the server is running, requests can be sent to it via the UI. If no info messages are displayed from the currently running server, it is most likely the case that the UI front end is not connecting to the server. If errors are displayed, it means it is connected, and those errors may point to which config.env parameters are incorrect or missing.
+Once the server is running, requests can be sent to it via the UI. If no info messages are displayed from the currently running server when a test is submitted, it is most likely the case that the UI front end is not connecting to the server. If errors are displayed, it means it is connected, and those errors may point to which config.env parameters are incorrect or missing.
 
 ### Flask service shows that it is stopped/failed
 
@@ -273,9 +273,9 @@ sudo chmod +x update_ui.sh
 
 The Grafana dashboard uses InfluxDB as its datasource. If for any reason that data source is not receiving metrics, the dashboard will remain blank. Possible reasons for this are:
 
-1. The incorrect IP is used for "INFLUX_HOST". When used from a virtual machine or EC2 server, the INFLUX_HOST value must contain the *private* IP of the machine, not the public one.
+1. The incorrect IP is used for "INFLUX_HOST". The INFLUX_HOST value must contain the *private* IP of the machine, not the public one.
 
-2. When running from CLI, this can occur when the "TEST_DATA_FILE" parameter is pointing to an incorrect file name. For example, it contains "files.csv", but the actual name that should be there is "gov_uk_files.csv".
+2. When running from CLI, this can occur when the "TEST_DATA_FILE" parameter is pointing to an incorrect file name. For example, the value contains is set to some non-existent file named "files.csv", but the actual name of the existing file is "gov_uk_files.csv".
 
 ## Miscellaneous Information
 
@@ -292,14 +292,14 @@ To add a new parameter to the project, the following steps will need to be taken
 
 ### Adding new dashboard templates
 
-Often when a template is copied over, it is from a dashboard that was created during a test and modified. This could result in that previous test's prefix occurring all over the dashboard template. Before using, make sure that no pre-existing occurrences of prefixes remain in the template, usually this involves a remove/replace of "prefix_". That is the prefix followed by an underscore character.
+Often when a template is copied over, it is from a dashboard that was created during a test and modified. This could result in that previous test's prefix occurring all over the dashboard template. Before using, make sure that no pre-existing occurrences of prefixes remain in the template, usually this involves a remove/replace of "prefix_" that appears before each measurement. The prefix and the underscore character should be removed together and not separately. One last occurrence of the prefix may also occur in the dashboard's title, that will need separate removal as it is not usually tied to an underscore character.
 
-When it comes to running the project from the UI, depending on the load type, a different file is chosen for the dashboard. This file is identified by name in the "determine_load_type" method of ui_tasks.py, and example from the code is shown below:
+When it comes to running the project from the UI, depending on the load type, a different file is chosen for the dashboard. This file is identified by name in the "determine_load_type" method of ui_tasks.py, an example from the code is shown below:
 ```
 config.grafana_file = 'aws-test-engine-dashboard.json'
 ```
 
- If a new dashboard template is chosen, one of the following two options methods can be used:
+ If a new dashboard template is chosen, one of the following two options can be used:
 
 1. Go to the folder associated with the load type. Overwrite the existing dashboard template with the new template taking care to preserve the naming of the file.
 
@@ -315,12 +315,12 @@ At the python back end:
 
 1. The load type should be added to the LoadType enum in ui_tasks.py
 2. A folder should be created for that load type containing the associated scripts, dashboard templates, and csv files. Config.env will look into this folder using the "TEST_DIRECTORY" variable.
-3. In ui_tasks.py, and entry for this new load type should be added in the "determine_load_type" with assignments done in the same manner as other load types there.
-4. In flask_server_scaled.py, the new load type's folder must be added to the possible upload locations so that uploaded csv files (via the Setup form) find their way to the right locations.
+3. In ui_tasks.py, an entry for this new load type should be added in the "determine_load_type" method with assignments done in the same manner as other load types there.
+4. In flask_server_scaled.py, the new load type's folder must be added to "UPLOAD_FOLDERS" list at the top of the file so that uploaded csv files (via the Setup form) find their way to the right locations.
 
 At the Angular UI front end:
 
-1. The load type will need to be added in the AppSettings.ts file. It is __required__ that entries for the load type are added to the following lists in the AppSettings.ts file (please see the section in that file for a detailed explanation on this point):
+1. The load type will need to be added in the AppSettings.ts file. It is __required__ that entries for the new load type are added to the following lists in the AppSettings.ts file (please see the section in that file for a detailed explanation on this point):
   - LoadTypes enum
   - loadTypeNames array
   - endPointFieldTitles
@@ -328,7 +328,7 @@ At the Angular UI front end:
   - testNames
   - dashboardNames
 
-  Care must also be taken to preserve the ordering of the elements in these lists, as is highlighted in the section dedicated to AppSettings.ts in the Programmer's guide.
+  Care must also be taken to preserve the ordering of the elements in these lists, as is highlighted in the section dedicated to AppSettings.ts in the Programmer's guide. Even if the load type does not, for example, require an "endPointFieldPlaceholder" value, an empty string should be input in to that array so as to take its spot and preserve the 1 to 1 mapping of values in all those arrays.
 2. Once added to the above arrays, the UI should automatically incorporate the new load type provided no new fields are needed along with it (i.e. it only requires an end point). If it has additional requirements, those will need to be manually implemented. An example of this can be seen in the Proxy SharePoint load type; an extra field will appear if that load type is selected and it has its own validators that are assigned/removed whenever the load type is selected/deselected.
 
 
