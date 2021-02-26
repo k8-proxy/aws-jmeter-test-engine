@@ -43,7 +43,7 @@
 
 ## Introduction
 
-This document aims to assist anyone who wishes to learn about, use, or modify the AWS Jmeter Test Engine UI and associated python scripts. It mainly targets the Scaled Solution UI, but much of it is also applicable to the OVA's version of the UI as well. It will begin with an overview of the project's components followed by a more detailed analysis of those components, a programmer's guide, a troubleshooting section, and a miscellaneous notes section.
+This document aims to assist anyone who wishes to learn about, use, or modify the AWS Jmeter Test Engine UI and associated python scripts. It mainly targets the Scaled Solution UI, but much of it is also applicable to the OVA's version of the UI as well. It will begin with an overview of the project's components followed by a more detailed analysis of those components, a programmer's guide, a troubleshooting section, and a miscellaneous notes section. This document also assumes that the reader has a basic understanding of the overall project and what it aims to achieve.
 
 ## Architecture Overview
 
@@ -72,11 +72,11 @@ This is not included in the UI's navbar, but can be accessed using the domain na
 
 #### Flask Server
 
-This component receives the different requests/forms from the previous two components and calls the necessary python scripts/methods required to process those requests. Its main functions are to trigger load, stop tests, update the config.env file, update the project, and upload csv test file lists files to the appropriate locations. All of these tasks are performed depending on input received from the front end UI buttons and forms.
+This component receives the different requests/forms from the previous two components and calls the necessary python scripts/methods required to process those requests. Its main functions are to trigger load, stop tests, update the config.env file, update the project, and upload csv test file lists to the appropriate locations. All of these tasks are performed depending on input received from the front end UI buttons and forms.
 
 ## Programmer's Guide to Project Components
 
-This section will list the various components associated with the UI/Flask server, as well as notes how each part operates. It details each piece of this project and gives tips on how it can be extended/modified to suit end user needs. It assumes the programmer has basic knowledge of both Angular and Python. It is meant to be used as a reference manual along with the code.
+This section will list the various components associated with the UI/Flask server, as well as notes how each part operates. It details each piece of this project and gives tips on how it can be extended/modified to suit end user needs. It assumes the programmer has basic knowledge of both Angular and Python. It is meant to be used as a reference along with the code base.
 
 ### Angular UI
 
@@ -88,9 +88,9 @@ This contains four subfolders for app settings, pipes, services, and validators.
 
 ##### AppSettings.ts
 
-This contains static data that is accessed by other components. When adding load types, descriptions, dashboard names, etc, the arrays in this class will need to be modified to reflect those changes. __The following are are some very important notes to understand relating to this file__:
+This contains static data that is accessed by other components. When adding load types, descriptions, dashboard names, etc, the arrays in this class will need to be modified to reflect those changes. __The following are some very important notes to understand relating to this file__:
 
-- __The loadTypeNames array__: This contains strings representing load type names. These strings should not be changed unless the programmer intends to modify the back end as well. They serve 2 purposes, the first is to be displayed/listed in the front end ICAP Testing form, the second is to be sent to the back end for processing. The back end looks specifically for those strings, as they are enumerated (in the form of strings) in the python class named [ui_tasks.py](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/ui_tasks.py). For example, in the case of the "Direct" load type, the back end will looks for the string "Direct" to be sent to it. That string's origins are the AppSettings.ts file. If the name must be modified for display purposes, an Angular pipe can be used. It so happens that one such pipe is already in use for the "Direct" load type; the front end displays it as "Direct ICAP Server" in the load types dropdown list, but internally, it's passed around as "Direct". This is *not* the case for the other load types at the time of this file's creation. So if a change must be made to this array, it must be noted that the same change will need to be made in ui_tasks.py.
+- __The loadTypeNames array__: This contains strings representing load type names. These strings should not be changed unless the programmer intends to modify the back end as well. They serve 2 purposes, the first is to be displayed/listed in the front end ICAP Testing form, the second is to be sent to the back end for processing. The back end looks specifically for those strings, as they are enumerated (in the form of strings) in the python class named [ui_tasks.py](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/ui_tasks.py). For example, in the case of the "Direct" load type, the back end will look for the string "Direct" to be sent to it. That string's origins are the AppSettings.ts file. If the name must be modified for display purposes, an Angular pipe can be used. It so happens that one such pipe is already in use for the "Direct" load type; the front end displays it as "Direct ICAP Server" in the load types dropdown list, but internally, it's passed around as "Direct". This is *not* the case for the other load types at the time of this file's creation. So if a change must be made to this array, it must be noted that the same change will need to be made in the corresponding enum located in ui_tasks.py.
 
 - __The LoadTypes enum__: A lot of components refer to what the current load type is to determine what they should display. For instance, if the load type is "Direct", we choose the dashboard name based on that, the test name, field descriptions, example field placeholders, etc. As such, the arrays containing this data need to be in sync with the LoadTypes enum. This means that their contents need to be in the same order as the contents of the LoadTypes enum. These arrays are loadTypeNames, endPointFieldTitles, endPointFieldPlaceholders, testNames, and dashboardNames. This will be highlighted below:
 
@@ -116,12 +116,12 @@ This service does a lot of the work required to pass data around to the various 
 - Creating test names for display
 - Generating dashboard names for display
 - Building rows for the tables that will display tests
-- Retrieves data from the back end for the "Test Results" table
-- Contains events for when a test form is submitted, a setup form is submitted, a test (one or many) is stopped, and when data retrieval for results table is complete. Other components subscribe to these events to either process data or perform necessary operations to update the UI based on these events.
+- Retrieving data from the back end for the "Test Results" table
+- Firing events for when a test form is submitted, a setup form is submitted, a test (one or many) is stopped, and when data retrieval for results table is complete. Other components subscribe to these events to either process data or perform necessary operations to update the UI based on the event.
 
 ##### ConfigFormValidators.ts
 
-This contains the various custom validators that have been used as the project progressed. They will not be listed here as they are self explanatory, however in the case of the "cannotContainDuplicatePrefix" validator, it uses a set in AppSettings.ts (testPrefixSet) to keep track of the prefixes that are currently in use. As of the writing of this document, this validator is not currently in use.
+This contains the various custom validators that have been used as the project progressed. They will not be listed here as they are self explanatory, however in the case of the "cannotContainDuplicatePrefix" validator, it uses a set in AppSettings.ts (testPrefixSet) to keep track of the prefixes that are currently in use. As of the writing of this document, this validator is not currently in use, but its function remains implemented and ready to use when required.
 
 #### Angular Components
 
@@ -131,7 +131,7 @@ This is the component for the main page of the UI that contains the ICAP Perform
 
 It is worth mentioning here that the form field for "icap_server_endpoint" represents all endpoint fields, even for other load types. So in the back end, end point fields are sent as "icap_server_endpoint" even if that is not technically the exact endpoint type they represent.
 
-When a form is submitted, the form's contents are packed into a "FormData" object and sent to the Flask server.
+When a form is submitted, the form's contents are packed into a "FormData" object and sent to the Flask server. Most of the utility methods that organize the data received from this form in the back end are in [ui_tasks.py](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/ui_tasks.py) while the execution of operations is in [create_stack_dash.py](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/create_stack_dash.py)
 
 ##### setup-form
 
@@ -152,7 +152,7 @@ This component is also responsible for handling requests to stop tests via the "
 
 ##### results-table
 
-The results table is responsible for displaying the results stored in the database to users at the front end. It subscribes to database retrieval events in shared.service.ts, which sends a GET request to the back end every minute. The shared.service.ts class also organizes the data into "ResultsRowElement" rows before passing them to the results-table component, which simply organizes the results and displays them.
+The results table is responsible for displaying the results stored in the database to users at the front end. It subscribes to database retrieval events in shared.service.ts, which sends a GET request to the back end every minute. The shared.service.ts class also organizes the data into "ResultsRowElement" rows before passing them to the results-table component, which simply organizes the results and displays them. For the associated back end scripts, see [database_ops.py](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/database_ops.py) and [metrics.py](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/metrics.py).
 
 ##### admin
 
@@ -167,9 +167,9 @@ A basic Bootstrap navbar component, contains navigation tabs for ICAP Performanc
 
 #### flask_server.py and flask_server_scaled.py
 
-These represent the Flask server back end. They are both very similar in implementations, but "flask_server.py" is used with the OVA, while "flask_server_scaled.py" is used for the scaled solution. The server receives POST and GET requests from the front end and triggers the corresponding scripts.
+These represent the Flask server back end. They are both very similar in implementations, but "flask_server.py" is used with the OVA, while "flask_server_scaled.py" is used for the scaled solution. The server receives POST and GET requests from the front end and triggers the appropriate scripts/methods.
 
-The forms sent from the UI (packed into a FormData object) are unpacked by the Flask server into a JSON representation, and depending on their contents, this script will call the necessary scripts. For example, if the request is from the Setup form, and it contains a file, the method for handing file uploads will be called along with the method that updates the config.env file. It also looks for 'button' in the JSON object (which represents a form submitted via the front end) to determine what the request is. The "button" attribute can contain "generate_load", "stop_individual_test", "setup_config", or "update" for those tasks.
+The forms sent from the UI (packed into FormData objects) are unpacked by the Flask server into a JSON representation, and depending on their contents, this script will call the necessary methods from other scripts. For example, if the request is from the Setup form, and it contains a file, the method for handling file uploads will be called along with the method that updates the config.env file. It also looks for 'button' in the JSON object (which represents what button was pressed in the UI) to determine what the request is. The "button" attribute can contain "generate_load", "stop_individual_test", "setup_config", or "update" for those tasks.
 
 This class also contains the array of repository folders that uploaded csv files get copied to. If a new folder for a new load type is added, it will need to be inserted into this array.
 
@@ -182,17 +182,17 @@ Whenever a new parameter is to be added to the project, the programmer should st
 
 #### create_dashboard.py
 
-This is responsible for creating dashboards. In the case of execution from the UI, it will create dashboards in the Grafana instance running on the same machine as the server, but will use that server's public IP to provide the dashboard link back to users. This is why the parameter "GRAFANA_URL" should contain the public IP of the machine hosting the Grafana instance.
+This is responsible for creating dashboards. In the case of execution from the UI, it will create dashboards in the Grafana instance running on the same machine as the server using the localhost IP, but it will use that server's public IP to provide the dashboard link back to users. This is why the parameter "GRAFANA_URL" should contain the public IP of the machine hosting the Grafana instance.
 
-This class also modifies dashboard contents in a limited capacity (for example modifying test run information in the JSON template before creating the dashboard). It also adjusts dashboard templates that might be missing required tags and ensures the dashboard template contains both id and uid attributes, and that those attributes are set to null (this is required when creating Grafana dashboards using JSON templates).
+This class also modifies dashboard contents (for example modifying test run information in the JSON template before creating the dashboard, adding prefixes to measurements). It also adjusts dashboard templates that might be missing required tags and ensures the dashboard template contains both id and uid attributes, and that those attributes are set to null (this is required when creating Grafana dashboards using JSON templates).
 
 #### create_stack_dash.py
 
 This is the master script of this framework responsible for orchestrating load generation by calling whatever scripts are required for both that and dashboard creation. [A more detailed look at this class can be seen in the instructions file created for it.](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/instructions/how-to-use-create_stack_dash.md)
 
-The class can be split into three major sections. The first contains a fairly lengthy list of parameters that can be input via running this class from the CLI (under a method called "__get_command_line_args()"). The second contains the various methods that call the scripts that generate load (create_stack.py) and generate dashboard (create_dashboard.py). The final part is the method called when it is run from CLI. It contains a list of assignment statements that serve to prioritize CLI input over config.env parameters (this is explained in more detail in instructions file linked above).
+The class can be split into three major sections. The first contains a fairly lengthy list of parameters that can be input via running this class from the CLI (under a method called "__get_command_line_args()"). The second contains the various methods that call the scripts that generate load (create_stack.py) and generate dashboard (create_dashboard.py). The final part is the method called when it is run from CLI. It contains a list of assignment statements that serve to prioritize CLI arguments input over config.env parameters (this is explained in more detail in instructions file linked above).
 
-To add parameters to this project, you would need to add them the __get_command_line_args method and ensure they get assigned in the main method that is run via the CLI (the final method in the file). Parameters would also need to be added to create_stack.py (see the create_stack.py section above for more information).
+To add parameters to this project, you would need to add them to the __get_command_line_args method and ensure they get assigned in the main method that is run via the CLI (the final method in the file). Parameters would also need to be added to create_stack.py (see the create_stack.py section above for more information).
 
 #### ui_tasks.py
 
@@ -200,7 +200,7 @@ This is a utility class that contains all the methods used for processing input 
 
 #### ui_setup.py
 
-This contains the methods used when the setup form is submitted from the UI. It updates both the Config object as well as the config.env file with newly input parameters. It also saves uploaded csv files to each of the folders containing the different scripts/dashboards for the various load types.
+This contains the methods used when the setup form is submitted from the UI. It updates both the Config object as well as the config.env file with newly input parameters. It also saves uploaded csv files to each of the folders containing the different scripts/dashboards for the various load types. Finally, it retrieves
 
 #### database_ops.py
 
@@ -232,11 +232,11 @@ If those values have been changed due to a previous run, they will need to be mo
 
 ### Generate Load is clicked, but gets stuck at "Generating Load..." or displays error message
 
-Most of the time, this is and issue related to parameters in the config.env file that are either invalid or missing. These are the most common issues ones:
+Most of the time, this is and issue related to parameters in the config.env file that are either invalid or missing. These are the most common ones:
 - The Grafana API key is invalid or expired
 - The Grafana URL does not end with the correct port (i.e. ":3000")
 - Incorrect IPs are used for Grafana/InfluxDB
-- AWS profile is not setup or USE_IAM_ROLE=yes is missing/set to "no"
+- AWS profile is not set up or the parameter "USE_IAM_ROLE=yes" is either missing or set to "no"
 
 Other possible reasons unrelated to the config.env file are:
 - The front end and back end are not connected. This could be due to a change in IP address. The UI front end relies on its machine's public IP to connect to itself. This IP can be found in "AppSettings.ts", and can be set using "changeIP.sh" (please see the section on changeIP.sh on how to do this). A useful way to test this is to stop the flask server currently running using the following for the scaled solution then start it up from the scripts folder to see any error output it may provide:
@@ -316,6 +316,7 @@ At the python back end:
 1. The load type should be added to the LoadType enum in ui_tasks.py
 2. A folder should be created for that load type containing the associated scripts, dashboard templates, and csv files. Config.env will look into this folder using the "TEST_DIRECTORY" variable.
 3. In ui_tasks.py, and entry for this new load type should be added in the "determine_load_type" with assignments done in the same manner as other load types there.
+4. In flask_server_scaled.py, the new load type's folder must be added to the possible upload locations so that uploaded csv files (via the Setup form) find their way to the right locations.
 
 At the Angular UI front end:
 
