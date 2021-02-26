@@ -140,6 +140,7 @@ This component is used to change configurations/environment variables in the con
 2. It auto populates its fields using existing values from the current config.env file to give users and idea of what is currently there. It does this via a GET request that is made to the back end as soon as the page is navigated to.
 3. It allows the automatic upload of test data to the Test Data S3 bucket if that data is not already there.
 4. It allows the upload of csv test file lists to all the test directories associated with each load type.
+5. It can return with one of three possible results: Failure, Success, and PartialSuccess. Failure means none of the config.env values were updated, nothing was uploaded. Success means everything succeeded. Partial success means that config.env values did indeed get updated, but upload to S3 failed.
 
 The methods associated with this form's functionality in the back end are located in the [ui_setup.py](https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/ui_setup.py) file of the project.
 
