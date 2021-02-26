@@ -9,6 +9,8 @@ def terminate_java_processes():
     script_path = os.path.join(dir_path, "stopTests.sh")
     os.chmod(script_path, 0o771)
     subprocess.Popen([script_path])
+    from run_local_test import running_tests
+    running_tests.clear()
 
 
 def modify_hosts_file(ip_addr: str, ova=False):

@@ -10,11 +10,25 @@ import { ConfigFormComponent } from './config-form/config-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { CookieService } from 'ngx-cookie-service';
+import { TestsTableComponent } from './tests-table/tests-table.component';
+import { MatTableModule } from '@angular/material/table';
+import { ResultsTableComponent } from './results-table/results-table.component';
+import { SetupFormComponent } from './setup-form/setup-form.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { RouterModule } from '@angular/router'
+import { LoadPipe } from './common/Pipes/load.pipe';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ConfigFormComponent
+    ConfigFormComponent,
+    TestsTableComponent,
+    ResultsTableComponent,
+    SetupFormComponent,
+    NavbarComponent,
+    LoadPipe,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -23,9 +37,15 @@ import { CookieService } from 'ngx-cookie-service';
     ReactiveFormsModule,
     HttpClientModule,
     CommonModule,
+    MatTableModule,
     ConfirmationPopoverModule.forRoot({
       confirmButtonType: 'warning'
-    })
+    }),
+    RouterModule.forRoot([
+      { path: '', component: ConfigFormComponent},
+      { path: 'setup', component: SetupFormComponent},
+      { path: 'admin', component: AdminComponent}
+    ], {useHash: true})
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [FormBuilder, CookieService],

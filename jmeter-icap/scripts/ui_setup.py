@@ -7,7 +7,7 @@ import shutil
 CONFIG_ENV_PATH = './config.env'
 
 
-def update_config_env(setup_json):
+def update_config_env(setup_json, ova=False):
     result = 0
     found = dotenv.find_dotenv(CONFIG_ENV_PATH)
     if not found:
@@ -32,7 +32,7 @@ def update_config_env(setup_json):
             dotenv.set_key(CONFIG_ENV_PATH, "CLIENT_SECRET", setup_json['client_secret'], "never")
             Config.client_secret = setup_json['client_secret']
 
-    if setup_json['upload_test_data']:
+    if setup_json['upload_test_data'] and not ova:
         result = upload_test_data_to_s3(Config)
     return result
 
@@ -80,7 +80,7 @@ def run_project_update():
     return output
 
 
-def save_csv_file(file, target_directories, allowed_extensions):
+def save_csv_file(file, target_directories, allowed_extensions, ova=False):
 
     if not file.filename.lower().endswith(tuple(allowed_extensions)):
         return
@@ -92,8 +92,8 @@ def save_csv_file(file, target_directories, allowed_extensions):
     file_to_copy = os.path.join(target_directories[0], file.filename)
     file.save(file_to_copy)
 
-    # copy the save file from first directory to all other directories
-    for directory in target_directories[1:]:
-        if os.path.exists(directory):
-            shutil.copy(file_to_copy, directory)
-
+    if not ova:
+        # copy the save file from first directory to all other directories
+        for directory in target_directories[1:]:
+            if os.path.exists(directory):
+                shutil.copy(file_to_copy, directory)
