@@ -32,10 +32,14 @@
     {
         "type": "shell-local",
         "inline": "aws s3 cp  jmeter-icap/cloudformation/  s3://aws-test-engine-cf-templates/ --recursive"
-    }
+    },
     {
         "type": "shell",
         "script": "jmeter-icap/deployment/packer/provisioning_scripts/loki.sh"
+    },
+    {
+        "type": "shell",
+        "script": "jmeter-icap/deployment/packer/provisioning_scripts/promtail.sh"
     },
     {
         "type": "shell",
