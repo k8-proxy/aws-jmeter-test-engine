@@ -200,7 +200,7 @@ This is a utility class that contains all the methods used for processing input 
 
 #### ui_setup.py
 
-This contains the methods used when the setup form is submitted from the UI. It updates both the Config object as well as the config.env file with newly input parameters. It also saves uploaded csv files to each of the folders containing the different scripts/dashboards for the various load types. Finally, it retrieves
+This contains the methods used when the setup form is submitted from the UI. It updates both the Config object as well as the config.env file with newly input parameters. It also saves uploaded csv files to each of the folders containing the different scripts/dashboards for the various load types. Finally, it retrieves config.env parameters and sends them back the UI setup component. These parameters populate their respective fields in the setup form, allowing the user to see what those values are and decide what needs to be changed.
 
 #### database_ops.py
 
