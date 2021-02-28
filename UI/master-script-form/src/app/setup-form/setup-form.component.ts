@@ -43,28 +43,10 @@ export class SetupFormComponent implements OnInit {
 
   initializeForm(): void {
     this.setupForm = this.fb.group({
-      region: AppSettings.regions[0],
-      script_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
-      test_data_bucket: new FormControl('', [Validators.required, Validators.pattern(/^[0-9a-z.-]*$/), ConfigFormValidators.cannotContainSpaces]),
-      upload_test_data: false,
-      test_data_access_secret: new FormControl('', [Validators.required]),
       tenant_id: new FormControl(''),
       client_id: new FormControl(''),
       client_secret: new FormControl('')
     });
-  }
-
-  get region() {
-    return this.setupForm.get('region');
-  }
-  get script_bucket() {
-    return this.setupForm.get('script_bucket');
-  }
-  get test_data_bucket() {
-    return this.setupForm.get('test_data_bucket');
-  }
-  get test_data_access_secret() {
-    return this.setupForm.get('test_data_access_secret');
   }
   get tenant_id() {
     return this.setupForm.get('tenant_id');
@@ -141,12 +123,6 @@ export class SetupFormComponent implements OnInit {
   }
 
   setFormFieldsFromServerData(serverData) {
-    if(AppSettings.regions.includes(serverData['region'])) {
-      this.region.setValue(serverData['region']);
-    }
-    this.script_bucket.setValue(serverData['script_bucket']);
-    this.test_data_bucket.setValue(serverData['test_data_bucket']);
-    this.test_data_access_secret.setValue(serverData['test_data_access_secret']);
     this.tenant_id.setValue(serverData['tenant_id']);
     this.client_id.setValue(serverData['client_id']);
     this.client_secret.setValue(serverData['client_secret']);

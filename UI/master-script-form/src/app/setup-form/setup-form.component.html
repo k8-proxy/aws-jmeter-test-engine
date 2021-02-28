@@ -5,53 +5,11 @@
 <form [formGroup]="setupForm" (ngSubmit)="onSubmit()" name="setupForm">
 
     <div class="form-group">
-        <label>Region</label>
-        <select class="form-control" formControlName="region">
-            <option *ngFor="let region of regions" [ngValue]="region">{{region}}</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Script Bucket*</label>
-        <input type="text" class="form-control" formControlName="script_bucket" placeholder="">
-        <small class="form-text text-muted">The bucket where scripts will be uploaded to *This field is required.</small>
-        <div *ngIf="script_bucket.invalid">
-            <div class="alert alert-danger" *ngIf="script_bucket.touched && script_bucket.errors.required">This field is required.</div>
-            <div class="alert alert-danger" *ngIf="script_bucket.dirty && script_bucket.errors.pattern || script_bucket.errors.cannotContainSpaces">Bucket names can consist only of lowercase letters, numbers, dots (.), and hyphens (-).</div>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Test Data Bucket*</label>
-        <input type="text" class="form-control" formControlName="test_data_bucket" placeholder="">
-        <small class="form-text text-muted">The bucket that will contain test data files *This field is required.</small>
-        <div *ngIf="test_data_bucket.invalid">
-            <div class="alert alert-danger" *ngIf="test_data_bucket.touched && test_data_bucket.errors.required">This field is required.</div>
-            <div class="alert alert-danger" *ngIf="test_data_bucket.dirty && test_data_bucket.errors.pattern || test_data_bucket.errors.cannotContainSpaces">Bucket names can consist only of lowercase letters, numbers, dots (.), and hyphens (-).</div>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>
-            <input type="checkbox" formControlName="upload_test_data" type="checkbox"> Upload Test Data to S3 Test Data Bucket
-        </label>
-    </div>
-
-    <div class="form-group">
         <label>Choose Test Data File List (only .csv files are accepted):</label>
         <input type="file" class="form-control-file" accept=".csv" (change)="handleFileInput($event.target.files)">
     </div>
     <div *ngIf="showUploadFileTypeWarning">
         <div class="alert alert-danger">Only .csv files will be uploaded.</div>
-    </div>
-
-    <div class="form-group">
-        <label>Test Data Access Secret*</label>
-        <input type="text" class="form-control" formControlName="test_data_access_secret" placeholder="">
-        <small class="form-text text-muted">The secret stored in AWS Secrets Manager containing the credentials of the IAM user that has S3 read/write permissions for the above buckets *This field is required.</small>
-        <div *ngIf="test_data_access_secret.invalid">
-            <div class="alert alert-danger" *ngIf="test_data_access_secret.touched && test_data_access_secret.errors.required">This field is required.</div>
-        </div>
     </div>
 
     <div class="form-group">
@@ -72,7 +30,7 @@
         <small class="form-text text-muted">Client Secret value (for use with SharePoint)</small>
     </div>
 
-    <button id="submit" type="button" class="btn btn-primary" [disabled]="!isValid" mwlConfirmationPopover 
+    <button id="submit" type="button" class="btn btn-primary" mwlConfirmationPopover 
     [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage" placement="right"
     (confirm)="onSubmit()">
          {{ submitButtonText }} 

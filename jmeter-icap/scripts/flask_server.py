@@ -42,7 +42,7 @@ def parse_request():
         elif button_pressed == 'setup_config':
             data = json.loads(request.form.get('form'))
             print('Setup Data sent from UI: {0}'.format(data))
-            result = update_config_env(data)
+            result = update_config_env(data, ova=True)
 
             if 'file' in request.files:
                 file = request.files['file']
