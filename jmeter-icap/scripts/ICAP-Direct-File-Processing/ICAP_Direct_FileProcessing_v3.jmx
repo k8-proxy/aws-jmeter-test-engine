@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.3">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -867,6 +867,18 @@ s3p_out = Runtime.getRuntime().exec(removeOutFile);
 s3p_out.waitFor();
 
 log.info(&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; file deleted from out folder &quot;);
+
+
+log.info(&quot;Cleaning file from in folder &quot;);
+
+//clean out folder
+String removeInFile=&quot;rm -Rf &quot;+&quot;${inPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+s3p_out = Runtime.getRuntime().exec(removeInFile);
+s3p_out.waitFor();
+
+log.info(&quot;${inPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; file deleted from in folder &quot;);
+
+
 /*
 // Read the output of the command and log it
 BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -1142,7 +1154,7 @@ log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString(
         </TestAction>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Get ICAP server status" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Get ICAP server status &amp; Clean Files" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -1327,6 +1339,61 @@ log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString(
           <stringProp name="filename">/home/son/icapserver.jtl</stringProp>
         </ResultCollector>
         <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Clean Files" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CleanOutFile" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">
+
+
+
+log.info(&quot;Cleaning file from files older than 10 mins from in folder &quot;);
+
+//clean out folder
+String removeAllInFile=&quot;sudo find in -mmin +10 -type f -exec rm -fv {} \\;&quot;;
+s3p_out = Runtime.getRuntime().exec(removeAllInFile);
+s3p_out.waitFor();
+
+log.info(&quot;All files older than 10 mins from in folder have been deleted&quot;);
+
+
+
+log.info(&quot;Cleaning file from files older than 10 mins from out folder &quot;);
+
+//clean in folder
+String removeAllOutFile=&quot;sudo find out -mmin +10 -type f -exec rm -fv {} \\;&quot;;
+s3p_out = Runtime.getRuntime().exec(removeAllOutFile);
+s3p_out.waitFor();
+
+log.info(&quot;All files older than 10 mins from out folder have been deleted&quot;);
+
+/*
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+
+in.readLine();
+String line;
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;OK&quot;))
+     SampleResult.setSuccessful(false);
+     break;
+     
+}
+
+in.close();
+log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
       </hashTree>
     </hashTree>
   </hashTree>
