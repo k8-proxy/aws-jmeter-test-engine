@@ -954,6 +954,102 @@
 						]
 					},
 					{
+						"alias": "png-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "L",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "png_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "tif-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "L",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "tif_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
+						"alias": "jpg-ICAP-Document-Process-Success",
+						"groupBy": [],
+						"measurement": "jmetericap",
+						"orderByTime": "ASC",
+						"policy": "default",
+						"refId": "L",
+						"resultFormat": "time_series",
+						"select": [
+							[
+								{
+									"params": [
+										"pct95.0"
+									],
+									"type": "field"
+								}
+							]
+						],
+						"tags": [
+							{
+								"key": "transaction",
+								"operator": "=",
+								"value": "jpg_ICAP-Document-Process"
+							},
+							{
+								"condition": "AND",
+								"key": "statut",
+								"operator": "=",
+								"value": "ok"
+							}
+						]
+					},
+					{
 						"alias": "rtf-ICAP-Document-Process-Success",
 						"groupBy": [],
 						"measurement": "jmetericap",
