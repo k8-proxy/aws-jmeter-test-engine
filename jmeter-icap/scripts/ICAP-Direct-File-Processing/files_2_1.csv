@@ -1,0 +1,2 @@
+id,filename,path,size,type,isMalicious,original_hash,rebuild_hash,date_created,virus_total_status,gw_rebuild_xml_status,gw_rebuild_file_status
+1,cmw-r6-4.ppt,ppt/3e5e1ce1fd265bd79bfa3d440ef483eca7c26354577e922095dcf3931a712919,46081 bytes,ppt,False,3e5e1ce1fd265bd79bfa3d440ef483eca7c26354577e922095dcf3931a712919,aa8d7cd1cd8af9bc8c0eca974a311e5e289262e439952c25d9af8aab87d5e286,2020-10-23 16:57:55.291563,False,True,True
