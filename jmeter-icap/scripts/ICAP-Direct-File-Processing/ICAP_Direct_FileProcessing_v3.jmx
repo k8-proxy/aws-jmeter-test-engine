@@ -479,12 +479,7 @@ while( (line = in.readLine()) != null) {
      log.info(&quot;200 Response, OK hash &quot;+line);
   }
 
-  if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)&amp;&amp;!out_checksum.equals(&quot;not found&quot;)) {
-  	SampleResult.setSuccessful(false);
-     SampleResult.setResponseCode(&quot;555&quot;);
-     log.info(&quot;Hash is mismatching &quot;+ &quot;Rebuild hash is &quot;+ &quot;${rebuild_hash}&quot;+&quot;.Out File Hash is &quot;+out_checksum+ &quot;.Out file is &quot;+outFile);
-     log.info(fileId+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
-  }
+  
 
   /*if (line.contains(&quot;failed/timedout&quot;)) {
 
@@ -578,6 +573,13 @@ while( (line = in.readLine()) != null) {
      if (&quot;${rebuild_hash}&quot;.equals(&quot;NULL&quot;))
      SampleResult.setSuccessful(true);
      break;
+  }
+  
+  if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)&amp;&amp;!out_checksum.equals(&quot;not found&quot;)) {
+  	SampleResult.setSuccessful(false);
+     SampleResult.setResponseCode(&quot;555&quot;);
+     log.info(&quot;Hash is mismatching &quot;+ &quot;Rebuild hash is &quot;+ &quot;${rebuild_hash}&quot;+&quot;.Out File Hash is &quot;+out_checksum+ &quot;.Out file is &quot;+outFile);
+     log.info(fileId+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
   }
 }
 
