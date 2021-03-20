@@ -42,7 +42,19 @@ sudo systemctl start flask_scaled
 sudo systemctl status flask_scaled
 sleep 10
 sudo netstat  -ntlp
+
+sudo bash -c 'cat << EOF >> /etc/systemd/system/changeIP.service
+[Unit]
+After=network.service
+
+[Service]
+ExecStart=/opt/git/aws-jmeter-test-engine/jmeter-icap/scripts/changeIP.sh
+
+[Install]
+WantedBy=default.target
+EOF'
+sudo chmod 664 /etc/systemd/system/changeIP.service
 cd /opt/git/aws-jmeter-test-engine/jmeter-icap/scripts
 sudo bash -c "chmod +x changeIP.sh"
-sudo cp changeIP.sh /etc/init.d/changeIP.sh
-sudo ln -s /etc/init.d/changeIP.sh /etc/rc.d/
+sudo systemctl daemon-reload
+sudo systemctl enable changeIP.service
