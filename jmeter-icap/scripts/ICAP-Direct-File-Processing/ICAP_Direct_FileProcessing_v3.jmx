@@ -166,7 +166,7 @@
           <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
         </BeanShellSampler>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-MoveFile2inFolder" enabled="false">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-MoveFile2inFolder" enabled="false">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -242,7 +242,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           </JSR223Sampler>
           <hashTree/>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-MoveFile2inFolder" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-MoveFile2inFolder" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -314,7 +314,7 @@ FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
           <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-Document-Process" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-Document-Process" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -461,7 +461,29 @@ String line;
 String respCode;
 String fileId=&quot;0&quot;;
 log.info(&quot;rebuild hash is &quot;+&quot;${rebuild_hash}&quot;);
+<<<<<<< Updated upstream
+=======
+StringBuilder sb = new StringBuilder();
+in.mark(500);
+//get file id
+while( (line2 = in2.readLine()) != null) {
 
+sb.append(line2 + &quot;\n&quot;);
+
+ if (line2.contains(&quot;X-Adaptation-File-Id&quot;)) {
+     fileId=line2;
+    log.info(line2+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
+    
+  }
+}
+
+sb.append(&quot;origin rebuild hash=&quot;+&quot;${rebuild_hash}&quot;+&quot;\n&quot;);
+sb.append(&quot;processed outfile hash=&quot;+out_checksum.toString()+&quot;\n&quot;);
+sb.append(&quot;file name=&quot;+&quot;${fileName}&quot;+&quot;\n&quot;);
+>>>>>>> Stashed changes
+
+in.reset();
+log.info(&quot;just before line&quot;);
 while( (line = in.readLine()) != null) {
   logCommandOutput.append(line);
   log.info(&quot;line is &quot;+line);
@@ -477,6 +499,7 @@ while( (line = in.readLine()) != null) {
      SampleResult.setResponseCode(&quot;200&quot;);
      processedOK=true;
      log.info(&quot;200 Response, OK hash &quot;+line);
+     break;
   }
 
   
@@ -492,6 +515,11 @@ while( (line = in.readLine()) != null) {
   if (line.contains(&quot;ICAP/1.0 204&quot;)) {
      SampleResult.setResponseCode(&quot;204&quot;);
      SampleResult.setSuccessful(true);
+<<<<<<< Updated upstream
+=======
+     processedOK=true;
+     respCode=&quot;204&quot;;
+>>>>>>> Stashed changes
      SampleResult.setResponseMessage(&quot;No modifications needed&quot;);
      log.info(&quot;Response Code is 204&quot;);
      break;
@@ -571,7 +599,11 @@ while( (line = in.readLine()) != null) {
      log.info(&quot;Response Code is HTTP/1.0 403 Forbidden. File is &quot;+ &quot;${fileName}&quot;);
      log.info(fileId+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
      if (&quot;${rebuild_hash}&quot;.equals(&quot;NULL&quot;))
-     SampleResult.setSuccessful(true);
+     {
+     	SampleResult.setSuccessful(true);
+     	processed=true;
+     }
+     
      break;
   }
   
@@ -582,6 +614,7 @@ while( (line = in.readLine()) != null) {
      log.info(fileId+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
   }
 }
+log.info(&quot;just after line&quot;);
 
 //if (!(SampleResult.isSuccessful())) {
 	
@@ -589,7 +622,14 @@ while( (line = in.readLine()) != null) {
 //	}
 
 in.close();
+<<<<<<< Updated upstream
 log.info(&quot;Upload Output: &quot; + logCommandOutput.toString());
+=======
+in2.close();
+log.info(&quot;Upload Output: &quot; + sb.toString());
+log.info(&quot;this is my script &quot;+fileId+&quot;-&quot;+respCode);
+log.info(&quot;testing&quot;);
+>>>>>>> Stashed changes
 
 
 if (processedOK==false) {
@@ -660,7 +700,7 @@ if (processedOK==false) {
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-Copy to S3 Out" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-Copy to S3 Out" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -847,7 +887,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-CleanOutFile" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-CleanOutFile" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -1027,7 +1067,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">/Users/faridsha/Documents/icaptest-s35.log</stringProp>
+          <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
