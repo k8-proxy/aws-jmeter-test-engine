@@ -11,9 +11,12 @@ The framework is designed to work on CSV file that contains the following minimu
 - filename,path,type,original_hash,rebuild_hash
 
 
-**filename**- name of file with extension: test.pdf
-**path**- location of the file. Structure is fileType/fileHash, for example: pdf/e7969907ce62ff7b3962a51a0c2dc926480453b04813c7071f6417d0138ced8c. The path does not necessarily need to have fileHash as subfolder name.
+**filename** - name of file with extension: test.pdf
+
+**path** - location of the file. Structure is fileType/fileHash, for example: pdf/e7969907ce62ff7b3962a51a0c2dc926480453b04813c7071f6417d0138ced8c. The path does not necessarily need to have fileHash as subfolder name.
+
 **original_hash**: the file hash calculated before processing with SHA-256 algorithm
+
 **rebuild_hash**: the out file hash calculated with SHA-256 algorithm
 
 (https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/jmeter-icap/scripts/ICAP-Direct-File-Processing/gov_uk_files.csv is example comprehensive meta data CSV file, but minimum required fields are mentioned above)
