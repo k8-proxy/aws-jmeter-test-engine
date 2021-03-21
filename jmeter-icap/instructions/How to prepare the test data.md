@@ -31,7 +31,7 @@ Once test files are in s3 bucket then we have to set the load test framework to 
 
 The framework UI interface allows to upload new CSV test data metada file. It is in UI -> Setup page. 
 
-![setup-dataset](img/how-to-change-data-set-metadata)
+![setup-dataset](img/how-to-change-data-set-metadata.png)
 
 Select the new CSV and click on Submit Configurations button.
 
