@@ -2,7 +2,7 @@
 
 This instruction assumes basic Load Test framework setup is done using the main instructions in https://github.com/k8-proxy/aws-jmeter-test-engine/blob/master/README.md
 
-The framework comes to setup sample test data and the data should be uploaded to the s3 test data bucket as described in documentation in above link.
+The framework comes with sample test data and the data should be uploaded to the s3 test data bucket as described in documentation in above link.
 
 **Question comes how to prepare new data set?**
 
