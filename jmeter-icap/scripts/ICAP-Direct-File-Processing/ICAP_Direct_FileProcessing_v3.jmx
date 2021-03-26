@@ -129,7 +129,7 @@
       </Arguments>
       <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
@@ -166,7 +166,7 @@
           <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
         </BeanShellSampler>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${filetype}_ICAP-MoveFile2inFolder" enabled="false">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-MoveFile2inFolder" enabled="false">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -242,7 +242,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           </JSR223Sampler>
           <hashTree/>
         </hashTree>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-MoveFile2inFolder" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-MoveFile2inFolder" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -314,7 +314,7 @@ FileUtils.copyInputStreamToFile(inputStream, new File(inFileName));
           <stringProp name="ActionProcessor.duration">${__Random(2000,5000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-Document-Process" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-Document-Process" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -337,6 +337,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 
 String uuid=vars.get(&quot;uid&quot;);
 /*log.info(&quot;UUID is &quot;+uuid);
@@ -451,6 +452,7 @@ log.info(&quot;Out file hash is &quot;+out_checksum);
 
 // Read the output of the command and log it
 BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+//BufferedReader in2=in;
 StringBuilder logCommandOutput = new StringBuilder();
 //in.readLine();
 //in.readLine();
@@ -458,143 +460,209 @@ StringBuilder logCommandOutput = new StringBuilder();
 SampleResult.setSuccessful(false);
 processedOK=false;
 String line;
-String respCode;
+String line2;
+String respCode=&quot;0&quot;;
 String fileId=&quot;0&quot;;
 log.info(&quot;rebuild hash is &quot;+&quot;${rebuild_hash}&quot;);
+//StringBuilder sb = new StringBuilder();
+//try {
+//in.mark(510);
+//get file id
+/*while( (line2 = in2.readLine()) != null) {
 
+sb.append(line2 + &quot;\n&quot;);
+
+ if (line2.contains(&quot;X-Adaptation-File-Id&quot;)) {
+     fileId=line2;
+    log.info(line2+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
+    
+  }
+}
+
+sb.append(&quot;origin rebuild hash=&quot;+&quot;${rebuild_hash}&quot;+&quot;\n&quot;);
+sb.append(&quot;processed outfile hash=&quot;+out_checksum.toString()+&quot;\n&quot;);
+sb.append(&quot;file name=&quot;+&quot;${fileName}&quot;+&quot;\n&quot;);
+
+in.reset();
+}
+
+ catch (Exception e){
+
+     log.info (&quot;Something is wrong with reading output &quot;);
+
+   } */
+
+log.info(&quot;just before line&quot;);
 while( (line = in.readLine()) != null) {
-  logCommandOutput.append(line);
+  logCommandOutput.append(line+&quot;\n&quot;);
   log.info(&quot;line is &quot;+line);
 
- if (line.contains(&quot;X-Adaptation-File-Id&quot;)) {
+  if (line.contains(&quot;X-Adaptation-File-Id&quot;)) {
      fileId=line;
     log.info(line+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
-  }
-
+    
+   }
   
   if (line.contains(&quot;ICAP/1.0 200 OK&quot;)&amp;&amp;&quot;${rebuild_hash}&quot;.equals(out_checksum)) {
      SampleResult.setSuccessful(true);
      SampleResult.setResponseCode(&quot;200&quot;);
+     respCode=&quot;200&quot;;
      processedOK=true;
      log.info(&quot;200 Response, OK hash &quot;+line);
+    // break;
   }
-
   
-
-  /*if (line.contains(&quot;failed/timedout&quot;)) {
-
-  	SampleResult.setResponseCode(&quot;556&quot;);
-     SampleResult.setSuccessful(false);
-     SampleResult.setResponseMessage(&quot;Connection Time Out&quot;);
-     log.info(&quot;Response Code is 556&quot;+ &quot;Connection Time Out&quot;);
-  	
-  	}*/
+  else
   if (line.contains(&quot;ICAP/1.0 204&quot;)) {
      SampleResult.setResponseCode(&quot;204&quot;);
      SampleResult.setSuccessful(true);
+     processedOK=true;
+     respCode=&quot;204&quot;;
      SampleResult.setResponseMessage(&quot;No modifications needed&quot;);
      log.info(&quot;Response Code is 204&quot;);
-     break;
+     //break;
   }
+  else
   if (line.contains(&quot;ICAP/1.0 500&quot;)) {
      SampleResult.setResponseCode(&quot;500&quot;);
      SampleResult.setResponseMessage(&quot;500 Internal server error&quot;);
+     respCode=&quot;500&quot;;
      log.info(&quot;Response Code is 500&quot;);
-     break;
+     //break;
   }
 
+  else
   if (line.contains(&quot;ICAP/1.0 503&quot;)) {
      SampleResult.setResponseCode(&quot;503&quot;);
      SampleResult.setResponseMessage(&quot;Service overloaded&quot;);
+     respCode=&quot;503&quot;;
      log.info(&quot;Response Code is 503&quot;);
-     break;
+     //break;
   }
+  else
   if (line.contains(&quot;ICAP/1.0 400&quot;)) {
      SampleResult.setResponseCode(&quot;400&quot;);
      SampleResult.setResponseMessage(&quot;400 Bad request.&quot;);
+     respCode=&quot;400&quot;;
      log.info(&quot;Response Code is 400&quot;);
-     break;
+     //break;
   }
+  else
   if (line.contains(&quot;ICAP/1.0 502&quot;)) {
      SampleResult.setResponseCode(&quot;502&quot;);
      SampleResult.setResponseMessage(&quot;502 Bad gateway.&quot;);
+     respCode=&quot;502&quot;;
      log.info(&quot;Response Code is 502&quot;);
-     break;
+     //break;
   }
+  else
   if (line.contains(&quot;ICAP/1.0 506&quot;)) {
      SampleResult.setResponseCode(&quot;506&quot;);
      SampleResult.setResponseMessage(&quot;506 Server too busy.r&quot;);
+     respCode=&quot;506&quot;;
      log.info(&quot;Response Code is 506&quot;);
-     break;
+     //break;
   }
+  else
   if (line.contains(&quot;ICAP/1.0 551&quot;)) {
      SampleResult.setResponseCode(&quot;551&quot;);
      SampleResult.setResponseMessage(&quot;551 Resource unavailable.&quot;);
+     respCode=&quot;551&quot;;
      log.info(&quot;Response Code is ICAP/1.0 551&quot;);
-     break;
+    // break;
   }
+  else
   if (line.contains(&quot;ICAP/1.0 403&quot;)) {
      SampleResult.setResponseCode(&quot;413&quot;);
      SampleResult.setResponseMessage(&quot;413 Forbidden&quot;);
+     respCode=&quot;413&quot;;
      log.info(&quot;Response Code is ICAP/1.0 403&quot;);
-     break;
+     //break;
   }
+  else
    if (line.contains(&quot;ICAP/1.0 404&quot;)) {
      SampleResult.setResponseCode(&quot;404&quot;);
      SampleResult.setResponseMessage(&quot;404 Service Not Found&quot;);
+     respCode=&quot;404&quot;;
      log.info(&quot;Response Code is ICAP/1.0 404&quot;);
-     break;
+     //break;
   }
+  else
     if (line.contains(&quot;ICAP/1.0 405&quot;)) {
      SampleResult.setResponseCode(&quot;405&quot;);
      SampleResult.setResponseMessage(&quot;405 Method Not Allowed&quot;);
+     respCode=&quot;405&quot;;
      log.info(&quot;Response Code is ICAP/1.0 405&quot;);
-     break;
+     //break;
   }
+  else
     if (line.contains(&quot;ICAP/1.0 408&quot;)) {
      SampleResult.setResponseCode(&quot;408&quot;);
      SampleResult.setResponseMessage(&quot;408 Request Timeout&quot;);
+     respCode=&quot;408&quot;;
      log.info(&quot;Response Code is ICAP/1.0 408&quot;);
-     break;
+     //break;
   }
-
+   else
    if (line.contains(&quot;Failed to connect to icap server&quot;)||line.contains(&quot;failed/timedout&quot;)) {
      SampleResult.setResponseCode(&quot;522&quot;);
      SampleResult.setResponseMessage(&quot;522 Failed to connect to icap server&quot;);
+     respCode=&quot;522&quot;;
      log.info(&quot;Response Code is 522&quot;);
-     break;
+     //break;
   }
+  else
   if (line.contains(&quot;HTTP/1.0 403 Forbidden&quot;)) {
      SampleResult.setResponseCode(&quot;403&quot;);
      SampleResult.setSuccessful(false);
      SampleResult.setResponseMessage(&quot;403 Fordbidden&quot;);
+     respCode=&quot;403&quot;;
      log.info(&quot;Response Code is HTTP/1.0 403 Forbidden. File is &quot;+ &quot;${fileName}&quot;);
      log.info(fileId+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
      if (&quot;${rebuild_hash}&quot;.equals(&quot;NULL&quot;))
-     SampleResult.setSuccessful(true);
-     break;
+     {
+     	SampleResult.setSuccessful(true);
+     	processed=true;
+     }
+     
+     //break;
   }
-  
-  if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)&amp;&amp;!out_checksum.equals(&quot;not found&quot;)) {
+  else 
+  if (!&quot;${rebuild_hash}&quot;.equals(out_checksum)&amp;&amp;!out_checksum.equals(&quot;not found&quot;)&amp;&amp;respCode.equals(&quot;0&quot;)) {
   	SampleResult.setSuccessful(false);
      SampleResult.setResponseCode(&quot;555&quot;);
+     respCode=&quot;555&quot;;
+     log.info (&quot;Response is &quot;+respCode);
      log.info(&quot;Hash is mismatching &quot;+ &quot;Rebuild hash is &quot;+ &quot;${rebuild_hash}&quot;+&quot;.Out File Hash is &quot;+out_checksum+ &quot;.Out file is &quot;+outFile);
      log.info(fileId+ &quot; for file &quot;+uuid+&quot;_${fileName}&quot;);
   }
+  
 }
+log.info(&quot;just after line&quot;);
 
 //if (!(SampleResult.isSuccessful())) {
 	
 //	vars.put(&quot;check&quot;,&quot;ng&quot;);
 //	}
 
+logCommandOutput.append(&quot;origin rebuild hash=&quot;+&quot;${rebuild_hash}&quot;+&quot;\n&quot;);
+logCommandOutput.append(&quot;processed outfile hash=&quot;+out_checksum.toString()+&quot;\n&quot;);
+logCommandOutput.append(&quot;file name=&quot;+&quot;${fileName}&quot;+&quot;\n&quot;);
 in.close();
+//in2.close();
 log.info(&quot;Upload Output: &quot; + logCommandOutput.toString());
+log.info(&quot;this is my script &quot;+fileId+&quot;-&quot;+respCode);
+
 
 
 if (processedOK==false) {
 	log.info (&quot;Processed status is &quot;+ processedOK);
 	vars.put(&quot;check&quot;,&quot;ng&quot;);
+	vars.put(&quot;fileId&quot;,fileId);
+	vars.put(&quot;responseCode&quot;,respCode);
+	vars.put(&quot;output&quot;,logCommandOutput.toString());
+	vars.put(&quot;filename&quot;,&quot;${fileName}&quot;);
+	log.info (&quot;File id and response code are &quot;+fileId+&quot;_&quot;+respCode+&quot;_{fileName}&quot;);
 }
 </stringProp>
             <stringProp name="scriptLanguage">java</stringProp>
@@ -660,7 +728,7 @@ if (processedOK==false) {
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-Copy to S3 Out" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-Copy to S3 Out" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -669,8 +737,7 @@ if (processedOK==false) {
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
-            <stringProp name="script">
-import com.amazonaws.auth.AWSCredentials;
+            <stringProp name="script">import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
@@ -683,6 +750,8 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
+
+log.info(&quot;check1&quot;);
 String uuid=vars.get(&quot;uid&quot;);
 log.info(&quot;S3:UUID is &quot;+uuid);
 
@@ -696,7 +765,7 @@ host = bucketName+&quot;.&quot;+service+&quot;.&quot;+region+&quot;.&quot;+&quot
 
 log.info(&quot;S3:Host is &quot;+host);
 
-
+log.info(&quot;check2&quot;);
 
         //put your accesskey and secretkey here
  private static final AWSCredentials credentials = new BasicAWSCredentials(
@@ -711,17 +780,30 @@ log.info(&quot;S3:Host is &quot;+host);
           .withRegion(region)
           .build();
 
- inFileName=&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
- originalFileName=vars.get(&quot;inPath&quot;)+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
- s3_originalFileName=vars.get(&quot;outputPath&quot;)+&quot;/&quot;+&quot;${prefix}&quot;+&quot;/&quot;+&quot;original_&quot;+uuid+&quot;_${fileName}&quot;;
- fileName=&quot;${outputPath}&quot;+&quot;/&quot;+&quot;${prefix}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+log.info(&quot;Starting s3 uploads &quot;);
+
 
 try {
  String isCheck=vars.get(&quot;check&quot;);
 
+
+ 
  log.info (&quot;Is Check value is &quot;+ isCheck);
 
+
+log.info(&quot;check6&quot;);
  if (isCheck.equals(&quot;ng&quot;)) {
+  String filename=vars.get(&quot;filename&quot;);	
+ inFileName=&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_&quot;+filename;;
+ originalFileName=vars.get(&quot;inPath&quot;)+&quot;/&quot;+uuid+&quot;_&quot;+filename;;
+ String output=vars.get(&quot;output&quot;);
+ String fileId=vars.get(&quot;fileId&quot;);
+ String filename=vars.get(&quot;filename&quot;);
+ String respCode=vars.get(&quot;responseCode&quot;);
+ String folderName= respCode+&quot;_&quot;+fileId+&quot;_&quot;+filename;
+ s3_originalFileName=vars.get(&quot;outputPath&quot;)+&quot;/&quot;+&quot;${prefix}&quot;+&quot;/&quot;+folderName+&quot;/&quot;+&quot;original_&quot;+uuid+&quot;_&quot;+filename;
+ fileName=&quot;${outputPath}&quot;+&quot;/&quot;+&quot;${prefix}&quot;+&quot;/&quot;+folderName+&quot;/&quot;+uuid+&quot;_&quot;+filename;
+ 
  log.info(&quot;S3: Copied file internal full path is &quot;+inFileName);
   try {
    s3client.putObject(
@@ -730,14 +812,16 @@ try {
           new File(inFileName)
         );
    log.info(&quot;S3:File is uploaded to out folder &quot;+fileName);
+   
+log.info(&quot;check7&quot;);
 
-}
+   }
 
-catch (Exception e){
+   catch (Exception e){
 
-log.info (&quot;S3: Something is wrong in uploading this file to s3 &quot;+ inFileName);
+     log.info (&quot;S3: Something is wrong in uploading this file to s3 &quot;+ inFileName);
 
-} 
+   } 
 
 //Upload original file
 
@@ -750,13 +834,34 @@ log.info(&quot;S3: Copied original file internal full path is &quot;+originalFil
         );
    log.info(&quot;S3:Original File is uploaded to out folder &quot;+s3_originalFileName);
 
-}
+   }
 
-catch (Exception e){
+  catch (Exception e){
 
-log.info (&quot;S3: Something is wrong in uploading original file to s3 &quot;+ s3_originalFileName);
+    log.info (&quot;S3: Something is wrong in uploading original file to s3 &quot;+ s3_originalFileName);
 
-} 
+   } 
+
+
+
+   logFile=vars.get(&quot;outputPath&quot;)+&quot;/&quot;+&quot;${prefix}&quot;+&quot;/&quot;+folderName+&quot;/&quot;+ &quot;response.log&quot;;
+
+   log.info(&quot;S3: Copy full response &quot;+logFile);
+  try {
+   s3client.putObject(
+          bucketName, 
+          logFile,
+          output
+        );
+   log.info(&quot;S3:Response log is copied to &quot;+logFile);
+
+   }
+
+  catch (Exception e){
+
+    log.info (&quot;S3: Something is wrong in uploading response log &quot;+ logFile);
+
+   } 
 
  }
 }
@@ -847,7 +952,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
           <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
         </TestAction>
         <hashTree/>
-        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${type}_ICAP-CleanOutFile" enabled="true">
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="${fileName}_ICAP-CleanOutFile" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
@@ -881,6 +986,171 @@ s3p_out.waitFor();
 log.info(&quot;${inPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; file deleted from in folder &quot;);
 
 
+/*
+// Read the output of the command and log it
+BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+StringBuilder logCommandOutput = new StringBuilder();
+
+in.readLine();
+String line;
+while( (line = in.readLine()) != null) {
+  logCommandOutput.append(line);
+  log.info(&quot;line is &quot;+line);
+  if (line.contains(&quot;OK&quot;))
+     SampleResult.setSuccessful(false);
+     break;
+     
+}
+
+in.close();
+log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <TestAction guiclass="TestActionGui" testclass="TestAction" testname="thinkTime" enabled="true">
+          <intProp name="ActionProcessor.action">1</intProp>
+          <intProp name="ActionProcessor.target">0</intProp>
+          <stringProp name="ActionProcessor.duration">${__Random(2000,10000,)}</stringProp>
+        </TestAction>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Upload_Jmeter_log" enabled="true">
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+          <boolProp name="TransactionController.parent">true</boolProp>
+        </TransactionController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="UploadJmeterLog" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;S3:UUID is &quot;+uuid);
+
+access_key = vars.get(&quot;aws_access_key&quot;);
+ secret_key = vars.get(&quot;aws_secret_key&quot;);
+service = vars.get(&quot;aws_service_name&quot;);
+bucketName = vars.get(&quot;s3bucketName&quot;);
+region=vars.get(&quot;aws_region&quot;);
+
+host = bucketName+&quot;.&quot;+service+&quot;.&quot;+region+&quot;.&quot;+&quot;amazonaws.com&quot;;
+
+log.info(&quot;S3:Host is &quot;+host);
+
+
+
+        //put your accesskey and secretkey here
+ private static final AWSCredentials credentials = new BasicAWSCredentials(
+          access_key, 
+          secret_key
+        );
+  
+  
+ AmazonS3 s3client = AmazonS3ClientBuilder
+          .standard()
+          .withCredentials(new AWSStaticCredentialsProvider(credentials))
+          .withRegion(region)
+          .build();
+
+
+ 
+
+try {
+ 
+ s3_originalFileName=&quot;/home/ec2-user/apache-jmeter-5.3/bin/jmeter.log&quot;;
+ fileName=&quot;${outputPath}&quot;+&quot;/&quot;+&quot;${prefix}&quot;+&quot;/&quot;+ &quot;jmeter.log&quot;;
+
+ log.info(&quot;S3: Copiying jmeter log file to &quot;+fileName);
+  try {
+   s3client.putObject(
+          bucketName, 
+          fileName,
+          new File(s3_originalFileName)
+        );
+   log.info(&quot;S3:Jmeter Log file is is uploaded to out folder &quot;+fileName);
+
+}
+
+catch (Exception e){
+
+log.info (&quot;S3: Something is wrong in uploading jmeter log file to s3 &quot;+ s3_originalFileName);
+
+} 
+
+
+}
+
+catch (Exception e){
+
+log.info (&quot;Jmeter log file was not available &quot;+ s3_originalFileName);
+
+} 
+</stringProp>
+            <stringProp name="scriptLanguage">java</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="S3 CLI copy" enabled="false">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// ********
+// Upload a file to ICAP server 
+//
+// Preconditions:
+// https://github.com/filetrust/program-icap/wiki/Using-the-C-ICAP-Test-Client
+// should be installed in same linux machine as jmeter
+//
+// ********
+
+String uuid=vars.get(&quot;uid&quot;);
+log.info(&quot;UUID is &quot;+uuid);
+//log.info(&quot;Coping files from s3 to localdisk&quot;);
+/*String s3cp=&quot;aws s3 cp s3://&quot;+vars.get(&quot;s3bucketName&quot;)+&quot;/${path}/&quot;+&quot;${fileName}&quot;+&quot; &quot;+vars.get(&quot;path&quot;)+&quot;/&quot;+&quot;${fileName}&quot;;
+
+// Create a process object and let this object execute the ping command
+Process s3p = Runtime.getRuntime().exec(s3cp);
+s3p.waitFor();
+log.info(&quot;File copied to in. &quot;+s3cp);
+
+log.info(Thread.currentThread().getName()+&quot;: &quot;+SampleLabel+&quot;: Document-Upload: &quot; + vars.get(&quot;icapServer&quot;));
+String command1 = &quot;/usr/local/c-icap/bin/c-icap-client -i &quot; + vars.get(&quot;icapServer&quot;)+&quot; -p 1344 -s gw_rebuild&quot;;    // for unix
+String command2=&quot; -f ${path}/${fileName} -o ${outputPath}/&quot;+uuid+&quot;_${fileName} -v&quot;;
+String command=command1+command2;
+// Print the generated status check command
+log.info(&quot;Command 1 is &quot;+command1);
+log.info(&quot;Command 2 is &quot;+command2);
+log.info(&quot;Full command is &quot;+command);
+
+// Create a process object and let this object execute the ping command
+Process p = Runtime.getRuntime().exec(command);
+p.waitFor();
+
+log.info(&quot;Execution complete.&quot;);
+*/
+String s3cp_out=&quot;aws s3 cp &quot;+ &quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;+&quot; s3://&quot;+vars.get(&quot;s3bucketName&quot;)+&quot;/${outputPath}/&quot;+uuid+&quot;_${fileName}&quot;;
+
+Process s3p_out = Runtime.getRuntime().exec(s3cp_out);
+s3p_out.waitFor();
+
+log.info(&quot;Out file copied to s3. &quot;+s3cp_out);
+
+//clean out folder
+String removeOutFile=&quot;rm -Rf &quot;+&quot;${outputPath}&quot;+&quot;/&quot;+uuid+&quot;_${fileName}&quot;;
+s3p_out = Runtime.getRuntime().exec(removeOutFile);
+s3p_out.waitFor();
 /*
 // Read the output of the command and log it
 BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -1027,7 +1297,7 @@ log.info(&quot;Output: &quot; + logCommandOutput.toString());*/</stringProp>
               <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">/Users/faridsha/Documents/icaptest-s35.log</stringProp>
+          <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
@@ -1346,7 +1616,7 @@ log.info(&quot;Resource Status check Output: &quot; + logCommandOutput.toString(
           <boolProp name="TransactionController.parent">true</boolProp>
         </TransactionController>
         <hashTree>
-          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CleanOutFile" enabled="true">
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CleanFiles" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
