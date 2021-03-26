@@ -1,7 +1,7 @@
 import os
 import requests, argparse
 
-API_ENDPOINT = "http://34.241.195.26:3000/api/datasources"
+apiendpoint = "http://localhost:3000/api/datasources"
 username = "admin"
 password = "admin"
 url = "localhost:9090"
@@ -13,7 +13,7 @@ parser.add_argument("--url", "-u", help="Input url for datasource")
 parser.add_argument("--name", "-n", help="Input datasource name")
 parser.add_argument("--username", help="Input username for grafana")
 parser.add_argument("--password", help="Input password for grafana")
-
+parser.add_argument("--apiendpoint", help="Input API_ENDPOINT for grafana")
 args = parser.parse_args()
 if args.url:
     url = args.url
@@ -23,6 +23,8 @@ if args.username:
     username = args.username
 if args.password:
     password = args.password
+if args.apiendpoint:
+    apiendpoint = args.apiendpoint
 
 # create  datasource
 Prometheus_data = {
@@ -35,7 +37,7 @@ Prometheus_data = {
 headers={'content-type': 'application/json'}
 
 # sending post request and saving response as response object
-r = requests.post(url=API_ENDPOINT, data=Prometheus_data,auth=(username, password))
+r = requests.post(url=apiendpoint, data=Prometheus_data,auth=(username, password))
 
 # extracting response text
 
