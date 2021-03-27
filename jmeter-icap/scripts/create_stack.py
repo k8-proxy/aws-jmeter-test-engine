@@ -66,15 +66,15 @@ def get_size(users_per_instance):
     # Determine the size of ec2 instance and jvm memory
     instance_type = "m4.2xlarge"
     jvm_memory = "9216m"
-    if 0 < users_per_instance < 1000:
+    if 0 < users_per_instance < 900:
         instance_type = "m4.large"
-        jvm_memory = "3072m"
-    elif 1000 <= users_per_instance < 2500:
-        instance_type = "m4.xlarge"
         jvm_memory = "4096m"
+    elif 900 <= users_per_instance < 2500:
+        instance_type = "m4.xlarge"
+        jvm_memory = "10240m"
     elif 2500 <= users_per_instance:
         instance_type = "m4.2xlarge"
-        jvm_memory = "9216m"
+        jvm_memory = "20480m"
 
     return instance_type, jvm_memory
 
