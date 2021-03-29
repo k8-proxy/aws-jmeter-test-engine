@@ -12,14 +12,18 @@ This script is parameterized python script that should be run along with the pas
 
 In order to create prometheus Datasource using the Grafana API, a Grafana username and password must be provided as parameter alson with the Datasource name and URL.
 
-you need to install python3 and pip3 on your machine. 
+you need to install python3 on your machine. 
+
+Install [Python](https://www.python.org/downloads/).
 
 ## Step By Step
 
 once you have an python3 and pip3 install in your system and you have an grafana endpoints, follow the following steps.
 
-1) clone the aws-jmeter-test-engine github repo 
+1) clone the aws-jmeter-test-engine github repo (https://github.com/k8-proxy/aws-jmeter-test-engine)
+
 2) go to jmeter-icap/script folder
+
 3) then run following command with all Parameter with the script . 
 
 example : 
