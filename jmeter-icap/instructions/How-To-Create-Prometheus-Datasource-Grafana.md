@@ -22,26 +22,48 @@ once you have an python3 and pip3 install in your system and you have an grafana
 
 1) clone the aws-jmeter-test-engine [Github_Repo] (https://github.com/k8-proxy/aws-jmeter-test-engine/).
 
+```
+git clone https://github.com/k8-proxy/aws-jmeter-test-engine/
+```
+
 2) go to jmeter-icap/script folder
+
+```
+cd aws-jmeter-test-engine/jmeter-icap/script
+```
 
 3) then run following command with all Parameter with the script . 
 
 example : 
-  python3 prom_datasource.py -u "Prometheus URL" -n "Name Of Datasource ex: prometheus" --username "Username of Grafana" --password "Password of grafana" --apiendpoint http://"Grafana Endpoint:Port"/api/datasources
 
-value to be Replace :
+```
+python3 prom_datasource.py -u "Prometheus URL" -n "Name Of Datasource ex: prometheus" --username "Username of Grafana" --password "Password of grafana" --apiendpoint http://"Grafana Endpoint:Port"/api/datasources
+```
+## Options/Parameters available for the prom_datasource.py script
 
-=> Prometheus URL : change it with the actual prometheus URL along with the Port if you expose with port and Ip or DNS name if you expose it with FQDN "
-
-=> Name Of Datasource : Name of the daasource you wanted to give in grafana for identification .
-
-=> Username Of Grafana : username of grafana to access the grafana console.
-
-=> Password Of Grafana : password of grafana to access the grafana console.
-
-=> Grafana Endpoint:Port : replace this with Grafana URL/IP if you are exposing grafana with FQDN then add the FQDN name of grafana ex: grafana.local or if you expose grafana with IP and port then add the "IP:Port" default port of grafana is 3000
-
+<table>
+<tr>
+<td width="200"> Parameter</td> <td> Description </td>
+</tr>
+<tr>
+<td> --URL, -u </td> <td>actual prometheus URL along with the Port if you expose with port and Ip or DNS name if you expose it with FQDN default is localhost:9090 </td>
+</tr>
+<tr>
+<td> --name, -n </td> <td> Name of the datasource that we want to give in grafana </td>
+</tr>
+<tr>
+<td> --username</td> <td>Input username for grafana <td>
+</tr>
+<tr>
+<td> --password</td> <td>Input Password for grafana </td>
+</tr>
+<tr>
+<td> --apiendpoint </td> <td>Input API_ENDPOINT for grafana default it is http://localhost:3000/api/datasources replace it with your grafana FQDN or IP:Port </td>
+</tr>
+</table>
 
 ## once the script is executed successful you visit the grafana and view the datasource section and you will see the datasource should be created with the values you have pass during execution of script.
 
+## datasource created on grafana with script we run.
 
+![Prometheous_datasource_created](img/prometheus_datasource.PNG)
