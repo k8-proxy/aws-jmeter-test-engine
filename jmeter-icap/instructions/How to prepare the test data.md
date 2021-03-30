@@ -35,5 +35,5 @@ The framework UI interface allows to upload new CSV test data metadata file. It 
 
 Select the new CSV and click on Submit Configurations button.
 
-**Note**: Upload Test Data to S3 bucket (see above picture) feature uploads only the test data provided by the framework internally and not any new test data. 
+**Note**: Upload Test Data option refers only to specific sample test data contained within this repo 
 
